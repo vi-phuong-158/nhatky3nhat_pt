@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import DOMPurify from 'dompurify';
 import './ScrapbookViewer.css';
 
@@ -171,12 +172,28 @@ export default function ScrapbookViewer({ entries, currentPage = 0, onPageChange
       )}
 
       {/* Lightbox xem ảnh Full màn hình */}
-      {selectedImage && (
-        <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
-          <button className="lightbox-close" onClick={() => setSelectedImage(null)}>✕</button>
-          <img src={selectedImage} alt="Phóng to" className="lightbox-image" onClick={(e) => e.stopPropagation()} />
-        </div>
-      )}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div 
+            className="lightbox-overlay" 
+            onClick={() => setSelectedImage(null)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <button className="lightbox-close" onClick={() => setSelectedImage(null)}>✕</button>
+            <motion.img 
+              src={selectedImage} 
+              alt="Phóng to" 
+              className="lightbox-image" 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, transition: { type: "spring", damping: 20 } }}
+              exit={{ scale: 0.9, opacity: 0 }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
