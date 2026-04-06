@@ -70,25 +70,7 @@
 }
 
 
-/* Image & Content Layers */
-.diary-image-container {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 1;
-}
-
-.diary-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.image-overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%);
-}
-
+/* Dọn dẹp Overlay cũ */
 .diary-content-overlay {
   position: relative;
   z-index: 2;
@@ -99,73 +81,138 @@
   overflow-y: auto;
 }
 
-/* Khi có ảnh nền, đẩy chữ xuống đáy và đổi màu sáng */
-.diary-image-container + .diary-content-overlay {
-  justify-content: flex-end; 
+@media (min-width: 768px) {
+  .diary-content-overlay {
+    padding: 40px 50px;
+  }
 }
-.text-light {
-  color: #fff;
-}
+
 .text-dark {
   color: var(--text-dark, #292524);
+}
+
+/* PHONG CÁCH ẢNH POLAROID - ĐÃ THU NHỎ HIỂN THỊ DƯỚI CÙNG */
+.scrapbook-photo {
+  width: 100%;
+  max-width: 220px; /* Thu nhỏ mạnh */
+  height: 180px;
+  object-fit: cover;
+  background-color: #fff;
+  padding: 8px 8px 30px 8px; /* Giữ tỷ lệ viền phân bố như Polaroid */
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 2px 6px 12px rgba(0,0,0,0.15), -2px 3px 5px rgba(0,0,0,0.05);
+  border-radius: 2px;
+  margin: 30px auto 10px auto; /* Tăng lề trên để cách bài viết */
+  align-self: center;
+  transform: rotate(-3deg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: zoom-in; /* Thêm con trỏ báo hiệu có thể click phóng to */
+}
+
+.scrapbook-photo:nth-of-type(even) {
+  transform: rotate(3deg);
+}
+
+.scrapbook-photo:hover {
+  transform: rotate(0deg) scale(1.1);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  z-index: 10;
 }
 
 /* Typography styles */
 .diary-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  font-size: 14px;
   margin-bottom: 20px;
-  font-size: 13px;
+  opacity: 0.8;
+  font-family: 'Times New Roman', Times, serif;
+  letter-spacing: 1px;
 }
 
-.diary-badge {
-  background-color: var(--butter-yellow, #F7E998);
+.diary-badge-main {
+  font-weight: 800;
   color: var(--cherry-red, #FF4747);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-weight: bold;
+  white-space: nowrap; /* Định hình nằm gọn 1 dòng */
 }
 
-.diary-date {
-  font-style: italic;
-  opacity: 0.9;
+.diary-body-content {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .diary-title {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-size: 26px;
-  margin-bottom: 15px;
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 32px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  color: #8B0000; /* Nhấn mạnh tiêu đề bằng màu Cherry Dark */
+  text-align: center; /* Đưa tiêu đề vào giữa */
+}
+
+.diary-badge-inline {
+  display: inline-block;
+  background-color: var(--cherry-red, #FF4747);
+  color: #FFF;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  align-self: center; /* Căn giữa badge */
+  margin-bottom: 30px;
+  text-transform: uppercase;
 }
 
 .diary-text {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  line-height: 1.7;
-  text-align: justify;
-  margin-bottom: 25px;
-  font-size: 16px;
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic; /* Chữ nghiêng cảm giác viết tay/cổ điển */
+  line-height: 1.8;
+  text-align: center; /* Đưa nội dung vào giữa cho nổi bật */
+  font-size: 20px; /* Cỡ chữ to hơn, dễ đọc */
+  font-weight: 500;
+  color: #333;
 }
 
 .diary-footer {
-  margin-top: auto;
-  border-top: 1px dashed rgba(255,255,255,0.4);
-  padding-top: 15px;
-}
-.text-dark.diary-footer {
-  border-top: 1px dashed rgba(0,0,0,0.2);
-}
-
-.diary-critic {
-  margin-top: 20px;
-  padding: 15px;
-  background: rgba(255,255,255,0.1);
-  border-left: 4px solid var(--butter-yellow, #F7E998);
-  font-family: 'Georgia', serif;
-  border-radius: 4px;
+  margin-top: 40px;
+  border-top: 1px dotted rgba(0,0,0,0.3);
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-/* Touch UX Target >= 44px */
+.author-info strong {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+}
+
+.author-info small {
+  opacity: 0.7;
+}
+
+.btn-view-photos {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  transition: all 0.2s;
+}
+
+.btn-view-photos:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* Nút lật trang */
 .flip-btn {
   position: absolute;
   top: 50%;
@@ -198,4 +245,55 @@
 
 .next-btn {
   right: 15px;
+}
+
+/* HIỆU ỨNG PHÓNG TO ẢNH (LIGHTBOX) */
+.lightbox-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+  backdrop-filter: blur(8px);
+}
+
+.lightbox-image {
+  max-width: 95vw;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  animation: zoomIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  z-index: 10001;
+}
+
+.lightbox-close:hover {
+  background: var(--cherry-red, #FF4747);
+  transform: scale(1.1);
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

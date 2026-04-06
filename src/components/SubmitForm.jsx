@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { submitEntry } from '../services/api';
 import './SubmitForm.css';
 
-export default function SubmitForm({ onFormSuccess }) {
+export default function SubmitForm({ onFormSuccess, onClose }) {
   // @react-best-practices: Sử dụng uncontrolled inputs (useRef) 
   const nameRef = useRef(null);
   const phoneRef = useRef(null);
@@ -128,7 +128,14 @@ export default function SubmitForm({ onFormSuccess }) {
 
   return (
     <div className="submit-form-container">
-      <h2>✍️ Viết trang mới</h2>
+      <div className="form-header-row" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <h2>✍️ Viết trang mới</h2>
+        {onClose && (
+          <button type="button" onClick={onClose} className="btn-close-form" style={{background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#666'}}>
+            ✕
+          </button>
+        )}
+      </div>
       
       {error && <div className="form-error">{error}</div>}
       {success && <div className="form-success">{success}</div>}

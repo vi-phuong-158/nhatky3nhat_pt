@@ -1,0 +1,150 @@
+/* BÌA SỔ (COVER) */
+.book-cover-container {
+  width: 100vw;
+  height: 100dvh;
+  position: relative;
+  background-color: var(--cherry-red, #FF4747); /* Đỏ Cherry */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.2);
+}
+
+@media (min-width: 768px) {
+  .book-cover-container {
+    border-radius: 0; 
+    width: 100vw;
+    margin: 0;
+  }
+}
+
+/* Lớp phủ da (texture) - đã bị vô hiệu hóa theo yêu cầu */
+.book-cover-texture {
+  display: none !important;
+}
+
+/* Nẹp cứng gáy sổ */
+.book-cover-binding {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  background: linear-gradient(to right, 
+    rgba(0,0,0,0.85) 0%, 
+    rgba(0,0,0,0.3) 40%, 
+    rgba(255,255,255,0.15) 75%, 
+    rgba(0,0,0,0.4) 100%
+  );
+  z-index: 2;
+  box-shadow: 4px 0 15px rgba(0,0,0,0.7);
+}
+
+.book-cover-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 30px 0 50px; /* Dịch nội dung sang phải nhường gáy sổ */
+  color: var(--butter-yellow, #F7E998); /* Vàng bơ */
+}
+
+.emblem-wrapper {
+  margin-bottom: 25px;
+  filter: drop-shadow(0px 6px 10px rgba(0,0,0,0.4));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Creates space between the two logos */
+}
+
+.emblem-logo {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+}
+
+.agency-name {
+  font-family: 'Times New Roman', Times, serif;
+  letter-spacing: 2px;
+  margin-bottom: 50px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  color: var(--butter-yellow, #F7E998);
+}
+
+.agency-name p {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.agency-name .sub-agency {
+  font-size: 14px;
+  opacity: 0.9;
+  letter-spacing: 3px;
+  color: var(--butter-yellow, #F7E998);
+}
+
+.book-title-wrapper {
+  margin-bottom: 70px;
+  filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.4));
+}
+
+/* Font chữ mô phỏng lưu bút thủ công */
+.title-small {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 38px;
+  font-style: italic;
+  font-weight: normal;
+  margin-bottom: -15px; 
+  color: var(--butter-yellow, #F7E998);
+}
+
+.title-large {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 68px;
+  font-weight: 900;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  /* Mạ vàng gradient cho chữ BA NHẤT */
+  background: linear-gradient(to bottom, #FFF7D6 0%, #D4AF37 50%, #A67C00 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+/* Nút mở sổ sang chảnh */
+.btn-open-book {
+  background: linear-gradient(135deg, #FCECA1 0%, #D4AF37 100%);
+  color: #6a040f; /* Đỏ đun tương phản với vàng */
+  border: none;
+  border-radius: 30px;
+  padding: 16px 45px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  cursor: pointer;
+  box-shadow: 
+    0 8px 25px rgba(0,0,0,0.5), 
+    inset 0 2px 2px rgba(255,255,255,0.7);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  letter-spacing: 1px;
+}
+
+.btn-open-book:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 30px rgba(0,0,0,0.6), 
+    inset 0 2px 3px rgba(255,255,255,0.8);
+  filter: brightness(1.1);
+}
+
+.btn-open-book:active {
+  transform: translateY(2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
