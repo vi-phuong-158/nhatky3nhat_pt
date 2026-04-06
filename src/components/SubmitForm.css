@@ -1,0 +1,92 @@
+.submit-form-container {
+  width: 100%;
+  padding: 10px;
+}
+
+.submit-form-container h2 {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: var(--cherry-red);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.scrapbook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.scrapbook-form label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+/* TOUCH TARGET MINIMUM 44x44px (UI/UX Pro Max) */
+.scrapbook-form input[type="text"],
+.scrapbook-form input[type="tel"],
+.scrapbook-form select,
+.scrapbook-form textarea,
+.scrapbook-form input[type="file"],
+.submit-btn {
+  width: 100%;
+  min-height: 48px; /* Đảm bảo lớn hơn 44px */
+  padding: 12px;
+  font-size: 16px; /* 16px chống auto-zoom trên Safari iOS */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  background-color: rgba(255, 255, 255, 0.7);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.scrapbook-form input:focus,
+.scrapbook-form select:focus,
+.scrapbook-form textarea:focus {
+  border-color: var(--cherry-red);
+  box-shadow: 0 0 0 2px rgba(255, 71, 71, 0.2);
+}
+
+.scrapbook-form textarea {
+  resize: vertical;
+}
+
+.submit-btn {
+  background-color: var(--cherry-red);
+  color: var(--butter-yellow);
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  min-height: 56px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+.submit-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-error {
+  color: #d93025;
+  background-color: #fce8e6;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.form-success {
+  color: #1e8e3e;
+  background-color: #e6f4ea;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}

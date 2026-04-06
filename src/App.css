@@ -1,0 +1,116 @@
+/* CSS BẢNG MÀU CHỦ ĐẠO TỪ KẾ HOẠCH */
+:root {
+  --cherry-red: #FF4747;
+  --butter-yellow: #F7E998;
+  --paper-cream: #E6E2D3;
+  --text-dark: #292524;
+}
+
+/* Reset cơ bản */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #1a1a1a;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+/* KHUNG SỔ LƯU NIỆM (SCAPBOOK) MOBILE-FIRST */
+.scrapbook-container {
+  width: 100%;
+  max-width: 480px; 
+  height: 100vh;
+  max-height: 850px;
+  background-color: var(--paper-cream);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 50px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+/* CHI TIẾT TRANG GIẤY */
+.scrapbook-page {
+  flex: 1;
+  padding: 30px 20px;
+  background: 
+    linear-gradient(to right, rgba(0,0,0,0.05) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.05) 100%),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><rect width="100" height="100" fill="%23000"/><path d="M0 0 L100 100 M100 0 L0 100" stroke="%23fff" stroke-width="1"/></svg>'); 
+  background-color: var(--paper-cream);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+/* Animation lật trang cơ bản */
+.flip-enter {
+  transform: rotateY(90deg);
+  transform-origin: left center;
+  opacity: 0;
+}
+.flip-enter-active {
+  transform: rotateY(0);
+  opacity: 1;
+  transition: transform 500ms ease-out, opacity 500ms ease-out;
+}
+.flip-exit {
+  transform: rotateY(0);
+  transform-origin: left center;
+  opacity: 1;
+}
+.flip-exit-active {
+  transform: rotateY(-90deg);
+  opacity: 0;
+  transition: transform 500ms ease-in, opacity 500ms ease-in;
+}
+
+/* Typography components */
+.scrapbook-page h1 {
+  color: var(--cherry-red);
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+}
+
+.scrapbook-page p.slogan {
+  text-align: center;
+  font-size: 14px;
+  font-style: italic;
+  color: #666;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px dashed #ccc;
+}
+
+/* RESPONSIVE DESKTOP */
+@media (min-width: 768px) {
+  .scrapbook-container {
+    max-width: 900px;
+    height: 80vh;
+    min-height: 600px;
+    flex-direction: row;
+    border-radius: 10px;
+  }
+  
+  .scrapbook-page {
+    width: 50%;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    box-shadow: inset -10px 0 20px -10px rgba(0,0,0,0.2);
+  }
+}
