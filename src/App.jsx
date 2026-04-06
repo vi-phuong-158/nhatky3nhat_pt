@@ -37,6 +37,13 @@ function App() {
     loadData();
   }, []);
 
+  // Bộ lọc tìm kiếm Mục Lục thời gian thực
+  const filteredEntries = entries.filter(e => 
+    e.tieuDe.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    e.donVi.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    e.hoTen.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Bọc phần hiển thị với Framer Motion
   return (
     <AnimatePresence mode="wait">
