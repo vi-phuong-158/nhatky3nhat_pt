@@ -1,4 +1,6 @@
 import React from 'react';
+import logoCand from '../assets/logo-cand.png';
+import logoPhuNu from '../assets/logo-phunu.png';
 import './BookCover.css';
 
 export default function BookCover({ onOpen }) {
@@ -12,8 +14,8 @@ export default function BookCover({ onOpen }) {
       
       <div className="book-cover-content">
         <div className="emblem-wrapper">
-          <img src="/logo-cand.png" alt="Logo CAND" className="emblem-logo" />
-          <img src="/logo-phunu.png" alt="Logo Hội Phụ Nữ" className="emblem-logo" />
+          <img src={logoCand} alt="Logo CAND" className="emblem-logo" />
+          <img src={logoPhuNu} alt="Logo Hội Phụ Nữ" className="emblem-logo" />
         </div>
         
         <div className="agency-name">
