@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { submitEntry } from '../services/api';
+import { donViList } from '../constants';
 import './SubmitForm.css';
 
 export default function SubmitForm({ onFormSuccess, onClose }) {
@@ -78,6 +79,12 @@ export default function SubmitForm({ onFormSuccess, onClose }) {
       return;
     }
 
+    if (!donViList.includes(unit)) {
+      setError('Vui lòng chọn tên đơn vị từ danh sách có sẵn (không được nhập ngoài).');
+      setLoading(false);
+      return;
+    }
+
     const file = fileRef.current?.files?.[0];
     let fileDataObj = { base64Data: '', mimeType: '', fileName: '' };
 
@@ -148,7 +155,26 @@ export default function SubmitForm({ onFormSuccess, onClose }) {
         <input id="input-phone" type="tel" inputMode="numeric" ref={phoneRef} placeholder="Nhập SĐT..." disabled={loading} />
 
         <label htmlFor="input-unit">Đơn vị *</label>
-        <input id="input-unit" type="text" ref={unitRef} placeholder="Vd: Phòng An ninh đối ngoại" disabled={loading} />
+        <input 
+          id="input-unit" 
+          type="text" 
+          list="donvi-list" 
+          ref={unitRef} 
+          placeholder="Chọn hoặc gõ tên đơn vị..." 
+          disabled={loading}
+          onBlur={(e) => {
+            const val = e.target.value;
+            if (val && !donViList.includes(val)) {
+              e.target.value = '';
+              if (unitRef.current) unitRef.current.value = '';
+            }
+          }}
+        />
+        <datalist id="donvi-list">
+          {donViList.map((dv, index) => (
+            <option key={index} value={dv} />
+          ))}
+        </datalist>
 
         <label htmlFor="input-title">Tiêu đề bài viết *</label>
         <input id="input-title" type="text" ref={titleRef} placeholder="Nhập tiêu đề..." disabled={loading} />
