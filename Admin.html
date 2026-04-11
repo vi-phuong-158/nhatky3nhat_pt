@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Nhật ký 3 Nhất</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Thư viện SheetJS để xuất file Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- Icon -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@300,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f1f5f9;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #1e3a8a;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .material-symbols-outlined {
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3a8a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading" class="fixed inset-0 bg-white/80 z-50 flex flex-col items-center justify-center">
+        <div class="loader mb-4"></div>
+        <p class="text-blue-900 font-semibold animate-pulse">Đang tải dữ liệu từ Google Sheets...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-blue-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-3xl">admin_panel_settings</span>
+                <h1 class="text-xl font-bold uppercase tracking-wide">Hệ Thống Quản Trị - Nhật Ký 3 Nhất</h1>
+            </div>
+            <div class="text-sm bg-blue-800 px-3 py-1 rounded-full border border-blue-700">
+                Ban Phụ nữ
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white shadow-sm mb-6">
+        <div class="max-w-7xl mx-auto px-4 flex gap-6">
+            <button onclick="switchTab('manage')" id="btn-tab-manage"
+                class="py-4 px-2 tab-active transition-colors hover:text-blue-800">
+                <span class="material-symbols-outlined mr-1">article</span> Quản lý bài viết
+            </button>
+            <button onclick="switchTab('stats')" id="btn-tab-stats"
+                class="py-4 px-2 text-gray-500 transition-colors hover:text-blue-800">
+                <span class="material-symbols-outlined mr-1">bar_chart</span> Thống kê phong trào
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 pb-12">
+
+        <!-- TAB 1: QUẢN LÝ BÀI VIẾT -->
+        <div id="tab-manage" class="block">
+            <!-- Thống kê nhanh -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500">
+                    <p class="text-sm text-gray-500 font-medium">Tổng số bài</p>
+                    <p id="stat-total" class="text-2xl font-bold text-gray-800">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-yellow-400">
+                    <p class="text-sm text-gray-500 font-medium">Chờ duyệt</p>
+                    <p id="stat-pending" class="text-2xl font-bold text-yellow-600">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-green-500">
+                    <p class="text-sm text-gray-500 font-medium">Đã duyệt</p>
+                    <p id="stat-approved" class="text-2xl font-bold text-green-600">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-red-500">
+                    <p class="text-sm text-gray-500 font-medium">Từ chối</p>
+                    <p id="stat-rejected" class="text-2xl font-bold text-red-600">0</p>
+                </div>
+            </div>
+
+            <!-- Bảng danh sách -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-50 text-gray-600 font-semibold border-b">
+                            <tr>
+                                <th class="py-3 px-4">Thời gian</th>
+                                <th class="py-3 px-4">Đơn vị</th>
+                                <th class="py-3 px-4">Họ tên</th>
+                                <th class="py-3 px-4 w-1/4">Tiêu đề</th>
+                                <th class="py-3 px-4">Trạng thái</th>
+                                <th class="py-3 px-4 text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manage-tbody" class="divide-y divide-gray-100">
+                            <!-- Nội dung render qua JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: THỐNG KÊ PHONG TRÀO -->
+        <div id="tab-stats" class="hidden">
+            <div
+                class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-wrap gap-4 items-end justify-between">
+                <div class="flex flex-wrap gap-4 items-end">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1 font-medium uppercase">Từ ngày</label>
+                        <input type="date" id="filter-start"
+                            class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-900 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1 font-medium uppercase">Đến ngày</label>
+                        <input type="date" id="filter-end"
+                            class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-900 outline-none">
+                    </div>
+                    <button onclick="renderStats()"
+                        class="bg-blue-100 text-blue-900 px-4 py-2 rounded-lg font-medium hover:bg-blue-200 transition text-sm flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">filter_alt</span> Lọc dữ liệu
+                    </button>
+                </div>
+                <button onclick="exportExcel()"
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition text-sm flex items-center gap-1 shadow-sm">
+                    <span class="material-symbols-outlined text-sm">download</span> Xuất file Excel
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-blue-900 text-white font-semibold">
+                        <tr>
+                            <th class="py-3 px-4 text-center w-16">STT</th>
+                            <th class="py-3 px-4">Tên Đơn vị</th>
+                            <th class="py-3 px-4 text-center">Tổng bài</th>
+                            <th class="py-3 px-4 text-center">Đã duyệt</th>
+                            <th class="py-3 px-4 text-center">Chờ duyệt</th>
+                            <th class="py-3 px-4 text-center">Từ chối</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stats-tbody" class="divide-y divide-gray-100">
+                        <!-- Nội dung render qua JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL DUYỆT BÀI -->
+    <div id="review-modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-blue-900">Chi tiết bài viết</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-6 overflow-y-auto flex-1 text-sm">
+                <div class="grid grid-cols-2 gap-y-3 mb-6 bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                    <div><span class="text-gray-500 block text-xs">Người gửi:</span><span id="modal-hoten"
+                            class="font-semibold"></span></div>
+                    <div><span class="text-gray-500 block text-xs">Đơn vị:</span><span id="modal-donvi"
+                            class="font-semibold"></span></div>
+                    <div><span class="text-gray-500 block text-xs">Thời gian:</span><span id="modal-thoigian"
+                            class="font-medium text-gray-700"></span></div>
+                    <div><span class="text-gray-500 block text-xs">Tiêu chí 3 Nhất:</span><span id="modal-tieuchi"
+                            class="font-medium text-blue-800"></span></div>
+                </div>
+
+                <div class="mb-4">
+                    <span class="text-gray-500 block text-xs mb-1">Tiêu đề:</span>
+                    <h4 id="modal-tieude" class="font-bold text-lg text-gray-900 leading-tight"></h4>
+                </div>
+
+                <div class="mb-6">
+                    <span class="text-gray-500 block text-xs mb-1">Nội dung chi tiết:</span>
+                    <p id="modal-noidung"
+                        class="text-gray-700 whitespace-pre-line bg-gray-50 p-4 rounded-lg border leading-relaxed"></p>
+                </div>
+
+                <div id="modal-image-container" class="mb-6 hidden">
+                    <span class="text-gray-500 block text-xs mb-1">Hình ảnh đính kèm:</span>
+                    <img id="modal-hinhanh" src="" alt="Ảnh hoạt động"
+                        class="max-h-80 w-auto rounded-lg border shadow-sm mx-auto">
+                </div>
+
+                <hr class="my-6">
+
+                <!-- Form Duyệt -->
+                <input type="hidden" id="modal-rowindex">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2 text-sm">Quyết định phê duyệt <span
+                            class="text-red-500">*</span></label>
+                    <select id="modal-trangthai"
+                        class="w-full border-gray-300 border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-900 bg-white">
+                        <option value="Chờ duyệt">Chờ duyệt (Chưa hiển thị)</option>
+                        <option value="Đã duyệt">Đã duyệt (Hiển thị lên Bảng tin)</option>
+                        <option value="Từ chối">Từ chối (Yêu cầu chỉnh sửa/Hủy)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2 text-sm">Nhận xét của Ban Phụ nữ (Không bắt
+                        buộc)</label>
+                    <textarea id="modal-nhanxet" rows="3"
+                        class="w-full border-gray-300 border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-900"
+                        placeholder="Nhập nhận xét hoặc lý do từ chối..."></textarea>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3">
+                <button onclick="closeModal()"
+                    class="px-4 py-2 text-gray-600 bg-white border rounded-lg hover:bg-gray-100 transition font-medium">Hủy
+                    bỏ</button>
+                <button onclick="saveStatus()" id="btn-save"
+                    class="px-6 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition font-medium flex items-center gap-2">
+                    Lưu cập nhật
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông báo Toast -->
+    <div id="toast"
+        class="fixed bottom-4 right-4 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-2">
+        <span class="material-symbols-outlined text-green-400">check_circle</span>
+        <span id="toast-message">Thành công!</span>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        let GLOBAL_DATA = [];
+
+        // 1. Khởi tạo: Lấy dữ liệu từ Apps Script
+        window.onload = () => {
+            // Giả lập an toàn nếu chạy dev offline, còn chạy thật sẽ gọi google.script.run
+            if (typeof google !== 'undefined') {
+                google.script.run
+                    .withSuccessHandler((data) => {
+                        GLOBAL_DATA = data;
+                        document.getElementById('loading').classList.add('hidden');
+                        renderManageTable();
+                        renderStats(); // Render sẵn data thống kê
+                    })
+                    .withFailureHandler((err) => {
+                        alert("Lỗi khi tải dữ liệu: " + err);
+                        document.getElementById('loading').classList.add('hidden');
+                    })
+                    .getAdminData();
+            }
+        };
+
+        // 2. Format Ngày tháng & Trạng thái
+        const formatDate = (dateStr) => {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        };
+
+        const getStatusBadge = (status) => {
+            if (status === 'Đã duyệt') return '<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Đã duyệt</span>';
+            if (status === 'Từ chối') return '<span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">Từ chối</span>';
+            return '<span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold border border-yellow-200">Chờ duyệt</span>';
+        };
+
+        // 3. Render Bảng Quản lý Bài viết
+        function renderManageTable() {
+            let html = '';
+            let pending = 0, approved = 0, rejected = 0;
+
+            GLOBAL_DATA.forEach(item => {
+                // Cập nhật số liệu
+                if (item.trangThai === 'Chờ duyệt') pending++;
+                else if (item.trangThai === 'Đã duyệt') approved++;
+                else if (item.trangThai === 'Từ chối') rejected++;
+
+                // Dựng HTML dòng table
+                html += `
+          <tr class="hover:bg-blue-50/50 transition-colors border-b">
+            <td class="py-3 px-4 text-gray-500 whitespace-nowrap">${formatDate(item.thoiGian)}</td>
+            <td class="py-3 px-4 font-medium text-gray-800">${item.donVi}</td>
+            <td class="py-3 px-4">${item.hoTen}</td>
+            <td class="py-3 px-4">
+              <div class="font-semibold text-gray-800 line-clamp-1">${item.tieuDe}</div>
+              <div class="text-xs text-gray-500 line-clamp-1">${item.tieuChi}</div>
+            </td>
+            <td class="py-3 px-4">${getStatusBadge(item.trangThai)}</td>
+            <td class="py-3 px-4 text-center">
+              <div class="flex gap-2 justify-center">
+                <button onclick='openModal(${JSON.stringify(item)})' class="bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white px-3 py-1.5 rounded-md text-xs font-medium border border-blue-200 hover:border-blue-600 transition-colors shadow-sm">
+                  Chi tiết
+                </button>
+                <button onclick='deleteItem(${item.rowIndex})' class="bg-red-50 text-red-700 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded-md text-xs font-medium border border-red-200 hover:border-red-600 transition-colors shadow-sm">
+                  Xóa
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+            });
+
+            document.getElementById('manage-tbody').innerHTML = html;
+
+            // Update Stats UI
+            document.getElementById('stat-total').innerText = GLOBAL_DATA.length;
+            document.getElementById('stat-pending').innerText = pending;
+            document.getElementById('stat-approved').innerText = approved;
+            document.getElementById('stat-rejected').innerText = rejected;
+        }
+
+        // 4. Modal Logic
+        function openModal(item) {
+            document.getElementById('modal-rowindex').value = item.rowIndex;
+            document.getElementById('modal-hoten').innerText = item.hoTen;
+            document.getElementById('modal-donvi').innerText = item.donVi;
+            document.getElementById('modal-thoigian').innerText = formatDate(item.thoiGian);
+            document.getElementById('modal-tieuchi').innerText = item.tieuChi;
+            document.getElementById('modal-tieude').innerText = item.tieuDe;
+            document.getElementById('modal-noidung').innerText = item.noiDung;
+
+            // Xử lý ảnh
+            const imgContainer = document.getElementById('modal-image-container');
+            const imgEl = document.getElementById('modal-hinhanh');
+            if (item.linkAnh) {
+                imgEl.src = item.linkAnh;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+            }
+
+            document.getElementById('modal-trangthai').value = item.trangThai || 'Chờ duyệt';
+            document.getElementById('modal-nhanxet').value = item.nhanXet || '';
+
+            document.getElementById('review-modal').classList.remove('hidden');
+            document.getElementById('review-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('review-modal').classList.add('hidden');
+            document.getElementById('review-modal').classList.remove('flex');
+        }
+
+        // 5. Lưu Trạng Thái mới
+        function saveStatus() {
+            const rowIndex = document.getElementById('modal-rowindex').value;
+            const status = document.getElementById('modal-trangthai').value;
+            const comment = document.getElementById('modal-nhanxet').value;
+            const btn = document.getElementById('btn-save');
+
+            // UI Loading button
+            const oldText = btn.innerHTML;
+            btn.innerHTML = '<div class="loader" style="width:20px;height:20px;border-width:2px;border-top-color:white;"></div> Đang lưu...';
+            btn.disabled = true;
+
+            google.script.run
+                .withSuccessHandler((res) => {
+                    // Update local data
+                    const idx = GLOBAL_DATA.findIndex(i => i.rowIndex == rowIndex);
+                    if (idx !== -1) {
+                        GLOBAL_DATA[idx].trangThai = status;
+                        GLOBAL_DATA[idx].nhanXet = comment;
+                    }
+                    renderManageTable();
+                    renderStats(); // Update stats theo data mới
+                    closeModal();
+                    showToast(res.message);
+
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                })
+                .withFailureHandler((err) => {
+                    alert("Lỗi khi lưu: " + err);
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                })
+                .updateEntryStatus(rowIndex, status, comment);
+        }
+
+        // 5.1. Xóa bài viết
+        function deleteItem(rowIndex) {
+            if (!confirm("Bạn có chắc chắn muốn xóa bài viết này không? Hành động này không thể hoàn tác.")) return;
+
+            // Hiển thị loading overlay
+            document.getElementById('loading').classList.remove('hidden');
+
+            google.script.run
+                .withSuccessHandler((res) => {
+                    showToast(res.message);
+                    // Tải lại toàn bộ dữ liệu để đảm bảo đồng bộ rowIndex
+                    google.script.run
+                        .withSuccessHandler((data) => {
+                            GLOBAL_DATA = data;
+                            document.getElementById('loading').classList.add('hidden');
+                            renderManageTable();
+                            renderStats();
+                        })
+                        .getAdminData();
+                })
+                .withFailureHandler((err) => {
+                    alert("Lỗi khi xóa: " + err);
+                    document.getElementById('loading').classList.add('hidden');
+                })
+                .deleteEntry(rowIndex);
+        }
+
+        // 6. Tabs Toggle
+        function switchTab(tabId) {
+            document.getElementById('tab-manage').classList.add('hidden');
+            document.getElementById('tab-stats').classList.add('hidden');
+            document.getElementById('btn-tab-manage').classList.replace('tab-active', 'text-gray-500');
+            document.getElementById('btn-tab-stats').classList.replace('tab-active', 'text-gray-500');
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('btn-tab-' + tabId).classList.replace('text-gray-500', 'tab-active');
+        }
+
+        // Danh sách toàn bộ đơn vị (đồng bộ với constants.js)
+        const ALL_UNITS = [
+            "CAP Âu Cơ","CAP Hòa Bình","CAP Kỳ Sơn","CAP Nông Trang","CAP Phong Châu",
+            "CAP Phú Thọ","CAP Phúc Yên","CAP Tân Hòa","CAP Thanh Miếu","CAP Thống Nhất",
+            "CAP Vân Phú","CAP Việt Trì","CAP Vĩnh Phúc","CAP Vĩnh Yên","CAP Xuân Hòa",
+            "CAX An Bình","CAX An Nghĩa","CAX Bản Nguyên","CAX Bằng Luân","CAX Bao La",
+            "CAX Bình Nguyên","CAX Bình Phú","CAX Bình Tuyền","CAX Bình Xuyên","CAX Cẩm Khê",
+            "CAX Cao Dương","CAX Cao Phong","CAX Cao Sơn","CAX Chân Mộng","CAX Chí Đám",
+            "CAX Chí Tiên","CAX Cự Đồng","CAX Đà Bắc","CAX Đại Đình","CAX Đại Đồng",
+            "CAX Dân Chủ","CAX Đan Thượng","CAX Đạo Trù","CAX Đào Xá","CAX Đoan Hùng",
+            "CAX Đồng Lương","CAX Đông Thành","CAX Đức Nhàn","CAX Dũng Tiến","CAX Hạ Hoà",
+            "CAX Hải Lựu","CAX Hiền Lương","CAX Hiền Quan","CAX Hoàng An","CAX Hoàng Cương",
+            "CAX Hội Thịnh","CAX Hợp Kim","CAX Hợp Lý","CAX Hùng Việt","CAX Hương Cần",
+            "CAX Hy Cương","CAX Khả Cửu","CAX Kim Bôi","CAX Lạc Lương","CAX Lạc Sơn",
+            "CAX Lạc Thủy","CAX Lai Đồng","CAX Lâm Thao","CAX Lập Thạch","CAX Liên Châu",
+            "CAX Liên Hòa","CAX Liên Minh","CAX Liên Sơn","CAX Long Cốc","CAX Lương Sơn",
+            "CAX Mai Châu","CAX Mai Hạ","CAX Minh Đài","CAX Minh Hoà","CAX Mường Bi",
+            "CAX Mường Động","CAX Mường Hoa","CAX Mường Thàng","CAX Mường Vang","CAX Nật Sơn",
+            "CAX Ngọc Sơn","CAX Nguyệt Đức","CAX Nhân Nghĩa","CAX Pà Cò","CAX Phú Khê",
+            "CAX Phú Mỹ","CAX Phù Ninh","CAX Phùng Nguyên","CAX Quảng Yên","CAX Quy Đức",
+            "CAX Quyết Thắng","CAX Sơn Đông","CAX Sơn Lương","CAX Sông Lô","CAX Tam Đảo",
+            "CAX Tam Dương","CAX Tam Dương Bắc","CAX Tam Hồng","CAX Tam Nông","CAX Tam Sơn",
+            "CAX Tân Lạc","CAX Tân Mai","CAX Tân Pheo","CAX Tân Sơn","CAX Tây Cốc",
+            "CAX Tề Lỗ","CAX Thái Hòa","CAX Thanh Ba","CAX Thanh Sơn","CAX Thanh Thuỷ",
+            "CAX Thịnh Minh","CAX Thổ Tang","CAX Thọ Văn","CAX Thu Cúc","CAX Thung Nai",
+            "CAX Thượng Cốc","CAX Thượng Long","CAX Tiên Lữ","CAX Tiên Lương","CAX Tiền Phong",
+            "CAX Toàn Thắng","CAX Trạm Thản","CAX Trung Sơn","CAX Tu Vũ","CAX Văn Bán",
+            "CAX Văn Lang","CAX Văn Miếu","CAX Vân Sơn","CAX Vạn Xuân","CAX Vĩnh An",
+            "CAX Vĩnh Chân","CAX Vĩnh Hưng","CAX Vĩnh Phú","CAX Vĩnh Thành","CAX Vĩnh Tường",
+            "CAX Võ Miếu","CAX Xuân Đài","CAX Xuân Lãng","CAX Xuân Lũng","CAX Xuân Viên",
+            "CAX Yên Kỳ","CAX Yên Lạc","CAX Yên Lãng","CAX Yên Lập","CAX Yên Phú",
+            "CAX Yên Sơn","CAX Yên Thủy","CAX Yên Trị",
+            "Hội phụ nữ PA01","Hội phụ nữ PA02","Hội phụ nữ PA03","Hội phụ nữ PA04",
+            "Hội phụ nữ PA05","Hội phụ nữ PA06","Hội phụ nữ PA08","Hội phụ nữ PA09",
+            "Hội phụ nữ PC01","Hội phụ nữ PC02","Hội phụ nữ PC03","Hội phụ nữ PC04",
+            "Hội phụ nữ PC06","Hội phụ nữ PC07","Hội phụ nữ PC08","Hội phụ nữ PC09",
+            "Hội phụ nữ PC10","Hội phụ nữ PK02",
+            "Hội phụ nữ TTG 1","Hội phụ nữ TTG 2","Hội phụ nữ TTG 3",
+            "Hội phụ nữ PV01","Hội phụ nữ PV06",
+            "Hội phụ nữ PX01","Hội phụ nữ PX03","Hội phụ nữ PX05","Hội phụ nữ PX06",
+            "Hội phụ nữ PH06","Hội phụ nữ PH10"
+        ];
+
+        // 7. Render Bảng Thống kê & Lọc (hiển thị TẤT CẢ đơn vị)
+        function renderStats() {
+            const startInput = document.getElementById('filter-start').value;
+            const endInput = document.getElementById('filter-end').value;
+
+            // Khởi tạo tất cả đơn vị với 0
+            const statsObj = {};
+            ALL_UNITS.forEach(dv => {
+                statsObj[dv] = { total: 0, pending: 0, approved: 0, rejected: 0 };
+            });
+
+            GLOBAL_DATA.forEach(item => {
+                const itemDate = new Date(item.thoiGian);
+
+                // Filter logic
+                if (startInput && itemDate < new Date(startInput)) return;
+                if (endInput && itemDate > new Date(new Date(endInput).getTime() + 86400000)) return;
+
+                const dv = item.donVi || 'Chưa xác định';
+                if (!statsObj[dv]) {
+                    statsObj[dv] = { total: 0, pending: 0, approved: 0, rejected: 0 };
+                }
+
+                statsObj[dv].total++;
+                if (item.trangThai === 'Chờ duyệt') statsObj[dv].pending++;
+                else if (item.trangThai === 'Đã duyệt') statsObj[dv].approved++;
+                else if (item.trangThai === 'Từ chối') statsObj[dv].rejected++;
+            });
+
+            // Sắp xếp: Đơn vị có bài lên trước (theo total DESC), đơn vị 0 bài xuống cuối (theo tên ABC)
+            const sortedStats = Object.keys(statsObj)
+                .map(key => ({ donVi: key, ...statsObj[key] }))
+                .sort((a, b) => {
+                    if (b.total !== a.total) return b.total - a.total;
+                    return a.donVi.localeCompare(b.donVi, 'vi');
+                });
+
+            let html = '';
+            let index = 1;
+            sortedStats.forEach(stat => {
+                const rowClass = stat.total === 0 ? 'bg-red-50/40 text-gray-400' : 'hover:bg-gray-50';
+                html += `
+          <tr class="border-b ${rowClass}">
+            <td class="py-3 px-4 text-center text-gray-500">${index++}</td>
+            <td class="py-3 px-4 font-semibold ${stat.total > 0 ? 'text-blue-900' : 'text-gray-400'}">${stat.donVi}</td>
+            <td class="py-3 px-4 text-center font-bold ${stat.total > 0 ? 'text-gray-800' : 'text-red-400'}">${stat.total}</td>
+            <td class="py-3 px-4 text-center text-green-600 font-medium">${stat.approved}</td>
+            <td class="py-3 px-4 text-center text-yellow-600 font-medium">${stat.pending}</td>
+            <td class="py-3 px-4 text-center text-red-600 font-medium">${stat.rejected}</td>
+          </tr>
+        `;
+            });
+
+            document.getElementById('stats-tbody').innerHTML = html;
+            return sortedStats;
+        }
+
+        // 8. Xuất file Excel bằng SheetJS
+        function exportExcel() {
+            const statsData = renderStats(); // Lấy array data đang hiển thị
+            if (statsData.length === 0) {
+                alert("Không có dữ liệu để xuất Excel.");
+                return;
+            }
+
+            // Format lại array để các Header của Excel hiển thị tiếng Việt đẹp
+            const excelData = statsData.map((item, index) => ({
+                "STT": index + 1,
+                "Đơn vị CAT": item.donVi,
+                "Tổng số bài viết": item.total,
+                "Số bài đã duyệt": item.approved,
+                "Số bài chờ duyệt": item.pending,
+                "Số bài từ chối": item.rejected
+            }));
+
+            // Gọi thư viện XLSX
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+            // Chỉnh độ rộng cột cho đẹp
+            worksheet['!cols'] = [
+                { wch: 5 },  // STT
+                { wch: 40 }, // Đơn vị
+                { wch: 15 }, // Tổng
+                { wch: 15 }, // Đã duyệt
+                { wch: 15 }, // Chờ
+                { wch: 15 }  // Từ chối
+            ];
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "ThongKeDonVi");
+
+            // Tạo tên file có ngày tháng
+            const dateStr = new Date().toLocaleDateString('vi-VN').replace(/\//g, '-');
+            XLSX.writeFile(workbook, `ThongKe_NhatKy3Nhat_${dateStr}.xlsx`);
+        }
+
+        // Tiện ích Toast Message
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

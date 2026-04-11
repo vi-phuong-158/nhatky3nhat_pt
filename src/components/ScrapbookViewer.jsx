@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DOMPurify from 'dompurify';
+import { sendFlower } from '../services/api';
 import './ScrapbookViewer.css';
 
 /* ─── Utilities ─── */
@@ -39,13 +40,7 @@ const timeAgo = (isoString) => {
   return formatDate(isoString);
 };
 
-/* Tạo avatar viết tắt từ họ tên */
-const getInitials = (name) => {
-  if (!name) return '?';
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0][0].toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-};
+
 
 /* ─── Badge color theo tiêu chí ─── */
 const getBadgeClass = (tieuChi) => {
@@ -83,6 +78,8 @@ const cardVariants = {
 export default function ScrapbookViewer({ entries, onOpenForm }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [expandedPosts, setExpandedPosts] = useState(new Set());
+  const [flowerStates, setFlowerStates] = useState({});
+  const [flowerAnimating, setFlowerAnimating] = useState({});
 
   const toggleExpand = (id) => {
     setExpandedPosts((prev) => {
@@ -92,6 +89,32 @@ export default function ScrapbookViewer({ entries, onOpenForm }) {
       return next;
     });
   };
+
+  const handleFlower = useCallback(async (entry) => {
+    const id = entry.id;
+    // Prevent double click during animation
+    if (flowerAnimating[id]) return;
+
+    // Trigger petal animation
+    setFlowerAnimating((prev) => ({ ...prev, [id]: true }));
+    setTimeout(() => setFlowerAnimating((prev) => ({ ...prev, [id]: false })), 1200);
+
+    // Call API (fire-and-forget, trả về ngay từ localStorage)
+    const result = await sendFlower(id);
+
+    // Cập nhật UI dựa trên kết quả localStorage
+    setFlowerStates((prev) => {
+      const current = prev[id] || { count: entry.flowerCount || 0, active: entry.hasFlowered || false };
+      const isAdding = result.toggled === 'added';
+      return {
+        ...prev,
+        [id]: {
+          count: isAdding ? current.count + 1 : Math.max(0, current.count - 1),
+          active: isAdding,
+        },
+      };
+    });
+  }, [flowerAnimating]);
 
   /* ── Empty state ── */
   if (!entries || entries.length === 0) {
@@ -127,12 +150,6 @@ export default function ScrapbookViewer({ entries, onOpenForm }) {
 
       {/* ─── SCROLLABLE MAIN FEED ─── */}
       <main className="feed-main">
-        {/* Heritage Banner */}
-        <div className="feed-banner">
-          <span className="material-symbols-outlined feed-banner-icon">campaign</span>
-          <p>Cổng thông tin phong trào Nhật ký 3 Nhất — Hội Phụ nữ Công an tỉnh Phú Thọ</p>
-        </div>
-
         {/* Post cards — stagger in */}
         <motion.div
           className="feed-posts"
@@ -156,7 +173,7 @@ export default function ScrapbookViewer({ entries, onOpenForm }) {
                 {/* ── Post header: avatar + meta ── */}
                 <div className="post-header">
                   <div className="post-header-left">
-                    <div className="post-avatar">{getInitials(entry.hoTen)}</div>
+                    
                     <div className="post-meta">
                       <span className="post-author">{entry.hoTen}</span>
                       <span className="post-unit">{entry.donVi}</span>
@@ -207,9 +224,31 @@ export default function ScrapbookViewer({ entries, onOpenForm }) {
 
                 {/* ── Post footer ── */}
                 <div className="post-footer">
+                  <button
+                    className={`flower-btn ${(flowerStates[entry.id]?.active ?? entry.hasFlowered) ? 'flower-active' : ''}`}
+                    onClick={() => handleFlower(entry)}
+                    aria-label="Tặng hoa"
+                  >
+                    <span className="flower-icon">🌸</span>
+                    <span className="flower-label">
+                      {(flowerStates[entry.id]?.active ?? entry.hasFlowered) ? 'Đã tặng hoa' : 'Tặng hoa'}
+                    </span>
+                    <span className="flower-count">
+                      {flowerStates[entry.id]?.count ?? entry.flowerCount ?? 0}
+                    </span>
+                    {/* Petal animation */}
+                    {flowerAnimating[entry.id] && (
+                      <span className="flower-petals" aria-hidden="true">
+                        {[...Array(6)].map((_, i) => (
+                          <span key={i} className={`petal petal-${i + 1}`}>🌸</span>
+                        ))}
+                      </span>
+                    )}
+                  </button>
+
                   <span className="post-timestamp">
                     <span className="material-symbols-outlined post-footer-icon">schedule</span>
-                    {timeAgo(entry.timestamp)}
+                    {timeAgo(entry.thoiGian)}
                   </span>
                   {entry.nhanXet && (
                     <span className="post-comment">

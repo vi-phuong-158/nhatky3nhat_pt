@@ -101,33 +101,6 @@
     padding: 28px 0 120px;
   }
 }
-
-/* ─── HERITAGE BANNER ─── */
-.feed-banner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(179, 36, 32, 0.08);
-  border-left: 4px solid var(--tertiary, #b32420);
-  padding: 14px 18px;
-  border-radius: 12px;
-}
-
-.feed-banner-icon {
-  font-size: 24px;
-  color: var(--tertiary, #b32420);
-  flex-shrink: 0;
-}
-
-.feed-banner p {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--tertiary, #b32420);
-  line-height: 1.5;
-}
-
 /* ─── POSTS WRAPPER (stagger) ─── */
 .feed-posts {
   display: flex;
@@ -170,22 +143,7 @@
   min-width: 0;
 }
 
-.post-avatar {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary, #005eaa) 0%, #0077d6 100%);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Be Vietnam Pro', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(0, 94, 170, 0.2);
-}
+
 
 .post-meta {
   display: flex;
@@ -441,5 +399,133 @@
 @media (prefers-reduced-motion: no-preference) {
   .feed-container {
     scroll-behavior: smooth;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   TẶNG HOA — Flower Reaction Button & Petal Animation
+   ═══════════════════════════════════════════════════════ */
+
+.flower-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--outline-variant, #c0c7d4);
+  border-radius: 20px;
+  background: var(--surface-container-low, #f1f4fa);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  transition: all 0.25s ease;
+  overflow: visible;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.flower-btn:hover {
+  background: #fff0f3;
+  border-color: #f9a8d4;
+  color: #db2777;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(219, 39, 119, 0.12);
+}
+
+.flower-btn:active {
+  transform: scale(0.95);
+}
+
+.flower-btn.flower-active {
+  background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+  border-color: #f9a8d4;
+  color: #db2777;
+  box-shadow: 0 2px 10px rgba(219, 39, 119, 0.15);
+}
+
+.flower-icon {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+
+.flower-btn:hover .flower-icon,
+.flower-btn.flower-active .flower-icon {
+  transform: scale(1.2) rotate(15deg);
+}
+
+.flower-label {
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.flower-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.06);
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  transition: all 0.25s ease;
+}
+
+.flower-btn.flower-active .flower-count {
+  background: rgba(219, 39, 119, 0.15);
+  color: #db2777;
+}
+
+/* ── Floating petal animation ── */
+.flower-petals {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.petal {
+  position: absolute;
+  font-size: 18px;
+  animation: petalFloat 1s ease-out forwards;
+  opacity: 0;
+}
+
+.petal-1 { animation-delay: 0s;   --px: -22px; --py: -35px; --rot: -30deg; }
+.petal-2 { animation-delay: 0.05s; --px: 18px;  --py: -40px; --rot: 20deg; }
+.petal-3 { animation-delay: 0.1s;  --px: -30px; --py: -18px; --rot: -50deg; }
+.petal-4 { animation-delay: 0.15s; --px: 28px;  --py: -20px; --rot: 40deg; }
+.petal-5 { animation-delay: 0.08s; --px: -10px; --py: -45px; --rot: 10deg; }
+.petal-6 { animation-delay: 0.12s; --px: 8px;   --py: -50px; --rot: -15deg; }
+
+@keyframes petalFloat {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.5) rotate(0deg);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--px), var(--py)) scale(1.1) rotate(var(--rot));
+  }
+}
+
+/* ── Mobile: ẩn label chữ, chỉ hiện icon + count ── */
+@media (max-width: 480px) {
+  .flower-label {
+    display: none;
+  }
+  .flower-btn {
+    padding: 6px 10px;
   }
 }
