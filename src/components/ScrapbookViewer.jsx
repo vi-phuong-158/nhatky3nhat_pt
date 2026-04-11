@@ -122,12 +122,12 @@ export default function ScrapbookViewer({
       )}
 
       {/* ─── TOP APP BAR ─── */}
-      <header className="feed-topbar">
+      <header className="feed-topbar glass-card">
         <span className="feed-logo">Nhật ký 3 Nhất</span>
         <div className="feed-topbar-actions">
-          <button 
-            className="feed-btn-write" 
-            onClick={onToggleDarkMode} 
+          <button
+            className="feed-btn-write"
+            onClick={onToggleDarkMode}
             aria-label={darkMode ? 'Chuyển sang sáng' : 'Chuyển sang tối'}
             title={darkMode ? 'Chế độ sáng' : 'Chế độ tối'}
             style={{ padding: '0 12px', minWidth: '40px' }}
@@ -138,12 +138,12 @@ export default function ScrapbookViewer({
       </header>
 
       {/* ─── SEARCH & FILTER BAR ─── */}
-      <div className="feed-toolbar" role="search">
+      <div className="feed-toolbar glass-card" role="search">
         <div className="feed-search-wrapper">
           <span className="material-symbols-outlined feed-search-icon" aria-hidden="true">search</span>
           <input
             type="search"
-            className="feed-search-input"
+            className="feed-search-input glass-card bg-white/40 border border-white/50 shadow-inner text-slate-800 focus:bg-white/60 focus:ring-2 focus:ring-blue-500/40 focus:outline-none"
             placeholder="Tìm bài viết..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -157,25 +157,25 @@ export default function ScrapbookViewer({
         </div>
         <div className="feed-filters">
           <select
-            className="feed-filter-select"
+            className="feed-filter-select glass-card bg-white/40 border border-white/50 shadow-inner text-slate-800 focus:bg-white/60 focus:ring-2 focus:ring-blue-500/40 focus:outline-none"
             value={filterCriteria}
             onChange={(e) => setFilterCriteria(e.target.value)}
             aria-label="Lọc theo tiêu chí"
           >
-            <option value="">Tất cả tiêu chí</option>
-            <option value="Kỷ luật nhất">Kỷ luật nhất</option>
-            <option value="Trung thành nhất">Trung thành nhất</option>
-            <option value="Gần dân nhất">Gần dân nhất</option>
+            <option value="" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Tất cả tiêu chí</option>
+            <option value="Kỷ luật nhất" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Kỷ luật nhất</option>
+            <option value="Trung thành nhất" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Trung thành nhất</option>
+            <option value="Gần dân nhất" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Gần dân nhất</option>
           </select>
           <select
-            className="feed-filter-select"
+            className="feed-filter-select glass-card bg-white/40 border border-white/50 shadow-inner text-slate-800 focus:bg-white/60 focus:ring-2 focus:ring-blue-500/40 focus:outline-none"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             aria-label="Sắp xếp bài viết"
           >
-            <option value="newest">Mới nhất</option>
-            <option value="oldest">Cũ nhất</option>
-            <option value="flowers">Nhiều hoa nhất</option>
+            <option value="newest" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Mới nhất</option>
+            <option value="oldest" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Cũ nhất</option>
+            <option value="flowers" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Nhiều hoa nhất</option>
           </select>
         </div>
       </div>
@@ -300,7 +300,7 @@ export default function ScrapbookViewer({
       </AnimatePresence>
 
       {/* ─── Bottom Navigation (Mobile Only) — 5 cột ─── */}
-      <nav className="btm-nav md:hidden">
+      <nav className="btm-nav md:hidden glass-card blue-glow">
         <div className="btm-nav-inner">
           {/* 1. Trang chủ */}
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="btm-nav-item">

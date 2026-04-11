@@ -3,7 +3,7 @@ import '../App.css';
 
 export default function DiaryPage() {
   return (
-    <div className="scrapbook-page">
+    <div className="scrapbook-page glass-card blue-glow">
       <h1>Nhật ký 3 Nhất</h1>
       <p className="slogan">Kỷ luật nhất – Trung thành nhất – Gần dân nhất</p>
       

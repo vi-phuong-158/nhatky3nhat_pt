@@ -60,6 +60,29 @@
   --topbar-bg: rgba(17, 19, 24, 0.75);
 }
 
+/* =============================================
+   GLASSMORPHISM UTILITIES
+   ============================================= */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.blue-glow {
+  box-shadow: 0 10px 40px -10px rgba(3, 96, 151, 0.15);
+}
+
+[data-theme="dark"] .glass-card {
+  background: rgba(20, 20, 20, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .blue-glow {
+  box-shadow: 0 10px 40px -10px rgba(142, 202, 255, 0.15);
+}
+
 /* Body mặc định */
 body {
   background-color: var(--surface);

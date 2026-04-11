@@ -374,3 +374,78 @@ function deleteEntry(rowIndex) {
     throw new Error('deleteEntry lỗi: ' + err.message);
   }
 }
+
+// ==========================================
+// 6. SỬA NỘI DUNG BÀI VIẾT (Admin inline edit)
+// ==========================================
+function updateEntryContent(rowIndex, newTieuDe, newNoiDung) {
+  try {
+    const sheet = getSheet();
+    if (!sheet) throw new Error('Không tìm thấy sheet');
+
+    // Cột D = Tiêu đề (4), Cột F = Nội dung (6)
+    sheet.getRange(rowIndex, 4).setValue(newTieuDe);
+    sheet.getRange(rowIndex, 6).setValue(newNoiDung);
+
+    return { success: true, message: "Đã cập nhật nội dung bài viết!" };
+  } catch (err) {
+    throw new Error('updateEntryContent lỗi: ' + err.message);
+  }
+}
+
+// ==========================================
+// 7. DUYỆT HÀNG LOẠT — Duyệt tất cả bài Chờ duyệt
+// ==========================================
+function bulkApprove(rowIndices) {
+  try {
+    const sheet = getSheet();
+    if (!sheet) throw new Error('Không tìm thấy sheet');
+
+    var count = 0;
+    for (var i = 0; i < rowIndices.length; i++) {
+      sheet.getRange(rowIndices[i], 8).setValue('Đã duyệt');
+      count++;
+    }
+
+    return { success: true, message: "Đã duyệt " + count + " bài viết!", count: count };
+  } catch (err) {
+    throw new Error('bulkApprove lỗi: ' + err.message);
+  }
+}
+
+// ==========================================
+// 8. XÓA TOÀN BỘ BÀI TỪ CHỐI
+// ==========================================
+function bulkDeleteRejected() {
+  try {
+    const sheet = getSheet();
+    if (!sheet) throw new Error('Không tìm thấy sheet');
+
+    const data = sheet.getDataRange().getValues();
+    var deletedCount = 0;
+
+    // Xóa từ dưới lên để không bị lệch index
+    for (var i = data.length - 1; i >= 1; i--) {
+      var trangThai = safeStr(data[i][7]);
+      if (trangThai === 'Từ chối') {
+        // Xóa ảnh Drive nếu có
+        var linkAnh = safeStr(data[i][6]);
+        if (linkAnh) {
+          var fileId = '';
+          var match = String(linkAnh).match(/[?&]id=([a-zA-Z0-9_-]+)/)
+            || String(linkAnh).match(/\/d\/([a-zA-Z0-9_-]+)/);
+          if (match) fileId = match[1];
+          if (fileId) {
+            try { DriveApp.getFileById(fileId).setTrashed(true); } catch (e) { }
+          }
+        }
+        sheet.deleteRow(i + 1);
+        deletedCount++;
+      }
+    }
+
+    return { success: true, message: "Đã xóa " + deletedCount + " bài viết bị từ chối!", count: deletedCount };
+  } catch (err) {
+    throw new Error('bulkDeleteRejected lỗi: ' + err.message);
+  }
+}

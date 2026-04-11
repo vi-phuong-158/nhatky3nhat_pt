@@ -20,7 +20,7 @@ function Toast({ message, type, onClose }) {
 
   return (
     <motion.div
-      className={`toast toast-${type}`}
+      className={`toast toast-${type} glass-card`}
       initial={{ opacity: 0, y: 50, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -228,7 +228,7 @@ function App() {
                   aria-label="Viết bài mới"
                 >
                   <motion.div
-                    className="submit-modal-content"
+                    className="submit-modal-content glass-card blue-glow"
                     initial={{ y: 50, opacity: 0, scale: 0.9 }}
                     animate={{ y: 0, opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 25 } }}
                     exit={{ y: 30, opacity: 0, scale: 0.95 }}

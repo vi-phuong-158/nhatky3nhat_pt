@@ -99,6 +99,7 @@
   .feed-btn-write-text {
     display: none;
   }
+
   .feed-btn-write {
     padding: 8px 12px;
     border-radius: 50%;
@@ -141,16 +142,17 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 24px; /* Bo tròn theo yêu cầu */
+  border-radius: 24px;
+  /* Bo tròn theo yêu cầu */
   outline: none;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255,255,255,0.5);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme="dark"] .feed-search-input {
   background: rgba(30, 30, 30, 0.4);
   border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .feed-search-input::placeholder {
@@ -228,9 +230,11 @@
     flex-direction: row;
     align-items: center;
   }
+
   .feed-search-wrapper {
     flex: 1;
   }
+
   .feed-filters {
     flex-shrink: 0;
   }
@@ -275,7 +279,9 @@
 }
 
 @keyframes spin-loader {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ─── INFINITE SCROLL: Sentinel (invisible trigger) ─── */
@@ -597,12 +603,10 @@
 .skeleton-line {
   display: block;
   border-radius: 6px;
-  background: linear-gradient(
-    90deg,
-    var(--surface-container-high) 25%,
-    var(--surface-container) 50%,
-    var(--surface-container-high) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--surface-container-high) 25%,
+      var(--surface-container) 50%,
+      var(--surface-container-high) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite ease-in-out;
 }
@@ -623,12 +627,10 @@
   width: 70px;
   height: 24px;
   border-radius: 20px;
-  background: linear-gradient(
-    90deg,
-    var(--surface-container-high) 25%,
-    var(--surface-container) 50%,
-    var(--surface-container-high) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--surface-container-high) 25%,
+      var(--surface-container) 50%,
+      var(--surface-container-high) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite ease-in-out;
 }
@@ -680,14 +682,22 @@
 }
 
 @keyframes skeleton-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ─── LIGHTBOX ─── */
 .lightbox-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.85);
   z-index: 10000;
   display: flex;
@@ -859,21 +869,58 @@
   opacity: 0;
 }
 
-.petal-1 { animation-delay: 0s;   --px: -22px; --py: -35px; --rot: -30deg; }
-.petal-2 { animation-delay: 0.05s; --px: 18px;  --py: -40px; --rot: 20deg; }
-.petal-3 { animation-delay: 0.1s;  --px: -30px; --py: -18px; --rot: -50deg; }
-.petal-4 { animation-delay: 0.15s; --px: 28px;  --py: -20px; --rot: 40deg; }
-.petal-5 { animation-delay: 0.08s; --px: -10px; --py: -45px; --rot: 10deg; }
-.petal-6 { animation-delay: 0.12s; --px: 8px;   --py: -50px; --rot: -15deg; }
+.petal-1 {
+  animation-delay: 0s;
+  --px: -22px;
+  --py: -35px;
+  --rot: -30deg;
+}
+
+.petal-2 {
+  animation-delay: 0.05s;
+  --px: 18px;
+  --py: -40px;
+  --rot: 20deg;
+}
+
+.petal-3 {
+  animation-delay: 0.1s;
+  --px: -30px;
+  --py: -18px;
+  --rot: -50deg;
+}
+
+.petal-4 {
+  animation-delay: 0.15s;
+  --px: 28px;
+  --py: -20px;
+  --rot: 40deg;
+}
+
+.petal-5 {
+  animation-delay: 0.08s;
+  --px: -10px;
+  --py: -45px;
+  --rot: 10deg;
+}
+
+.petal-6 {
+  animation-delay: 0.12s;
+  --px: 8px;
+  --py: -50px;
+  --rot: -15deg;
+}
 
 @keyframes petalFloat {
   0% {
     opacity: 1;
     transform: translate(0, 0) scale(0.5) rotate(0deg);
   }
+
   60% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     transform: translate(var(--px), var(--py)) scale(1.1) rotate(var(--rot));
@@ -885,6 +932,7 @@
   .flower-label {
     display: none;
   }
+
   .flower-btn {
     padding: 6px 10px;
   }
