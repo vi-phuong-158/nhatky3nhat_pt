@@ -64,6 +64,29 @@ export default function ScrapbookViewer({
   const [sortBy, setSortBy] = useState('newest');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
+  // ─── Áp dụng filter tiêu chí + sort client-side ───
+  const displayEntries = useMemo(() => {
+    let result = entries;
+
+    if (filterCriteria) {
+      result = result.filter(
+        (e) => e.tieuChi && e.tieuChi.includes(filterCriteria)
+      );
+    }
+
+    if (sortBy === 'oldest') {
+      result = [...result].sort(
+        (a, b) => new Date(a.thoiGian) - new Date(b.thoiGian)
+      );
+    } else if (sortBy === 'flowers') {
+      result = [...result].sort(
+        (a, b) => (b.flowerCount || 0) - (a.flowerCount || 0)
+      );
+    }
+
+    return result;
+  }, [entries, filterCriteria, sortBy]);
+
   // ─── Infinite Scroll: IntersectionObserver sentinel ───
   const sentinelRef = useRef(null);
 
@@ -181,9 +204,10 @@ export default function ScrapbookViewer({
       </div>
 
       {/* ─── Bộ đếm bài viết ─── */}
-      {!loading && !error && entries.length > 0 && (
+      {!loading && !error && displayEntries.length > 0 && (
         <div className="feed-counter">
-          Đã hiển thị {entries.length} / {totalCount || entries.length} bài viết
+          Đã hiển thị {displayEntries.length}
+          {!filterCriteria && ` / ${totalCount || entries.length}`} bài viết
         </div>
       )}
 
@@ -211,14 +235,14 @@ export default function ScrapbookViewer({
         )}
 
         {/* Empty state */}
-        {!loading && !error && entries.length === 0 && (
+        {!loading && !error && displayEntries.length === 0 && (
           <div className="feed-empty">
             <span className="material-symbols-outlined feed-empty-icon">
               {hasFilters ? 'search_off' : 'auto_stories'}
             </span>
             <p>{hasFilters ? 'Không tìm thấy bài viết phù hợp.' : 'Chưa có bài viết nào...'}</p>
             {hasFilters && (
-              <button className="feed-retry-btn" onClick={() => { onSearchChange(''); setFilterCriteria(''); }}>
+              <button className="feed-retry-btn" onClick={() => { onSearchChange(''); setFilterCriteria(''); setSortBy('newest'); }}>
                 Xóa bộ lọc
               </button>
             )}
@@ -226,14 +250,14 @@ export default function ScrapbookViewer({
         )}
 
         {/* Posts */}
-        {!loading && !error && entries.length > 0 && (
+        {!loading && !error && displayEntries.length > 0 && (
           <motion.div
             className="feed-posts"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {entries.map((entry) => (
+            {displayEntries.map((entry) => (
               <PostCard
                 key={entry.id}
                 entry={entry}
