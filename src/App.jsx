@@ -41,7 +41,7 @@ function useDarkMode() {
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem('nk3n_dark_mode');
     if (saved !== null) return saved === 'true';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return false; // Mặc định là Light Mode
   });
 
   useEffect(() => {
