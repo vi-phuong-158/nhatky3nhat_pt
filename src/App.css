@@ -187,7 +187,7 @@ p, span, input, button, textarea {
 
 /* MODAL GỬI BÀI VIẾT */
 .submit-modal-overlay {
-  position: absolute;
+  position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.8);
   z-index: 9999;
@@ -201,12 +201,13 @@ p, span, input, button, textarea {
 .submit-modal-content {
   width: 100%;
   max-width: 600px;
-  height: 90vh; /* Thu lại chút so với màn hình */
+  height: 90vh;
   max-height: 800px;
   border-radius: 12px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.5);
   overflow-y: auto;
-  position: relative; /* Ghi đè position nếu bị class .scrapbook-page tác động */
+  position: relative;
+  background: var(--surface-container-lowest, #ffffff);
 }
 
 /* ------------------------------------- */

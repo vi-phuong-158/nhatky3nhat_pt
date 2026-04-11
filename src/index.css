@@ -1,1 +1,27 @@
-/* Đã chuyển cấu hình styles vào App.css */
+/* =============================================
+   HỆ THỐNG MÀU MỚI (Material Design 3 inspired)
+   Dùng cho các component ngoài BookCover.
+   Các biến --cherry-red, --butter-yellow, --paper-cream, --text-dark
+   của BookCover được giữ nguyên trong App.css.
+   ============================================= */
+
+:root {
+  /* --- Surface tones --- */
+  --surface: #f7f9ff;
+  --surface-container: #ebeef4;
+  --surface-container-low: #f1f4fa;
+  --surface-container-lowest: #ffffff;
+  --surface-container-high: #e5e8ee;
+
+  /* --- Accent colors --- */
+  --primary: #005eaa;
+  --secondary-fixed: #ffe07d;
+  --tertiary: #b32420;
+  --outline-variant: #c0c7d4;
+}
+
+/* Body mặc định: nền surface, font Inter */
+body {
+  background-color: var(--surface);
+  font-family: 'Inter', 'Be Vietnam Pro', sans-serif;
+}

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DOMPurify from 'dompurify';
 import './ScrapbookViewer.css';
 
+/* ─── Utilities ─── */
 const getDirectImageUrl = (url) => {
   if (!url || typeof url !== 'string') return '';
   const driveIdMatch = url.match(/[-\w]{25,}/);
   if (url.includes('drive.google.com') && driveIdMatch) {
-    // Tránh dùng /uc?export=view do dễ dính lỗi chặn Cookie bên thứ 3 (403 Forbidden)
     return `https://lh3.googleusercontent.com/d/${driveIdMatch[0]}`;
   }
   return url;
@@ -16,179 +16,234 @@ const getDirectImageUrl = (url) => {
 const formatDate = (isoString) => {
   if (!isoString) return '';
   const date = new Date(isoString);
-  if (isNaN(date.getTime())) return isoString; // fallback
+  if (isNaN(date.getTime())) return isoString;
   const d = String(date.getDate()).padStart(2, '0');
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const y = date.getFullYear();
   return `${d}/${m}/${y}`;
 };
 
-export default function ScrapbookViewer({ entries, currentPage = 0, onPageChange }) {
-  const [internalPage, setInternalPage] = useState(currentPage);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
-  const [isFlipping, setIsFlipping] = useState('');
+const timeAgo = (isoString) => {
+  if (!isoString) return '';
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return isoString;
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 1) return 'Vừa xong';
+  if (diffMins < 60) return `${diffMins} phút trước`;
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours} giờ trước`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) return `${diffDays} ngày trước`;
+  return formatDate(isoString);
+};
+
+/* Tạo avatar viết tắt từ họ tên */
+const getInitials = (name) => {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+/* ─── Badge color theo tiêu chí ─── */
+const getBadgeClass = (tieuChi) => {
+  if (!tieuChi) return 'badge-default';
+  const lower = tieuChi.toLowerCase();
+  if (lower.includes('nhất 1') || lower.includes('nhat 1')) return 'badge-nhat1';
+  if (lower.includes('nhất 2') || lower.includes('nhat 2')) return 'badge-nhat2';
+  if (lower.includes('nhất 3') || lower.includes('nhat 3')) return 'badge-nhat3';
+  return 'badge-default';
+};
+
+/* ─── Stagger animation variants ─── */
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.97 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.45, ease: [0.25, 0.8, 0.25, 1] },
+  },
+};
+
+/* ═══════════════════════════════════════════════════════
+   COMPONENT CHÍNH — Social Feed (cuộn dọc)
+   ═══════════════════════════════════════════════════════ */
+export default function ScrapbookViewer({ entries, onOpenForm }) {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [expandedPosts, setExpandedPosts] = useState(new Set());
 
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Đồng bộ thay đổi currentPage từ component cha (Mục lục dội vào)
-  useEffect(() => {
-    if (currentPage !== internalPage && isFlipping === '') {
-      const target = Math.max(0, Math.min(currentPage, entries ? entries.length - 1 : 0));
-      if (target === internalPage) return;
-
-      const dir = target > internalPage ? 'next' : 'prev';
-      setIsFlipping(dir);
-      
-      setTimeout(() => {
-        setInternalPage(target);
-        setIsFlipping('');
-      }, 400); // Trùng với thời gian animation
-    }
-  }, [currentPage, internalPage, isFlipping, entries]);
-
-  const itemsPerPage = 1;
-  const totalPages = Math.ceil((entries || []).length / itemsPerPage);
-
-  const nextPage = () => {
-    if (internalPage < totalPages - 1) {
-      if (onPageChange) {
-        onPageChange(internalPage + 1);
-      } else {
-        setIsFlipping('next');
-        setTimeout(() => {
-          setInternalPage(internalPage + 1);
-          setIsFlipping('');
-        }, 400);
-      }
-    }
-  };
-
-  const prevPage = () => {
-    if (internalPage > 0) {
-      if (onPageChange) {
-        onPageChange(internalPage - 1);
-      } else {
-        setIsFlipping('prev');
-        setTimeout(() => {
-          setInternalPage(internalPage - 1);
-          setIsFlipping('');
-        }, 400);
-      }
-    }
-  };
-
-  const renderPage = (entry, idx) => {
-    if (!entry) return <div className="scrapbook-page empty-page" key={`empty-${idx}`}></div>;
-
-    const safeHtml = DOMPurify.sanitize(entry.noiDung.replace(/\n/g, '<br/>'), {
-      ALLOWED_TAGS: ['br']
+  const toggleExpand = (id) => {
+    setExpandedPosts((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
     });
+  };
 
+  /* ── Empty state ── */
+  if (!entries || entries.length === 0) {
     return (
-      <div className="scrapbook-page" key={entry.id}>
-        
-        <div className="diary-content-overlay">
-          <div className="diary-header text-dark">
-            <span className="diary-badge-main">NHẬT KÝ BA NHẤT</span>
-            <span className="diary-date">{formatDate(entry.timestamp)}</span>
+      <div className="feed-container">
+        <header className="feed-topbar">
+          <span className="feed-logo">Nhật ký 3 Nhất</span>
+        </header>
+        <main className="feed-main">
+          <div className="feed-empty">
+            <span className="material-symbols-outlined feed-empty-icon">auto_stories</span>
+            <p>Chưa có bài viết nào...</p>
           </div>
-          
-          <div className="diary-body-content">
-            <h2 className="diary-title text-dark">{entry.tieuDe}</h2>
-            <div className="diary-badge-inline">{entry.tieuChi}</div>
-            
-            <div 
-               className="diary-text text-dark" 
-               dangerouslySetInnerHTML={{ __html: safeHtml }} 
-            />
-
-            {entry.linkAnh && (
-              <img 
-                src={getDirectImageUrl(entry.linkAnh)}
-                alt="Ảnh hoạt động 3 Nhất"
-                loading="lazy"
-                className="scrapbook-photo"
-                onClick={() => setSelectedImage(getDirectImageUrl(entry.linkAnh))}
-                title="Nhấn để xem ảnh phóng to"
-                onError={(e) => {
-                  e.target.onerror = null; 
-                  e.target.src = 'https://placehold.co/400x300/E6E2D3/8B0000.png?text=Loi+Hien+Thi+Anh'; 
-                }}
-              />
-            )}
-          </div>
-          
-          <div className="diary-footer text-dark">
-            <div className="author-info">
-              <strong>{entry.hoTen}</strong>
-              <br />
-              <small>{entry.donVi}</small>
-            </div>
-            
-            {entry.nhanXet && (
-              <div className="diary-critic-tooltip">
-                <em>📝 {entry.nhanXet}</em>
-              </div>
-            )}
-          </div>
-        </div>
+        </main>
       </div>
     );
-  };
-
-  if (!entries || entries.length === 0) {
-    return <div className="scrapbook-viewer-container"><div className="scrapbook-page empty">Chưa có bài viết nào...</div></div>;
-  }
-
-  const startIndex = internalPage * itemsPerPage;
-  const currentEntries = entries.slice(startIndex, startIndex + itemsPerPage);
-
-  // Đảm bảo Desktop luôn có 2 trang (nếu ở trang cuối chỉ có chiều trái thì bù chiều phải)
-  if (isDesktop && currentEntries.length === 1) {
-    currentEntries.push(null); 
   }
 
   return (
-    <div className={`scrapbook-viewer-container ${isFlipping}`}>
-      {currentEntries.map((entry, idx) => renderPage(entry, idx))}
-      
-      {/* Nút lật trang trái */}
-      {internalPage > 0 && (
-        <button className="flip-btn prev-btn" onClick={prevPage} aria-label="Trang trước">
-          &#10094;
-        </button>
-      )}
+    <div className="feed-container">
+      {/* ─── TOP APP BAR (sticky + blur) ─── */}
+      <header className="feed-topbar">
+        <span className="feed-logo">Nhật ký 3 Nhất</span>
+        <div className="feed-topbar-actions">
+          {onOpenForm && (
+            <button className="feed-btn-write" onClick={onOpenForm}>
+              <span className="material-symbols-outlined">edit_square</span>
+              <span className="feed-btn-write-text">Viết bài</span>
+            </button>
+          )}
+        </div>
+      </header>
 
-      {/* Nút lật trang phải */}
-      {internalPage < totalPages - 1 && (
-        <button className="flip-btn next-btn" onClick={nextPage} aria-label="Trang kế">
-          &#10095;
-        </button>
-      )}
+      {/* ─── SCROLLABLE MAIN FEED ─── */}
+      <main className="feed-main">
+        {/* Heritage Banner */}
+        <div className="feed-banner">
+          <span className="material-symbols-outlined feed-banner-icon">campaign</span>
+          <p>Cổng thông tin phong trào Nhật ký 3 Nhất — Hội Phụ nữ Công an tỉnh Phú Thọ</p>
+        </div>
 
-      {/* Lightbox xem ảnh Full màn hình */}
+        {/* Post cards — stagger in */}
+        <motion.div
+          className="feed-posts"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {entries.map((entry) => {
+            const safeHtml = DOMPurify.sanitize(
+              entry.noiDung.replace(/\n/g, '<br/>'),
+              { ALLOWED_TAGS: ['br'] }
+            );
+            const imgUrl = entry.linkAnh ? getDirectImageUrl(entry.linkAnh) : null;
+
+            return (
+              <motion.article
+                key={entry.id}
+                className="post-card"
+                variants={cardVariants}
+              >
+                {/* ── Post header: avatar + meta ── */}
+                <div className="post-header">
+                  <div className="post-header-left">
+                    <div className="post-avatar">{getInitials(entry.hoTen)}</div>
+                    <div className="post-meta">
+                      <span className="post-author">{entry.hoTen}</span>
+                      <span className="post-unit">{entry.donVi}</span>
+                    </div>
+                  </div>
+                  <div className="post-header-right">
+                    <span className={`post-badge ${getBadgeClass(entry.tieuChi)}`}>
+                      {entry.tieuChi}
+                    </span>
+                  </div>
+                </div>
+
+                {/* ── Post body ── */}
+                <div className="post-body">
+                  <h3 className="post-title">{entry.tieuDe}</h3>
+                  <div
+                    className={`post-text ${expandedPosts.has(entry.id) ? '' : 'clamped'}`}
+                    dangerouslySetInnerHTML={{ __html: safeHtml }}
+                  />
+                  <button
+                    className="btn-expand"
+                    onClick={() => toggleExpand(entry.id)}
+                  >
+                    <span className="material-symbols-outlined btn-expand-icon">
+                      {expandedPosts.has(entry.id) ? 'expand_less' : 'expand_more'}
+                    </span>
+                    {expandedPosts.has(entry.id) ? 'Thu gọn' : 'Xem chi tiết'}
+                  </button>
+                </div>
+
+                {/* ── Post image ── */}
+                {imgUrl && (
+                  <div className="post-image-wrapper">
+                    <img
+                      src={imgUrl}
+                      alt="Ảnh hoạt động 3 Nhất"
+                      loading="lazy"
+                      className="post-image"
+                      onClick={() => setSelectedImage(imgUrl)}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          'https://placehold.co/600x400/ebeef4/005eaa.png?text=Loi+Hien+Thi+Anh';
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* ── Post footer ── */}
+                <div className="post-footer">
+                  <span className="post-timestamp">
+                    <span className="material-symbols-outlined post-footer-icon">schedule</span>
+                    {timeAgo(entry.timestamp)}
+                  </span>
+                  {entry.nhanXet && (
+                    <span className="post-comment">
+                      <span className="material-symbols-outlined post-footer-icon">rate_review</span>
+                      {entry.nhanXet}
+                    </span>
+                  )}
+                </div>
+              </motion.article>
+            );
+          })}
+        </motion.div>
+      </main>
+
+      {/* ─── LIGHTBOX (phóng to ảnh) ─── */}
       <AnimatePresence>
         {selectedImage && (
-          <motion.div 
-            className="lightbox-overlay" 
+          <motion.div
+            className="lightbox-overlay"
             onClick={() => setSelectedImage(null)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <button className="lightbox-close" onClick={() => setSelectedImage(null)}>✕</button>
-            <motion.img 
-              src={selectedImage} 
-              alt="Phóng to" 
-              className="lightbox-image" 
+            <button className="lightbox-close" onClick={() => setSelectedImage(null)}>
+              <span className="material-symbols-outlined">close</span>
+            </button>
+            <motion.img
+              src={selectedImage}
+              alt="Phóng to"
+              className="lightbox-image"
               onClick={(e) => e.stopPropagation()}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1, transition: { type: "spring", damping: 20 } }}
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, transition: { type: 'spring', damping: 22 } }}
               exit={{ scale: 0.9, opacity: 0 }}
             />
           </motion.div>

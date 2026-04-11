@@ -1,92 +1,339 @@
-.submit-form-container {
+/* ═══════════════════════════════════════════════════════
+   SUBMIT FORM — The No-Line Rule Design
+   Inputs: nền surface-container-high, không viền, bo góc md
+   Focus: viền mờ primary 20% opacity
+   Submit: gradient primary → #0077d4, chữ trắng, bo tròn
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Container ─── */
+.sf-container {
   width: 100%;
-  padding: 10px;
+  padding: 28px 24px 32px;
+  font-family: 'Inter', sans-serif;
 }
 
-.submit-form-container h2 {
-  font-family: 'Lora', serif;
-  color: var(--cherry-red);
-  margin-bottom: 20px;
-  text-align: center;
+/* ─── Header ─── */
+.sf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--outline-variant, #c0c7d4);
 }
 
-.scrapbook-form {
+.sf-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sf-header-icon {
+  font-size: 28px;
+  color: var(--primary, #005eaa);
+}
+
+.sf-title {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1c1b1f;
+  margin: 0;
+}
+
+.sf-btn-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-container-high, #e5e8ee);
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.sf-btn-close .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.sf-btn-close:hover {
+  background: var(--surface-container, #ebeef4);
+  color: #1c1b1f;
+  transform: rotate(90deg);
+}
+
+/* ─── Alerts ─── */
+.sf-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.sf-alert-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.sf-alert-error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.sf-alert-error .sf-alert-icon {
+  color: #dc2626;
+}
+
+.sf-alert-success {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.sf-alert-success .sf-alert-icon {
+  color: #22c55e;
+}
+
+/* ─── Form layout ─── */
+.sf-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 }
 
-.scrapbook-form label {
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--text-dark);
+/* ─── Field group ─── */
+.sf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-/* TOUCH TARGET MINIMUM 44x44px (UI/UX Pro Max) */
-.scrapbook-form input[type="text"],
-.scrapbook-form input[type="tel"],
-.scrapbook-form select,
-.scrapbook-form textarea,
-.scrapbook-form input[type="file"],
-.submit-btn {
-  width: 100%;
-  min-height: 48px; /* Đảm bảo lớn hơn 44px */
-  padding: 12px;
-  font-size: 16px; /* 16px chống auto-zoom trên Safari iOS */
-  border: 1px solid #ccc;
-  border-radius: 8px;
+/* ─── Labels ─── */
+.sf-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-family: 'Inter', sans-serif;
-  background-color: rgba(255, 255, 255, 0.7);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+  letter-spacing: 0.1px;
 }
 
-.scrapbook-form input:focus,
-.scrapbook-form select:focus,
-.scrapbook-form textarea:focus {
-  border-color: var(--cherry-red);
-  box-shadow: 0 0 0 2px rgba(255, 71, 71, 0.2);
+.sf-required {
+  color: var(--tertiary, #b32420);
+  font-weight: 700;
 }
 
-.scrapbook-form textarea {
-  resize: vertical;
-}
-
-.submit-btn {
-  background-color: var(--cherry-red);
-  color: var(--butter-yellow);
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  margin-top: 10px;
-  min-height: 56px; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.sf-label-icon {
   font-size: 18px;
+  color: var(--primary, #005eaa);
 }
 
-.submit-btn:hover {
-  opacity: 0.9;
+.sf-label-hint {
+  font-weight: 400;
+  color: #9ca3af;
+  font-size: 12px;
+  margin-left: 4px;
 }
 
-.submit-btn:active {
-  transform: translateY(2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* ═════════════════════════════════════════════════════
+   THE NO-LINE RULE — Input / Select / Textarea
+   Nền surface-container-high, không viền, bo góc md
+   ═════════════════════════════════════════════════════ */
+
+/* Input wrapper (icon + input) */
+.sf-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.form-error {
-  color: #d93025;
-  background-color: #fce8e6;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+.sf-input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 20px;
+  color: #9ca3af;
+  pointer-events: none;
+  transition: color 0.2s;
+  z-index: 1;
+}
+
+/* Khi wrapper được focus-within, tô icon */
+.sf-input-wrapper:focus-within .sf-input-icon {
+  color: var(--primary, #005eaa);
+}
+
+/* Shared styles cho tất cả field inputs */
+.sf-input-wrapper input[type="text"],
+.sf-input-wrapper input[type="tel"],
+.sf-input-wrapper select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px 12px 44px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: #1c1b1f;
+  background-color: var(--surface-container-high, #e5e8ee);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sf-form textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: #1c1b1f;
+  background-color: var(--surface-container-high, #e5e8ee);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Placeholder */
+.sf-input-wrapper input::placeholder,
+.sf-form textarea::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+/* ── FOCUS — viền mờ primary 20% ── */
+.sf-input-wrapper input:focus,
+.sf-input-wrapper select:focus,
+.sf-form textarea:focus {
+  border-color: rgba(0, 94, 170, 0.35);
+  background-color: var(--surface-container-lowest, #ffffff);
+  box-shadow: 0 0 0 3px rgba(0, 94, 170, 0.1);
+}
+
+/* Textarea riêng (không có icon, padding bình thường) */
+.sf-form textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+/* Select arrow fix */
+.sf-select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 38px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='%239ca3af'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+}
+
+/* File input styling */
+.sf-form input[type="file"] {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
+  color: #6b7280;
+  background-color: var(--surface-container-high, #e5e8ee);
+  border: 2px dashed var(--outline-variant, #c0c7d4);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
 }
 
-.form-success {
-  color: #1e8e3e;
-  background-color: #e6f4ea;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  font-size: 14px;
+.sf-form input[type="file"]:hover {
+  border-color: var(--primary, #005eaa);
+  background-color: var(--surface-container, #ebeef4);
+}
+
+.sf-form input[type="file"]:focus {
+  outline: none;
+  border-color: rgba(0, 94, 170, 0.35);
+  box-shadow: 0 0 0 3px rgba(0, 94, 170, 0.1);
+}
+
+/* Disabled state */
+.sf-input-wrapper input:disabled,
+.sf-input-wrapper select:disabled,
+.sf-form textarea:disabled,
+.sf-form input[type="file"]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ═════════════════════════════════════════════════
+   SUBMIT BUTTON — Gradient primary → #0077d4
+   ═════════════════════════════════════════════════ */
+.sf-btn-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 28px;
+  margin-top: 8px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #005eaa 0%, #0077d4 100%);
+  border: none;
+  border-radius: 26px;
+  cursor: pointer;
+  box-shadow:
+    0 4px 14px rgba(0, 94, 170, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.sf-btn-submit .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.sf-btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(0, 94, 170, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+  filter: brightness(1.05);
+}
+
+.sf-btn-submit:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(0, 94, 170, 0.25);
+}
+
+.sf-btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  filter: grayscale(0.2);
+}
+
+/* ── Loading spinner ── */
+.sf-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: sf-spin 0.7s linear infinite;
+}
+
+@keyframes sf-spin {
+  to { transform: rotate(360deg); }
 }

@@ -1,299 +1,445 @@
-/* UI/UX Pro Max - Hardware Acceleration for 3D Paging */
+/* ═══════════════════════════════════════════════════════
+   SOCIAL FEED — ScrapbookViewer.css
+   Sử dụng hệ thống màu mới từ index.css (--surface, --primary, v.v.)
+   KHÔNG sử dụng biến cũ (--cherry-red, --paper-cream…) tránh xung đột.
+   ═══════════════════════════════════════════════════════ */
 
-.scrapbook-viewer-container {
-  display: flex;
-  flex-direction: column;
+/* ─── CONTAINER ─── */
+.feed-container {
   width: 100%;
-  height: 100%;
-  position: relative;
-  perspective: 2000px; /* 3D Perspective gốc nhìn */
-  transform-style: preserve-3d;
-  flex: 1;
+  min-height: 100vh;
+  background-color: var(--surface, #f7f9ff);
+  color: #1c1b1f;
 }
 
-@media (min-width: 768px) {
-  .scrapbook-viewer-container {
-    flex-direction: row;
+/* ─── TOP APP BAR (sticky + glass blur) ─── */
+.feed-topbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background: rgba(247, 249, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 12px 40px rgba(24, 28, 32, 0.06);
+  border-bottom: 1px solid var(--outline-variant, #c0c7d4);
+  transition: box-shadow 0.3s ease;
+}
+
+.feed-logo {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--primary, #005eaa);
+}
+
+.feed-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feed-btn-write {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary, #005eaa);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 94, 170, 0.25);
+}
+
+.feed-btn-write .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.feed-btn-write:hover {
+  background: #004e90;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 94, 170, 0.35);
+}
+
+.feed-btn-write:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+  .feed-btn-write-text {
+    display: none;
+  }
+  .feed-btn-write {
+    padding: 8px 12px;
+    border-radius: 50%;
   }
 }
 
-/* Base class page config lại từ App.css để áp thẻ */
-.scrapbook-viewer-container .scrapbook-page {
-  flex: 1;
-  position: relative;
+/* ─── MAIN FEED AREA ─── */
+.feed-main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px 16px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .feed-main {
+    padding: 28px 0 120px;
+  }
+}
+
+/* ─── HERITAGE BANNER ─── */
+.feed-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(179, 36, 32, 0.08);
+  border-left: 4px solid var(--tertiary, #b32420);
+  padding: 14px 18px;
+  border-radius: 12px;
+}
+
+.feed-banner-icon {
+  font-size: 24px;
+  color: var(--tertiary, #b32420);
+  flex-shrink: 0;
+}
+
+.feed-banner p {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--tertiary, #b32420);
+  line-height: 1.5;
+}
+
+/* ─── POSTS WRAPPER (stagger) ─── */
+.feed-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ─── POST CARD (Article) ─── */
+.post-card {
+  background: var(--surface-container-lowest, #ffffff);
+  border-radius: 16px;
   overflow: hidden;
-  /* Hardware acceleration chuẩn cho 3D Flip */
-  will-change: transform;
-  transform: translateZ(0); 
-  backface-visibility: hidden;
-  background-color: var(--paper-cream, #E6E2D3);
-  display: flex;
-  flex-direction: column;
+  border: 1px solid rgba(192, 199, 212, 0.15);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-/* HỘI TỤ ANIMATION LẬT TRANG (NEXT) */
-.scrapbook-viewer-container.next .scrapbook-page {
-  animation: flipNext 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.post-card:hover {
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
 }
 
-@keyframes flipNext {
-  0% {
-    transform: rotateY(0deg) translateZ(0);
-  }
-  50% {
-    transform: rotateY(-90deg) translateZ(50px);
-    opacity: 0.5;
-  }
-  100% {
-    transform: rotateY(-180deg) translateZ(0);
-    opacity: 0;
-  }
-}
-
-/* HỘI TỤ ANIMATION LẬT TRANG (PREV) */
-.scrapbook-viewer-container.prev .scrapbook-page {
-  animation: flipPrev 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes flipPrev {
-  0% {
-    transform: rotateY(0deg) translateZ(0);
-  }
-  50% {
-    transform: rotateY(90deg) translateZ(50px);
-    opacity: 0.5;
-  }
-  100% {
-    transform: rotateY(180deg) translateZ(0);
-    opacity: 0;
-  }
-}
-
-
-/* Dọn dẹp Overlay cũ */
-.diary-content-overlay {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-@media (min-width: 768px) {
-  .diary-content-overlay {
-    padding: 40px 50px;
-  }
-}
-
-.text-dark {
-  color: var(--text-dark, #292524);
-}
-
-/* PHONG CÁCH ẢNH POLAROID - ĐÃ THU NHỎ HIỂN THỊ DƯỚI CÙNG */
-.scrapbook-photo {
-  width: 100%;
-  max-width: 220px; /* Thu nhỏ mạnh */
-  height: 180px;
-  object-fit: cover;
-  background-color: #fff;
-  padding: 8px 8px 30px 8px; /* Giữ tỷ lệ viền phân bố như Polaroid */
-  border: 1px solid rgba(0,0,0,0.1);
-  box-shadow: 2px 6px 12px rgba(0,0,0,0.15), -2px 3px 5px rgba(0,0,0,0.05);
-  border-radius: 2px;
-  margin: 30px auto 10px auto; /* Tăng lề trên để cách bài viết */
-  align-self: center;
-  transform: rotate(-3deg);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: zoom-in; /* Thêm con trỏ báo hiệu có thể click phóng to */
-}
-
-.scrapbook-photo:nth-of-type(even) {
-  transform: rotate(3deg);
-}
-
-.scrapbook-photo:hover {
-  transform: rotate(0deg) scale(1.1);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-  z-index: 10;
-}
-
-/* Typography styles */
-.diary-header {
+/* ── Post Header ── */
+.post-header {
+  padding: 16px 18px 0;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  font-size: 14px;
-  margin-bottom: 20px;
-  opacity: 0.8;
-  font-family: 'Times New Roman', Times, serif;
-  letter-spacing: 1px;
+  gap: 12px;
 }
 
-.diary-badge-main {
-  font-weight: 800;
-  color: var(--cherry-red, #FF4747);
-  white-space: nowrap; /* Định hình nằm gọn 1 dòng */
+.post-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 
-.diary-body-content {
-  margin: auto 0;
+.post-avatar {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary, #005eaa) 0%, #0077d6 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 94, 170, 0.2);
+}
+
+.post-meta {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-.diary-title {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 32px;
-  line-height: 1.2;
-  margin-bottom: 10px;
-  color: #8B0000; /* Nhấn mạnh tiêu đề bằng màu Cherry Dark */
-  text-align: center; /* Đưa tiêu đề vào giữa */
+.post-author {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-weight: 600;
+  font-size: 14.5px;
+  color: #1c1b1f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.diary-badge-inline {
-  display: inline-block;
-  background-color: var(--cherry-red, #FF4747);
-  color: #FFF;
-  padding: 5px 12px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 13px;
+.post-unit {
   font-family: 'Inter', sans-serif;
-  align-self: center; /* Căn giữa badge */
-  margin-bottom: 30px;
+  font-size: 12.5px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.post-header-right {
+  flex-shrink: 0;
+}
+
+/* ── Badges ── */
+.post-badge {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 4px 10px;
+  border-radius: 20px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.diary-text {
-  font-family: 'Times New Roman', Times, serif;
-  font-style: italic; /* Chữ nghiêng cảm giác viết tay/cổ điển */
-  line-height: 1.8;
-  text-align: center; /* Đưa nội dung vào giữa cho nổi bật */
-  font-size: 20px; /* Cỡ chữ to hơn, dễ đọc */
-  font-weight: 500;
-  color: #333;
+.badge-default {
+  background: var(--surface-container, #ebeef4);
+  color: #4b5563;
 }
 
-.diary-footer {
-  margin-top: 40px;
-  border-top: 1px dotted rgba(0,0,0,0.3);
-  padding-top: 20px;
+.badge-nhat1 {
+  background: rgba(0, 94, 170, 0.1);
+  color: var(--primary, #005eaa);
+}
+
+.badge-nhat2 {
+  background: rgba(255, 224, 125, 0.35);
+  color: #8a6d00;
+}
+
+.badge-nhat3 {
+  background: rgba(179, 36, 32, 0.1);
+  color: var(--tertiary, #b32420);
+}
+
+/* ── Post Body (Title + Content) ── */
+.post-body {
+  padding: 14px 18px 6px;
+}
+
+.post-title {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1c1b1f;
+  line-height: 1.45;
+  margin: 0 0 8px;
+}
+
+.post-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #374151;
+  word-break: break-word;
+}
+
+/* Giới hạn chiều cao — chỉ khi có class .clamped */
+.post-text.clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Nút Xem chi tiết / Thu gọn ── */
+.btn-expand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--outline-variant, #c0c7d4);
+  border-radius: 20px;
+  background: var(--surface-container-low, #f1f4fa);
+  color: var(--primary, #005eaa);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.btn-expand:hover {
+  background: var(--surface-container, #ebeef4);
+  border-color: var(--primary, #005eaa);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 94, 170, 0.12);
+}
+
+.btn-expand:active {
+  transform: translateY(0);
+}
+
+.btn-expand-icon {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+/* ── Post Image ── */
+.post-image-wrapper {
+  position: relative;
+  width: 100%;
+  background: var(--surface-container-low, #f1f4fa);
+  margin-top: 6px;
+}
+
+.post-image {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  cursor: zoom-in;
+  transition: filter 0.2s ease;
+}
+
+.post-image:hover {
+  filter: brightness(0.95);
+}
+
+/* ── Post Footer ── */
+.post-footer {
+  padding: 10px 18px 14px;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 15px;
+  border-top: 1px solid rgba(192, 199, 212, 0.15);
+  margin-top: 4px;
 }
 
-.author-info strong {
+.post-timestamp,
+.post-comment {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  color: #6b7280;
+}
+
+.post-footer-icon {
+  font-size: 17px;
+  color: #9ca3af;
+}
+
+.post-comment {
+  color: #4b5563;
+  font-style: italic;
+}
+
+/* ─── EMPTY STATE ─── */
+.feed-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  color: #9ca3af;
+  gap: 12px;
+}
+
+.feed-empty-icon {
+  font-size: 56px;
+  color: var(--outline-variant, #c0c7d4);
+}
+
+.feed-empty p {
   font-family: 'Inter', sans-serif;
   font-size: 15px;
 }
 
-.author-info small {
-  opacity: 0.7;
-}
-
-.btn-view-photos {
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.4);
-  color: white;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 12px;
-  cursor: pointer;
-  backdrop-filter: blur(5px);
-  transition: all 0.2s;
-}
-
-.btn-view-photos:hover {
-  background: rgba(255,255,255,0.3);
-}
-
-/* Nút lật trang */
-.flip-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%) translateZ(10px);
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.4);
-  color: white;
-  border: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(4px);
-  transition: transform 0.2s, background 0.2s;
-}
-
-.flip-btn:hover {
-  background: rgba(0, 0, 0, 0.6);
-  transform: translateY(-50%) translateZ(10px) scale(1.1);
-}
-
-.prev-btn {
-  left: 15px;
-}
-
-.next-btn {
-  right: 15px;
-}
-
-/* HIỆU ỨNG PHÓNG TO ẢNH (LIGHTBOX) */
+/* ─── LIGHTBOX (phóng to ảnh) ─── */
 .lightbox-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0, 0, 0, 0.85);
   z-index: 10000;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: zoom-out;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .lightbox-image {
-  max-width: 95vw;
-  max-height: 95vh;
+  max-width: 94vw;
+  max-height: 92vh;
   object-fit: contain;
-  border-radius: 4px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-  animation: zoomIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 8px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
 }
 
 .lightbox-close {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255,255,255,0.1);
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   width: 44px;
   height: 44px;
-  font-size: 20px;
-  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all 0.2s;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
   z-index: 10001;
 }
 
+.lightbox-close .material-symbols-outlined {
+  font-size: 22px;
+}
+
 .lightbox-close:hover {
-  background: var(--cherry-red, #FF4747);
+  background: var(--tertiary, #b32420);
+  border-color: var(--tertiary, #b32420);
   transform: scale(1.1);
 }
 
-@keyframes zoomIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+/* ─── SMOOTH SCROLL ─── */
+@media (prefers-reduced-motion: no-preference) {
+  .feed-container {
+    scroll-behavior: smooth;
+  }
 }
