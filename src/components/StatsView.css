@@ -1,0 +1,574 @@
+/* ═══════════════════════════════════════════
+   StatsView — Trang thống kê bài viết
+   Thiết kế Material Design 3, Dark mode ready
+   ═══════════════════════════════════════════ */
+
+/* ─── Overlay ─── */
+.stats-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--surface);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Container ─── */
+.stats-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px 100px;
+}
+
+/* ─── Header ─── */
+.stats-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--outline-variant);
+  margin-bottom: 20px;
+}
+
+.stats-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stats-header-icon {
+  font-size: 26px;
+  color: var(--primary);
+}
+
+.stats-title {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.stats-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface-container);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stats-close:hover {
+  background: var(--surface-container-high);
+  color: var(--text-primary);
+}
+
+/* ─── Filters ─── */
+.stats-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stats-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stats-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stats-filter-label .material-symbols-outlined {
+  font-size: 16px;
+}
+
+/* Chips */
+.stats-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stats-chip {
+  padding: 6px 14px;
+  border: 1.5px solid var(--outline-variant);
+  border-radius: 20px;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.stats-chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.stats-chip-active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.stats-chip-active:hover {
+  color: #fff;
+}
+
+/* Unit filter */
+.stats-unit-filter {
+  position: relative;
+}
+
+.stats-unit-input-wrapper {
+  position: relative;
+}
+
+.stats-unit-input {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  border: 1.5px solid var(--outline-variant);
+  border-radius: 12px;
+  background: var(--surface-container-lowest);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.stats-unit-input:focus {
+  border-color: var(--primary);
+}
+
+.stats-unit-input::placeholder {
+  color: var(--text-faint);
+}
+
+.stats-unit-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.stats-unit-clear:hover {
+  background: var(--surface-container);
+}
+
+.stats-unit-clear .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.stats-unit-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--outline-variant);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+}
+
+.stats-unit-option {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.stats-unit-option:hover {
+  background: var(--surface-container);
+}
+
+.stats-unit-option-active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.stats-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  background: transparent;
+}
+
+/* ─── Summary Cards ─── */
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stats-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.stats-card-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.stats-card-total .stats-card-icon { color: var(--primary); }
+.stats-card-units .stats-card-icon { color: #e67e22; }
+.stats-card-flowers .stats-card-icon { color: #e91e90; }
+
+.stats-card-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stats-card-value {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.stats-card-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .stats-summary {
+    grid-template-columns: 1fr;
+  }
+  .stats-card {
+    padding: 14px;
+  }
+  .stats-card-value {
+    font-size: 20px;
+  }
+}
+
+/* ─── Criteria Breakdown Bar ─── */
+.stats-criteria-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.stats-criteria-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  border-radius: 14px;
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-criteria-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--bar-pct);
+  background: var(--bar-color);
+  opacity: 0.1;
+  transition: height 0.6s ease;
+}
+
+.stats-criteria-count {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-primary);
+  z-index: 1;
+}
+
+.stats-criteria-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: center;
+  z-index: 1;
+}
+
+@media (max-width: 480px) {
+  .stats-criteria-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Top 10 Chart ─── */
+.stats-chart-section {
+  margin-bottom: 28px;
+}
+
+.stats-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 14px;
+}
+
+.stats-section-title .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--primary);
+}
+
+.stats-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stats-bar-row {
+  display: grid;
+  grid-template-columns: 24px minmax(80px, 160px) 1fr 40px;
+  gap: 8px;
+  align-items: center;
+}
+
+.stats-bar-rank {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.stats-bar-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stats-bar-track {
+  height: 24px;
+  border-radius: 8px;
+  background: var(--surface-container);
+  overflow: hidden;
+}
+
+.stats-bar-fill {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--primary), #60b4ff);
+  min-width: 4px;
+}
+
+.stats-bar-count {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: right;
+}
+
+@media (max-width: 480px) {
+  .stats-bar-row {
+    grid-template-columns: 20px minmax(60px, 110px) 1fr 32px;
+    gap: 6px;
+  }
+  .stats-bar-name {
+    font-size: 11px;
+  }
+}
+
+/* ─── Table ─── */
+.stats-table-section {
+  margin-bottom: 24px;
+}
+
+.stats-table-wrapper {
+  overflow-x: auto;
+  border-radius: 14px;
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-lowest);
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+}
+
+.stats-th {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: var(--surface-container-low);
+  border-bottom: 1px solid var(--outline-variant);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.stats-th:hover {
+  color: var(--primary);
+}
+
+.stats-th-stt {
+  width: 36px;
+  text-align: center;
+}
+
+.stats-th-name {
+  min-width: 120px;
+}
+
+.stats-th-num {
+  text-align: center;
+  width: 70px;
+}
+
+.stats-sort-icon {
+  font-size: 16px;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+.stats-tr {
+  transition: background 0.15s;
+}
+
+.stats-tr:hover {
+  background: var(--surface-container-low);
+}
+
+.stats-td {
+  padding: 10px;
+  border-bottom: 1px solid var(--outline-variant);
+  color: var(--text-primary);
+}
+
+.stats-td-stt {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.stats-td-name {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.stats-td-num {
+  text-align: center;
+}
+
+.stats-td-total {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stats-td-flowers {
+  color: #e91e90;
+  font-weight: 600;
+}
+
+.stats-tr-footer {
+  background: var(--surface-container);
+}
+
+.stats-tr-footer .stats-td {
+  border-bottom: none;
+}
+
+.stats-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ─── Responsive: Small screens tighten ─── */
+@media (max-width: 600px) {
+  .stats-container {
+    padding: 0 10px 100px;
+  }
+  .stats-title {
+    font-size: 17px;
+  }
+  .stats-th, .stats-td {
+    padding: 8px 6px;
+    font-size: 11.5px;
+  }
+  .stats-th-num {
+    width: 50px;
+  }
+}

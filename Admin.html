@@ -201,7 +201,8 @@
                             class="font-medium text-blue-800"></span></div>
                 </div>
 
-                <div class="mb-4 text-center bg-pink-50 p-3 rounded-lg border border-pink-100 flex items-center justify-center gap-2">
+                <div
+                    class="mb-4 text-center bg-pink-50 p-3 rounded-lg border border-pink-100 flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined text-pink-600">local_florist</span>
                     <span class="text-pink-900 font-bold uppercase tracking-wider text-xs">Số lượng hoa hiện tại:</span>
                     <span id="modal-flowercount" class="text-2xl font-black text-pink-600">0</span>
@@ -220,7 +221,7 @@
 
                 <div id="modal-image-container" class="mb-6 hidden">
                     <span class="text-gray-500 block text-xs mb-1">Hình ảnh đính kèm:</span>
-                    <img id="modal-hinhanh" src="" alt="Ảnh hoạt động"
+                    <img id="modal-hinhanh" src="" alt="Ảnh hoạt động" referrerpolicy="no-referrer"
                         class="max-h-80 w-auto rounded-lg border shadow-sm mx-auto">
                 </div>
 
@@ -366,7 +367,16 @@
             const imgContainer = document.getElementById('modal-image-container');
             const imgEl = document.getElementById('modal-hinhanh');
             if (item.linkAnh) {
-                imgEl.src = item.linkAnh;
+                let imgUrl = item.linkAnh;
+                // Sửa lỗi Google Drive chặn hiển thị ảnh (thay uc?id bằng thumbnail?id)
+                if (imgUrl.includes('drive.google.com/uc?id=')) {
+                    const fileId = imgUrl.split('id=')[1].split('&')[0];
+                    imgUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
+                } else if (imgUrl.includes('drive.google.com/file/d/')) {
+                    const fileId = imgUrl.split('/d/')[1].split('/')[0];
+                    imgUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
+                }
+                imgEl.src = imgUrl;
                 imgContainer.classList.remove('hidden');
             } else {
                 imgContainer.classList.add('hidden');
@@ -462,45 +472,45 @@
 
         // Danh sách toàn bộ đơn vị (đồng bộ với constants.js)
         const ALL_UNITS = [
-            "CAP Âu Cơ","CAP Hòa Bình","CAP Kỳ Sơn","CAP Nông Trang","CAP Phong Châu",
-            "CAP Phú Thọ","CAP Phúc Yên","CAP Tân Hòa","CAP Thanh Miếu","CAP Thống Nhất",
-            "CAP Vân Phú","CAP Việt Trì","CAP Vĩnh Phúc","CAP Vĩnh Yên","CAP Xuân Hòa",
-            "CAX An Bình","CAX An Nghĩa","CAX Bản Nguyên","CAX Bằng Luân","CAX Bao La",
-            "CAX Bình Nguyên","CAX Bình Phú","CAX Bình Tuyền","CAX Bình Xuyên","CAX Cẩm Khê",
-            "CAX Cao Dương","CAX Cao Phong","CAX Cao Sơn","CAX Chân Mộng","CAX Chí Đám",
-            "CAX Chí Tiên","CAX Cự Đồng","CAX Đà Bắc","CAX Đại Đình","CAX Đại Đồng",
-            "CAX Dân Chủ","CAX Đan Thượng","CAX Đạo Trù","CAX Đào Xá","CAX Đoan Hùng",
-            "CAX Đồng Lương","CAX Đông Thành","CAX Đức Nhàn","CAX Dũng Tiến","CAX Hạ Hoà",
-            "CAX Hải Lựu","CAX Hiền Lương","CAX Hiền Quan","CAX Hoàng An","CAX Hoàng Cương",
-            "CAX Hội Thịnh","CAX Hợp Kim","CAX Hợp Lý","CAX Hùng Việt","CAX Hương Cần",
-            "CAX Hy Cương","CAX Khả Cửu","CAX Kim Bôi","CAX Lạc Lương","CAX Lạc Sơn",
-            "CAX Lạc Thủy","CAX Lai Đồng","CAX Lâm Thao","CAX Lập Thạch","CAX Liên Châu",
-            "CAX Liên Hòa","CAX Liên Minh","CAX Liên Sơn","CAX Long Cốc","CAX Lương Sơn",
-            "CAX Mai Châu","CAX Mai Hạ","CAX Minh Đài","CAX Minh Hoà","CAX Mường Bi",
-            "CAX Mường Động","CAX Mường Hoa","CAX Mường Thàng","CAX Mường Vang","CAX Nật Sơn",
-            "CAX Ngọc Sơn","CAX Nguyệt Đức","CAX Nhân Nghĩa","CAX Pà Cò","CAX Phú Khê",
-            "CAX Phú Mỹ","CAX Phù Ninh","CAX Phùng Nguyên","CAX Quảng Yên","CAX Quy Đức",
-            "CAX Quyết Thắng","CAX Sơn Đông","CAX Sơn Lương","CAX Sông Lô","CAX Tam Đảo",
-            "CAX Tam Dương","CAX Tam Dương Bắc","CAX Tam Hồng","CAX Tam Nông","CAX Tam Sơn",
-            "CAX Tân Lạc","CAX Tân Mai","CAX Tân Pheo","CAX Tân Sơn","CAX Tây Cốc",
-            "CAX Tề Lỗ","CAX Thái Hòa","CAX Thanh Ba","CAX Thanh Sơn","CAX Thanh Thuỷ",
-            "CAX Thịnh Minh","CAX Thổ Tang","CAX Thọ Văn","CAX Thu Cúc","CAX Thung Nai",
-            "CAX Thượng Cốc","CAX Thượng Long","CAX Tiên Lữ","CAX Tiên Lương","CAX Tiền Phong",
-            "CAX Toàn Thắng","CAX Trạm Thản","CAX Trung Sơn","CAX Tu Vũ","CAX Văn Bán",
-            "CAX Văn Lang","CAX Văn Miếu","CAX Vân Sơn","CAX Vạn Xuân","CAX Vĩnh An",
-            "CAX Vĩnh Chân","CAX Vĩnh Hưng","CAX Vĩnh Phú","CAX Vĩnh Thành","CAX Vĩnh Tường",
-            "CAX Võ Miếu","CAX Xuân Đài","CAX Xuân Lãng","CAX Xuân Lũng","CAX Xuân Viên",
-            "CAX Yên Kỳ","CAX Yên Lạc","CAX Yên Lãng","CAX Yên Lập","CAX Yên Phú",
-            "CAX Yên Sơn","CAX Yên Thủy","CAX Yên Trị",
-            "Hội phụ nữ PA01","Hội phụ nữ PA02","Hội phụ nữ PA03","Hội phụ nữ PA04",
-            "Hội phụ nữ PA05","Hội phụ nữ PA06","Hội phụ nữ PA08","Hội phụ nữ PA09",
-            "Hội phụ nữ PC01","Hội phụ nữ PC02","Hội phụ nữ PC03","Hội phụ nữ PC04",
-            "Hội phụ nữ PC06","Hội phụ nữ PC07","Hội phụ nữ PC08","Hội phụ nữ PC09",
-            "Hội phụ nữ PC10","Hội phụ nữ PK02",
-            "Hội phụ nữ TTG 1","Hội phụ nữ TTG 2","Hội phụ nữ TTG 3",
-            "Hội phụ nữ PV01","Hội phụ nữ PV06",
-            "Hội phụ nữ PX01","Hội phụ nữ PX03","Hội phụ nữ PX05","Hội phụ nữ PX06",
-            "Hội phụ nữ PH06","Hội phụ nữ PH10"
+            "CAP Âu Cơ", "CAP Hòa Bình", "CAP Kỳ Sơn", "CAP Nông Trang", "CAP Phong Châu",
+            "CAP Phú Thọ", "CAP Phúc Yên", "CAP Tân Hòa", "CAP Thanh Miếu", "CAP Thống Nhất",
+            "CAP Vân Phú", "CAP Việt Trì", "CAP Vĩnh Phúc", "CAP Vĩnh Yên", "CAP Xuân Hòa",
+            "CAX An Bình", "CAX An Nghĩa", "CAX Bản Nguyên", "CAX Bằng Luân", "CAX Bao La",
+            "CAX Bình Nguyên", "CAX Bình Phú", "CAX Bình Tuyền", "CAX Bình Xuyên", "CAX Cẩm Khê",
+            "CAX Cao Dương", "CAX Cao Phong", "CAX Cao Sơn", "CAX Chân Mộng", "CAX Chí Đám",
+            "CAX Chí Tiên", "CAX Cự Đồng", "CAX Đà Bắc", "CAX Đại Đình", "CAX Đại Đồng",
+            "CAX Dân Chủ", "CAX Đan Thượng", "CAX Đạo Trù", "CAX Đào Xá", "CAX Đoan Hùng",
+            "CAX Đồng Lương", "CAX Đông Thành", "CAX Đức Nhàn", "CAX Dũng Tiến", "CAX Hạ Hoà",
+            "CAX Hải Lựu", "CAX Hiền Lương", "CAX Hiền Quan", "CAX Hoàng An", "CAX Hoàng Cương",
+            "CAX Hội Thịnh", "CAX Hợp Kim", "CAX Hợp Lý", "CAX Hùng Việt", "CAX Hương Cần",
+            "CAX Hy Cương", "CAX Khả Cửu", "CAX Kim Bôi", "CAX Lạc Lương", "CAX Lạc Sơn",
+            "CAX Lạc Thủy", "CAX Lai Đồng", "CAX Lâm Thao", "CAX Lập Thạch", "CAX Liên Châu",
+            "CAX Liên Hòa", "CAX Liên Minh", "CAX Liên Sơn", "CAX Long Cốc", "CAX Lương Sơn",
+            "CAX Mai Châu", "CAX Mai Hạ", "CAX Minh Đài", "CAX Minh Hoà", "CAX Mường Bi",
+            "CAX Mường Động", "CAX Mường Hoa", "CAX Mường Thàng", "CAX Mường Vang", "CAX Nật Sơn",
+            "CAX Ngọc Sơn", "CAX Nguyệt Đức", "CAX Nhân Nghĩa", "CAX Pà Cò", "CAX Phú Khê",
+            "CAX Phú Mỹ", "CAX Phù Ninh", "CAX Phùng Nguyên", "CAX Quảng Yên", "CAX Quy Đức",
+            "CAX Quyết Thắng", "CAX Sơn Đông", "CAX Sơn Lương", "CAX Sông Lô", "CAX Tam Đảo",
+            "CAX Tam Dương", "CAX Tam Dương Bắc", "CAX Tam Hồng", "CAX Tam Nông", "CAX Tam Sơn",
+            "CAX Tân Lạc", "CAX Tân Mai", "CAX Tân Pheo", "CAX Tân Sơn", "CAX Tây Cốc",
+            "CAX Tề Lỗ", "CAX Thái Hòa", "CAX Thanh Ba", "CAX Thanh Sơn", "CAX Thanh Thuỷ",
+            "CAX Thịnh Minh", "CAX Thổ Tang", "CAX Thọ Văn", "CAX Thu Cúc", "CAX Thung Nai",
+            "CAX Thượng Cốc", "CAX Thượng Long", "CAX Tiên Lữ", "CAX Tiên Lương", "CAX Tiền Phong",
+            "CAX Toàn Thắng", "CAX Trạm Thản", "CAX Trung Sơn", "CAX Tu Vũ", "CAX Văn Bán",
+            "CAX Văn Lang", "CAX Văn Miếu", "CAX Vân Sơn", "CAX Vạn Xuân", "CAX Vĩnh An",
+            "CAX Vĩnh Chân", "CAX Vĩnh Hưng", "CAX Vĩnh Phú", "CAX Vĩnh Thành", "CAX Vĩnh Tường",
+            "CAX Võ Miếu", "CAX Xuân Đài", "CAX Xuân Lãng", "CAX Xuân Lũng", "CAX Xuân Viên",
+            "CAX Yên Kỳ", "CAX Yên Lạc", "CAX Yên Lãng", "CAX Yên Lập", "CAX Yên Phú",
+            "CAX Yên Sơn", "CAX Yên Thủy", "CAX Yên Trị",
+            "Hội phụ nữ PA01", "Hội phụ nữ PA02", "Hội phụ nữ PA03", "Hội phụ nữ PA04",
+            "Hội phụ nữ PA05", "Hội phụ nữ PA06", "Hội phụ nữ PA08", "Hội phụ nữ PA09",
+            "Hội phụ nữ PC01", "Hội phụ nữ PC02", "Hội phụ nữ PC03", "Hội phụ nữ PC04",
+            "Hội phụ nữ PC06", "Hội phụ nữ PC07", "Hội phụ nữ PC08", "Hội phụ nữ PC09",
+            "Hội phụ nữ PC10", "Hội phụ nữ PK02",
+            "Hội phụ nữ TTG 1", "Hội phụ nữ TTG 2", "Hội phụ nữ TTG 3",
+            "Hội phụ nữ PV01", "Hội phụ nữ PV06",
+            "Hội phụ nữ PX01", "Hội phụ nữ PX03", "Hội phụ nữ PX05", "Hội phụ nữ PX06",
+            "Hội phụ nữ PH06", "Hội phụ nữ PH10"
         ];
 
         // 7. Render Bảng Thống kê & Lọc (hiển thị TẤT CẢ đơn vị)

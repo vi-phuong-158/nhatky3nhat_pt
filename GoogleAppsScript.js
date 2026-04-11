@@ -74,11 +74,41 @@ function doGet(e) {
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
 
-  // API trả JSON cho frontend React (Vite)
+  // ─── API: Album ảnh từ Google Drive folder ───
+  if (e.parameter.action === 'album') {
+    try {
+      var folderId = '14wkyhsViNaEKUunwuzwcLGVUWTROGRvg';
+      var folder = DriveApp.getFolderById(folderId);
+      var files = folder.getFiles();
+      var images = [];
+      while (files.hasNext()) {
+        var file = files.next();
+        var mimeType = file.getMimeType();
+        if (mimeType.indexOf('image/') === 0) {
+          images.push({
+            id: file.getId(),
+            name: file.getName(),
+            url: 'https://lh3.googleusercontent.com/d/' + file.getId(),
+            thumb: 'https://lh3.googleusercontent.com/d/' + file.getId() + '=w400',
+            date: file.getDateCreated().toISOString(),
+          });
+        }
+      }
+      // Sắp xếp mới nhất trước
+      images.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+      return ContentService.createTextOutput(JSON.stringify({ images: images, total: images.length }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } catch (err) {
+      return ContentService.createTextOutput(JSON.stringify({ images: [], total: 0, error: err.message }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // API trả JSON cho frontend React (Vite) — HỖ TRỢ PHÂN TRANG
   try {
     const sheet = getSheet();
     if (!sheet) {
-      return ContentService.createTextOutput(JSON.stringify({ data: [], error: 'Sheet not found' }))
+      return ContentService.createTextOutput(JSON.stringify({ data: [], totalCount: 0, error: 'Sheet not found' }))
         .setMimeType(ContentService.MimeType.JSON);
     }
 
@@ -87,38 +117,65 @@ function doGet(e) {
     // Lấy danh sách bài mà device đã tặng hoa (nếu có deviceId trong query)
     var deviceId = e.parameter.deviceId || '';
     var deviceFlowered = deviceId ? getDeviceFlowers(deviceId) : [];
+    
+    // Tham số tìm kiếm
+    var search = (e.parameter.q || "").toLowerCase().trim();
 
     const data = sheet.getDataRange().getValues();
-    const entries = [];
+    const allApproved = [];
 
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
       const trangThai = safeStr(row[7]) || 'Chờ duyệt';
 
       if (trangThai === 'Đã duyệt') {
-        var artId = String(i + 1);
-        entries.push({
-          id: i + 1,
-          thoiGian: safeDate(row[0]),
-          hoTen: safeStr(row[1]),
-          donVi: safeStr(row[2]),
-          tieuDe: safeStr(row[3]),
-          tieuChi: safeStr(row[4]),
-          noiDung: safeStr(row[5]),
-          linkAnh: safeStr(row[6]),
-          flowerCount: flowerCounts[artId] || 0,
-          hasFlowered: deviceFlowered.indexOf(artId) !== -1,
-        });
+        // Nội dung để tìm kiếm: Họ tên, đơn vị, tiêu đề, nội dung
+        var searchContent = (safeStr(row[1]) + safeStr(row[2]) + safeStr(row[3]) + safeStr(row[5])).toLowerCase();
+        
+        if (!search || searchContent.indexOf(search) !== -1) {
+          var artId = String(i + 1);
+          allApproved.push({
+            id: i + 1,
+            thoiGian: safeDate(row[0]),
+            hoTen: safeStr(row[1]),
+            donVi: safeStr(row[2]),
+            tieuDe: safeStr(row[3]),
+            tieuChi: safeStr(row[4]),
+            noiDung: safeStr(row[5]),
+            linkAnh: safeStr(row[6]),
+            flowerCount: flowerCounts[artId] || 0,
+            hasFlowered: deviceFlowered.indexOf(artId) !== -1,
+          });
+        }
       }
     }
 
-    entries.sort((a, b) => new Date(b.thoiGian || 0) - new Date(a.thoiGian || 0));
+    // Sắp xếp theo thời gian mới nhất
+    allApproved.sort((a, b) => new Date(b.thoiGian || 0) - new Date(a.thoiGian || 0));
 
-    return ContentService.createTextOutput(JSON.stringify({ data: entries }))
+    var totalCount = allApproved.length;
+
+    // Phân trang: page (1-indexed), limit (mặc định 20)
+    var page = parseInt(e.parameter.page) || 1;
+    var limit = parseInt(e.parameter.limit) || 20;
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 20;
+    if (limit > 10000) limit = 10000; // Cho phép lấy nhiều (thống kê)
+
+    var startIdx = (page - 1) * limit;
+    var entries = allApproved.slice(startIdx, startIdx + limit);
+
+    return ContentService.createTextOutput(JSON.stringify({
+      data: entries,
+      totalCount: totalCount,
+      page: page,
+      limit: limit,
+      hasMore: startIdx + limit < totalCount
+    }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ data: [], error: err.message }))
+    return ContentService.createTextOutput(JSON.stringify({ data: [], totalCount: 0, error: err.message }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }

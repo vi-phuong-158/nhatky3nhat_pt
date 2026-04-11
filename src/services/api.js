@@ -10,7 +10,44 @@ const getDeviceId = () => {
   return id;
 };
 
-export const fetchEntries = async () => {
+/** Rate limiter — giới hạn số lần gọi action trong khoảng thời gian */
+const rateLimits = {};
+const checkRateLimit = (action, maxCalls, windowMs) => {
+  const now = Date.now();
+  if (!rateLimits[action]) rateLimits[action] = [];
+  rateLimits[action] = rateLimits[action].filter((t) => now - t < windowMs);
+  if (rateLimits[action].length >= maxCalls) {
+    throw new Error('Bạn thao tác quá nhanh, vui lòng thử lại sau.');
+  }
+  rateLimits[action].push(now);
+};
+
+/** Tải danh sách bài viết — HỖ TRỢ PHÂN TRANG & TÌM KIẾM SERVER-SIDE */
+export const fetchEntries = async (page = 1, limit = 20, search = "") => {
+  if (!GAS_URL) {
+    console.warn("Chưa cấu hình VITE_GAS_API_URL trong .env!");
+    return { data: [], totalCount: 0, hasMore: false };
+  }
+  
+  try {
+    const deviceId = getDeviceId();
+    const url = `${GAS_URL}?deviceId=${encodeURIComponent(deviceId)}&page=${page}&limit=${limit}&q=${encodeURIComponent(search)}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Mạng bị lỗi. Vui lòng kiểm tra kết nối.');
+    const result = await response.json();
+    return {
+      data: result.data || [],
+      totalCount: result.totalCount || 0,
+      hasMore: result.hasMore ?? false,
+    };
+  } catch (error) {
+    console.error("Lỗi tải dữ liệu:", error);
+    throw error;
+  }
+};
+
+/** Tải TẤT CẢ bài viết (cho trang Thống kê) — không phân trang */
+export const fetchAllEntries = async () => {
   if (!GAS_URL) {
     console.warn("Chưa cấu hình VITE_GAS_API_URL trong .env!");
     return [];
@@ -18,14 +55,34 @@ export const fetchEntries = async () => {
   
   try {
     const deviceId = getDeviceId();
-    const url = `${GAS_URL}?deviceId=${encodeURIComponent(deviceId)}`;
+    // Gửi limit rất lớn để lấy hết
+    const url = `${GAS_URL}?deviceId=${encodeURIComponent(deviceId)}&page=1&limit=99999`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Mạng bị lỗi. Vui lòng kiểm tra kết nối.');
-    const data = await response.json();
-    return data.data || [];
+    if (!response.ok) throw new Error('Mạng bị lỗi.');
+    const result = await response.json();
+    return result.data || [];
   } catch (error) {
-    console.error("Lỗi tải dữ liệu:", error);
+    console.error("Lỗi tải tất cả dữ liệu:", error);
+    throw error;
+  }
+};
+
+/** Tải danh sách ảnh từ album Google Drive */
+export const fetchAlbumImages = async () => {
+  if (!GAS_URL) {
+    console.warn("Chưa cấu hình VITE_GAS_API_URL trong .env!");
     return [];
+  }
+  
+  try {
+    const url = `${GAS_URL}?action=album`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Mạng bị lỗi.');
+    const result = await response.json();
+    return result.images || [];
+  } catch (error) {
+    console.error("Lỗi tải album:", error);
+    throw error;
   }
 };
 
@@ -33,6 +90,8 @@ export const submitEntry = async (entryData) => {
   if (!GAS_URL) {
     throw new Error("Chưa cấu hình API URL!");
   }
+
+  checkRateLimit('submit', 3, 60000); // max 3 bài / phút
 
   try {
     const response = await fetch(GAS_URL, {
@@ -56,6 +115,8 @@ export const submitEntry = async (entryData) => {
 
 export const sendFlower = async (articleId) => {
   if (!GAS_URL) throw new Error("Chưa cấu hình API URL!");
+
+  checkRateLimit('flower', 10, 10000); // max 10 lần tặng hoa / 10 giây
 
   const deviceId = getDeviceId();
 

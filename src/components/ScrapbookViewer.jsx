@@ -1,271 +1,272 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import DOMPurify from 'dompurify';
-import { sendFlower } from '../services/api';
+import PostCard from './PostCard';
 import './ScrapbookViewer.css';
-
-/* ─── Utilities ─── */
-const getDirectImageUrl = (url) => {
-  if (!url || typeof url !== 'string') return '';
-  const driveIdMatch = url.match(/[-\w]{25,}/);
-  if (url.includes('drive.google.com') && driveIdMatch) {
-    return `https://lh3.googleusercontent.com/d/${driveIdMatch[0]}`;
-  }
-  return url;
-};
-
-const formatDate = (isoString) => {
-  if (!isoString) return '';
-  const date = new Date(isoString);
-  if (isNaN(date.getTime())) return isoString;
-  const d = String(date.getDate()).padStart(2, '0');
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const y = date.getFullYear();
-  return `${d}/${m}/${y}`;
-};
-
-const timeAgo = (isoString) => {
-  if (!isoString) return '';
-  const date = new Date(isoString);
-  if (isNaN(date.getTime())) return isoString;
-  const now = new Date();
-  const diffMs = now - date;
-  const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return 'Vừa xong';
-  if (diffMins < 60) return `${diffMins} phút trước`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours} giờ trước`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays} ngày trước`;
-  return formatDate(isoString);
-};
-
-
-
-/* ─── Badge color theo tiêu chí ─── */
-const getBadgeClass = (tieuChi) => {
-  if (!tieuChi) return 'badge-default';
-  const lower = tieuChi.toLowerCase();
-  if (lower.includes('nhất 1') || lower.includes('nhat 1')) return 'badge-nhat1';
-  if (lower.includes('nhất 2') || lower.includes('nhat 2')) return 'badge-nhat2';
-  if (lower.includes('nhất 3') || lower.includes('nhat 3')) return 'badge-nhat3';
-  return 'badge-default';
-};
 
 /* ─── Stagger animation variants ─── */
 const containerVariants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
+  visible: { transition: { staggerChildren: 0.08 } },
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.97 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.45, ease: [0.25, 0.8, 0.25, 1] },
-  },
-};
+/* ─── Skeleton Loader ─── */
+function SkeletonCard() {
+  return (
+    <div className="post-card skeleton-card" aria-hidden="true">
+      <div className="post-header">
+        <div className="post-header-left">
+          <div className="post-meta">
+            <span className="skeleton-line skeleton-name"></span>
+            <span className="skeleton-line skeleton-unit"></span>
+          </div>
+        </div>
+        <div className="post-header-right">
+          <span className="skeleton-badge"></span>
+        </div>
+      </div>
+      <div className="post-body">
+        <div className="skeleton-line skeleton-title"></div>
+        <div className="skeleton-line skeleton-text-1"></div>
+        <div className="skeleton-line skeleton-text-2"></div>
+        <div className="skeleton-line skeleton-text-3"></div>
+      </div>
+      <div className="post-footer">
+        <span className="skeleton-line skeleton-btn"></span>
+        <span className="skeleton-line skeleton-time"></span>
+      </div>
+    </div>
+  );
+}
 
 /* ═══════════════════════════════════════════════════════
-   COMPONENT CHÍNH — Social Feed (cuộn dọc)
+   COMPONENT CHÍNH — Social Feed (cuộn dọc + Infinite Scroll)
    ═══════════════════════════════════════════════════════ */
-export default function ScrapbookViewer({ entries, onOpenForm }) {
+export default function ScrapbookViewer({
+  entries,
+  loading,
+  loadingMore,
+  hasMore,
+  totalCount,
+  onLoadMore,
+  error,
+  onRetry,
+  onOpenForm,
+  onToast,
+  darkMode,
+  onToggleDarkMode,
+  onOpenStats,
+  onOpenAlbum,
+  searchTerm,
+  onSearchChange,
+}) {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [expandedPosts, setExpandedPosts] = useState(new Set());
-  const [flowerStates, setFlowerStates] = useState({});
-  const [flowerAnimating, setFlowerAnimating] = useState({});
+  const [filterCriteria, setFilterCriteria] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-  const toggleExpand = (id) => {
-    setExpandedPosts((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
+  // ─── Infinite Scroll: IntersectionObserver sentinel ───
+  const sentinelRef = useRef(null);
 
-  const handleFlower = useCallback(async (entry) => {
-    const id = entry.id;
-    // Prevent double click during animation
-    if (flowerAnimating[id]) return;
+  useEffect(() => {
+    // Chỉ kích hoạt infinite scroll khi KHÔNG có bộ lọc/tìm kiếm đang hoạt động
+    const isFilterActive = searchTerm.trim() || filterCriteria;
+    if (!onLoadMore || !hasMore || loading || loadingMore || isFilterActive) return;
 
-    // Trigger petal animation
-    setFlowerAnimating((prev) => ({ ...prev, [id]: true }));
-    setTimeout(() => setFlowerAnimating((prev) => ({ ...prev, [id]: false })), 1200);
-
-    try {
-      // Call API — bây giờ await response từ server (source of truth)
-      const result = await sendFlower(id);
-
-      // Cập nhật UI từ dữ liệu server (flowerCount chính xác từ Sheet TangHoa)
-      setFlowerStates((prev) => ({
-        ...prev,
-        [id]: {
-          count: result.flowerCount,
-          active: result.toggled === 'added',
-        },
-      }));
-    } catch (err) {
-      console.error('Tặng hoa thất bại:', err);
-      // Tắt animation nếu lỗi
-      setFlowerAnimating((prev) => ({ ...prev, [id]: false }));
-    }
-  }, [flowerAnimating]);
-
-  /* ── Empty state ── */
-  if (!entries || entries.length === 0) {
-    return (
-      <div className="feed-container">
-        <header className="feed-topbar">
-          <span className="feed-logo">Nhật ký 3 Nhất</span>
-        </header>
-        <main className="feed-main">
-          <div className="feed-empty">
-            <span className="material-symbols-outlined feed-empty-icon">auto_stories</span>
-            <p>Chưa có bài viết nào...</p>
-          </div>
-        </main>
-      </div>
+    const observer = new IntersectionObserver(
+      (observerEntries) => {
+        if (observerEntries[0].isIntersecting) {
+          onLoadMore();
+        }
+      },
+      { rootMargin: '300px' } // Bắt đầu tải trước khi cuộn tới 300px
     );
-  }
+
+    const el = sentinelRef.current;
+    if (el) observer.observe(el);
+    return () => { if (el) observer.unobserve(el); };
+  }, [onLoadMore, hasMore, loading, loadingMore, searchTerm, filterCriteria]);
+
+  // Online/offline detection
+  useEffect(() => {
+    const handleOnline = () => { setIsOnline(true); if (onToast) onToast('Đã kết nối mạng', 'success'); };
+    const handleOffline = () => { setIsOnline(false); if (onToast) onToast('Mất kết nối mạng', 'error'); };
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [onToast]);
+
+  // Close lightbox on Escape
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape' && selectedImage) setSelectedImage(null);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [selectedImage]);
+
+  const handleImageClick = useCallback((url) => setSelectedImage(url), []);
+
+  const hasFilters = searchTerm || filterCriteria;
 
   return (
     <div className="feed-container">
-      {/* ─── TOP APP BAR (sticky + blur) ─── */}
+      {/* ─── Offline Banner ─── */}
+      {!isOnline && (
+        <div className="offline-banner" role="alert">
+          <span className="material-symbols-outlined" aria-hidden="true">wifi_off</span>
+          Mất kết nối mạng
+        </div>
+      )}
+
+      {/* ─── TOP APP BAR ─── */}
       <header className="feed-topbar">
         <span className="feed-logo">Nhật ký 3 Nhất</span>
         <div className="feed-topbar-actions">
-          {onOpenForm && (
-            <button className="feed-btn-write" onClick={onOpenForm}>
-              <span className="material-symbols-outlined">edit_square</span>
-              <span className="feed-btn-write-text">Viết bài</span>
-            </button>
-          )}
+          <button 
+            className="feed-btn-write" 
+            onClick={onToggleDarkMode} 
+            aria-label={darkMode ? 'Chuyển sang sáng' : 'Chuyển sang tối'}
+            title={darkMode ? 'Chế độ sáng' : 'Chế độ tối'}
+            style={{ padding: '0 12px', minWidth: '40px' }}
+          >
+            <span className="material-symbols-outlined" aria-hidden="true">{darkMode ? 'light_mode' : 'dark_mode'}</span>
+          </button>
         </div>
       </header>
 
-      {/* ─── SCROLLABLE MAIN FEED ─── */}
+      {/* ─── SEARCH & FILTER BAR ─── */}
+      <div className="feed-toolbar" role="search">
+        <div className="feed-search-wrapper">
+          <span className="material-symbols-outlined feed-search-icon" aria-hidden="true">search</span>
+          <input
+            type="search"
+            className="feed-search-input"
+            placeholder="Tìm bài viết..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            aria-label="Tìm kiếm bài viết"
+          />
+          {searchTerm && (
+            <button className="feed-search-clear" onClick={() => onSearchChange('')} aria-label="Xóa tìm kiếm">
+              <span className="material-symbols-outlined">close</span>
+            </button>
+          )}
+        </div>
+        <div className="feed-filters">
+          <select
+            className="feed-filter-select"
+            value={filterCriteria}
+            onChange={(e) => setFilterCriteria(e.target.value)}
+            aria-label="Lọc theo tiêu chí"
+          >
+            <option value="">Tất cả tiêu chí</option>
+            <option value="Kỷ luật nhất">Kỷ luật nhất</option>
+            <option value="Trung thành nhất">Trung thành nhất</option>
+            <option value="Gần dân nhất">Gần dân nhất</option>
+          </select>
+          <select
+            className="feed-filter-select"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            aria-label="Sắp xếp bài viết"
+          >
+            <option value="newest">Mới nhất</option>
+            <option value="oldest">Cũ nhất</option>
+            <option value="flowers">Nhiều hoa nhất</option>
+          </select>
+        </div>
+      </div>
+
+      {/* ─── Bộ đếm bài viết ─── */}
+      {!loading && !error && entries.length > 0 && (
+        <div className="feed-counter">
+          Đã hiển thị {entries.length} / {totalCount || entries.length} bài viết
+        </div>
+      )}
+
+      {/* ─── MAIN FEED ─── */}
       <main className="feed-main">
-        {/* Post cards — stagger in */}
-        <motion.div
-          className="feed-posts"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {entries.map((entry) => {
-            const safeHtml = DOMPurify.sanitize(
-              entry.noiDung.replace(/\n/g, '<br/>'),
-              { ALLOWED_TAGS: ['br'] }
-            );
-            const imgUrl = entry.linkAnh ? getDirectImageUrl(entry.linkAnh) : null;
+        {/* Loading skeleton */}
+        {loading && (
+          <div className="feed-posts">
+            {[...Array(3)].map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+        )}
 
-            return (
-              <motion.article
+        {/* Error state with retry */}
+        {!loading && error && (
+          <div className="feed-empty feed-error-state">
+            <span className="material-symbols-outlined feed-empty-icon">cloud_off</span>
+            <p>{error}</p>
+            {onRetry && (
+              <button className="feed-retry-btn" onClick={onRetry}>
+                <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
+                Thử lại
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && !error && entries.length === 0 && (
+          <div className="feed-empty">
+            <span className="material-symbols-outlined feed-empty-icon">
+              {hasFilters ? 'search_off' : 'auto_stories'}
+            </span>
+            <p>{hasFilters ? 'Không tìm thấy bài viết phù hợp.' : 'Chưa có bài viết nào...'}</p>
+            {hasFilters && (
+              <button className="feed-retry-btn" onClick={() => { onSearchChange(''); setFilterCriteria(''); }}>
+                Xóa bộ lọc
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Posts */}
+        {!loading && !error && entries.length > 0 && (
+          <motion.div
+            className="feed-posts"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {entries.map((entry) => (
+              <PostCard
                 key={entry.id}
-                className="post-card"
-                variants={cardVariants}
-              >
-                {/* ── Post header: avatar + meta ── */}
-                <div className="post-header">
-                  <div className="post-header-left">
-                    
-                    <div className="post-meta">
-                      <span className="post-author">{entry.hoTen}</span>
-                      <span className="post-unit">{entry.donVi}</span>
-                    </div>
-                  </div>
-                  <div className="post-header-right">
-                    <span className={`post-badge ${getBadgeClass(entry.tieuChi)}`}>
-                      {entry.tieuChi}
-                    </span>
-                  </div>
-                </div>
+                entry={entry}
+                onImageClick={handleImageClick}
+                onToast={onToast}
+              />
+            ))}
+          </motion.div>
+        )}
 
-                {/* ── Post body ── */}
-                <div className="post-body">
-                  <h3 className="post-title">{entry.tieuDe}</h3>
-                  <div
-                    className={`post-text ${expandedPosts.has(entry.id) ? '' : 'clamped'}`}
-                    dangerouslySetInnerHTML={{ __html: safeHtml }}
-                  />
-                  <button
-                    className="btn-expand"
-                    onClick={() => toggleExpand(entry.id)}
-                  >
-                    <span className="material-symbols-outlined btn-expand-icon">
-                      {expandedPosts.has(entry.id) ? 'expand_less' : 'expand_more'}
-                    </span>
-                    {expandedPosts.has(entry.id) ? 'Thu gọn' : 'Xem chi tiết'}
-                  </button>
-                </div>
+        {/* ─── Loading More Indicator ─── */}
+        {loadingMore && (
+          <div className="feed-loading-more">
+            <div className="feed-loading-spinner" />
+            <span>Đang tải thêm bài viết...</span>
+          </div>
+        )}
 
-                {/* ── Post image ── */}
-                {imgUrl && (
-                  <div className="post-image-wrapper">
-                    <img
-                      src={imgUrl}
-                      alt="Ảnh hoạt động 3 Nhất"
-                      loading="lazy"
-                      className="post-image"
-                      onClick={() => setSelectedImage(imgUrl)}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          'https://placehold.co/600x400/ebeef4/005eaa.png?text=Loi+Hien+Thi+Anh';
-                      }}
-                    />
-                  </div>
-                )}
+        {/* ─── Infinite Scroll Sentinel ─── */}
+        {!loading && !error && hasMore && !hasFilters && (
+          <div ref={sentinelRef} className="feed-sentinel" aria-hidden="true" />
+        )}
 
-                {/* ── Post footer ── */}
-                <div className="post-footer">
-                  <button
-                    className={`flower-btn ${(flowerStates[entry.id]?.active ?? entry.hasFlowered) ? 'flower-active' : ''}`}
-                    onClick={() => handleFlower(entry)}
-                    aria-label="Tặng hoa"
-                  >
-                    <span className="flower-icon">🌸</span>
-                    <span className="flower-label">
-                      {(flowerStates[entry.id]?.active ?? entry.hasFlowered) ? 'Đã tặng hoa' : 'Tặng hoa'}
-                    </span>
-                    <span className="flower-count">
-                      {flowerStates[entry.id]?.count ?? entry.flowerCount ?? 0}
-                    </span>
-                    {/* Petal animation */}
-                    {flowerAnimating[entry.id] && (
-                      <span className="flower-petals" aria-hidden="true">
-                        {[...Array(6)].map((_, i) => (
-                          <span key={i} className={`petal petal-${i + 1}`}>🌸</span>
-                        ))}
-                      </span>
-                    )}
-                  </button>
-
-                  <span className="post-timestamp">
-                    <span className="material-symbols-outlined post-footer-icon">schedule</span>
-                    {timeAgo(entry.thoiGian)}
-                  </span>
-                  {entry.nhanXet && (
-                    <span className="post-comment">
-                      <span className="material-symbols-outlined post-footer-icon">rate_review</span>
-                      {entry.nhanXet}
-                    </span>
-                  )}
-                </div>
-              </motion.article>
-            );
-          })}
-        </motion.div>
+        {/* ─── Hết bài viết ─── */}
+        {!loading && !error && !hasMore && entries.length > 0 && !hasFilters && (
+          <div className="feed-end-message">
+            <span className="material-symbols-outlined" aria-hidden="true">check_circle</span>
+            Bạn đã xem hết tất cả bài viết
+          </div>
+        )}
       </main>
 
-      {/* ─── LIGHTBOX (phóng to ảnh) ─── */}
+      {/* ─── LIGHTBOX ─── */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div
@@ -274,8 +275,15 @@ export default function ScrapbookViewer({ entries, onOpenForm }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Phóng to ảnh"
           >
-            <button className="lightbox-close" onClick={() => setSelectedImage(null)}>
+            <button
+              className="lightbox-close"
+              onClick={() => setSelectedImage(null)}
+              aria-label="Đóng ảnh phóng to"
+            >
               <span className="material-symbols-outlined">close</span>
             </button>
             <motion.img
@@ -290,6 +298,43 @@ export default function ScrapbookViewer({ entries, onOpenForm }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ─── Bottom Navigation (Mobile Only) — 5 cột ─── */}
+      <nav className="btm-nav md:hidden">
+        <div className="btm-nav-inner">
+          {/* 1. Trang chủ */}
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="btm-nav-item">
+            <span className="material-symbols-outlined btm-nav-icon" aria-hidden="true">home</span>
+            <span className="btm-nav-label">Trang chủ</span>
+          </button>
+
+          {/* 2. Album ảnh */}
+          <button onClick={onOpenAlbum} className="btm-nav-item">
+            <span className="material-symbols-outlined btm-nav-icon" aria-hidden="true">photo_library</span>
+            <span className="btm-nav-label">Album</span>
+          </button>
+
+          {/* 3. Viết bài (Nổi bật - giữa) */}
+          <div className="btm-nav-center">
+            <button onClick={onOpenForm} className="btm-nav-fab" aria-label="Viết bài mới">
+              <span className="material-symbols-outlined text-[26px]">edit</span>
+            </button>
+            <span className="btm-nav-label btm-nav-label-primary">Viết bài</span>
+          </div>
+
+          {/* 4. Trợ lý AI */}
+          <a href="https://notebooklm.google.com/notebook/ad20daef-a080-4103-a6e8-3ee5271866ed" target="_blank" rel="noopener noreferrer" className="btm-nav-item">
+            <span className="material-symbols-outlined btm-nav-icon" aria-hidden="true">smart_toy</span>
+            <span className="btm-nav-label">Trợ lý AI</span>
+          </a>
+
+          {/* 5. Thống kê */}
+          <button onClick={onOpenStats} className="btm-nav-item">
+            <span className="material-symbols-outlined btm-nav-icon" aria-hidden="true">insights</span>
+            <span className="btm-nav-label">Thống kê</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

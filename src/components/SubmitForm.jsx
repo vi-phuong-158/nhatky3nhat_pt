@@ -3,7 +3,7 @@ import { submitEntry } from '../services/api';
 import { donViList } from '../constants';
 import './SubmitForm.css';
 
-export default function SubmitForm({ onFormSuccess, onClose }) {
+export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
   // @react-best-practices: Sử dụng uncontrolled inputs (useRef) 
   const nameRef = useRef(null);
   const phoneRef = useRef(null);
@@ -16,6 +16,19 @@ export default function SubmitForm({ onFormSuccess, onClose }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hasFile, setHasFile] = useState(false);
+  const [fileName, setFileName] = useState('');
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setHasFile(true);
+      setFileName(file.name);
+    } else {
+      setHasFile(false);
+      setFileName('');
+    }
+  };
 
   // @frontend-security-coder: Base XSS Sanitization
   const sanitizeInput = (input) => {
@@ -120,12 +133,12 @@ export default function SubmitForm({ onFormSuccess, onClose }) {
         ...fileDataObj
       });
       
-      setSuccess('Gửi lưu bút thành công! Bài viết đang chờ Ban Phụ nữ phê duyệt.');
-      // Giả lập callback cho component cha để load lại nếu cần
-      if(onFormSuccess) onFormSuccess();
-      
-      // Reset form
+      if (onToast) onToast('Gửi lưu bút thành công! Bài viết đang chờ phê duyệt.', 'success');
+      else setSuccess('Gửi lưu bút thành công! Bài viết đang chờ Ban Phụ nữ phê duyệt.');
+      if (onFormSuccess) onFormSuccess();
       e.target.reset();
+      setHasFile(false);
+      setFileName('');
     } catch(err) {
       setError('Đã xảy ra lỗi: ' + err.message);
     } finally {
@@ -262,7 +275,34 @@ export default function SubmitForm({ onFormSuccess, onClose }) {
             Ảnh Kỷ Niệm
             <span className="sf-label-hint">(JPG/PNG &lt; 5MB)</span>
           </label>
-          <input id="input-file" type="file" accept="image/png, image/jpeg" ref={fileRef} disabled={loading} />
+          <input 
+            id="input-file" 
+            type="file" 
+            accept="image/png, image/jpeg" 
+            ref={fileRef} 
+            onChange={handleFileChange}
+            disabled={loading || hasFile} 
+            className="w-full"
+          />
+          {hasFile && (
+            <div className="flex items-center justify-between mt-2 px-3 py-2 bg-green-50 border border-green-200 rounded-md">
+              <span className="text-sm font-medium text-green-700 truncate mr-2" title={fileName}>
+                ✓ Đã chọn: {fileName}
+              </span>
+              <button 
+                type="button" 
+                disabled={loading}
+                onClick={() => {
+                  setHasFile(false);
+                  setFileName('');
+                  if (fileRef.current) fileRef.current.value = '';
+                }}
+                className="text-xs font-semibold text-red-600 hover:text-red-800 transition-colors shrink-0"
+              >
+                Hủy ảnh
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Submit */}
