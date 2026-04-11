@@ -225,16 +225,20 @@ function getAdminData() {
     const data = sheet.getDataRange().getValues();
     if (data.length <= 1) return [];
 
+    // Lấy thống kê hoa
+    const flowerCounts = countAllFlowers();
+
     const entries = [];
 
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
       // Bỏ qua dòng hoàn toàn trống
-      const hasContent = row.some(function(cell) { return cell !== '' && cell !== null && cell !== undefined; });
+      const hasContent = row.some(function (cell) { return cell !== '' && cell !== null && cell !== undefined; });
       if (!hasContent) continue;
 
+      var rowIndex = i + 1;
       entries.push({
-        rowIndex: i + 1,
+        rowIndex: rowIndex,
         thoiGian: safeDate(row[0]),
         hoTen: safeStr(row[1]),
         donVi: safeStr(row[2]),
@@ -244,12 +248,13 @@ function getAdminData() {
         linkAnh: safeStr(row[6]),
         trangThai: safeStr(row[7]) || 'Chờ duyệt',
         nhanXet: safeStr(row[8]),
-        sdt: safeStr(row[9])
+        sdt: safeStr(row[9]),
+        flowerCount: flowerCounts[String(rowIndex)] || 0 // Thêm số lượng hoa vào admin data
       });
     }
 
     // Sắp xếp: Ưu tiên bài "Chờ duyệt" lên đầu, sau đó theo thời gian mới nhất
-    entries.sort(function(a, b) {
+    entries.sort(function (a, b) {
       if (a.trangThai === 'Chờ duyệt' && b.trangThai !== 'Chờ duyệt') return -1;
       if (a.trangThai !== 'Chờ duyệt' && b.trangThai === 'Chờ duyệt') return 1;
       return new Date(b.thoiGian || 0) - new Date(a.thoiGian || 0);
@@ -282,18 +287,18 @@ function deleteEntry(rowIndex) {
   try {
     const sheet = getSheet();
     if (!sheet) throw new Error('Không tìm thấy sheet');
-    
+
     // Lấy link ảnh ở cột G (cột 7) trước khi xóa dòng
     var linkAnh = sheet.getRange(rowIndex, 7).getValue();
-    
+
     // Nếu có ảnh Drive → xóa file ảnh
     if (linkAnh) {
       var fileId = '';
       // Hỗ trợ nhiều dạng URL Drive
-      var match = String(linkAnh).match(/[?&]id=([a-zA-Z0-9_-]+)/) 
-                || String(linkAnh).match(/\/d\/([a-zA-Z0-9_-]+)/);
+      var match = String(linkAnh).match(/[?&]id=([a-zA-Z0-9_-]+)/)
+        || String(linkAnh).match(/\/d\/([a-zA-Z0-9_-]+)/);
       if (match) fileId = match[1];
-      
+
       if (fileId) {
         try {
           DriveApp.getFileById(fileId).setTrashed(true); // Chuyển vào thùng rác
@@ -303,10 +308,10 @@ function deleteEntry(rowIndex) {
         }
       }
     }
-    
+
     // Xóa dòng trong sheet
     sheet.deleteRow(rowIndex);
-    
+
     return { success: true, message: "Đã xóa bài viết và ảnh đính kèm!" };
   } catch (err) {
     throw new Error('deleteEntry lỗi: ' + err.message);

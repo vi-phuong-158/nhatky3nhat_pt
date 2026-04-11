@@ -58,27 +58,33 @@ export const sendFlower = async (articleId) => {
   if (!GAS_URL) throw new Error("Chưa cấu hình API URL!");
 
   const deviceId = getDeviceId();
-  const storageKey = `nk3n_flower_${articleId}_${deviceId}`;
-  const alreadyFlowered = localStorage.getItem(storageKey) === '1';
 
-  // Gửi request lên GAS (fire-and-forget — không phụ thuộc response vì GAS redirect 302)
-  fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    redirect: 'follow',
-    body: JSON.stringify({
-      action: 'tangHoa',
-      articleId: String(articleId),
-      deviceId: deviceId,
-    }),
-  }).catch((err) => console.warn('Flower request gửi đi rồi, lỗi nhẹ:', err));
+  try {
+    // Gửi request lên GAS và AWAIT response (server là source of truth)
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      redirect: 'follow',
+      body: JSON.stringify({
+        action: 'tangHoa',
+        articleId: String(articleId),
+        deviceId: deviceId,
+      }),
+    });
 
-  // Cập nhật localStorage để theo dõi trạng thái
-  if (alreadyFlowered) {
-    localStorage.removeItem(storageKey);
-    return { success: true, toggled: 'removed' };
-  } else {
-    localStorage.setItem(storageKey, '1');
-    return { success: true, toggled: 'added' };
+    const result = await response.json();
+
+    if (result.success) {
+      return {
+        success: true,
+        toggled: result.toggled,         // 'added' hoặc 'removed' từ server
+        flowerCount: result.flowerCount, // Số hoa chính xác từ Sheet TangHoa
+      };
+    } else {
+      throw new Error(result.error || 'Lỗi tặng hoa');
+    }
+  } catch (err) {
+    console.error('Lỗi tặng hoa:', err);
+    throw err;
   }
 };

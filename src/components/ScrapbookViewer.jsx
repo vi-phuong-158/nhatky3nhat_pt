@@ -99,21 +99,23 @@ export default function ScrapbookViewer({ entries, onOpenForm }) {
     setFlowerAnimating((prev) => ({ ...prev, [id]: true }));
     setTimeout(() => setFlowerAnimating((prev) => ({ ...prev, [id]: false })), 1200);
 
-    // Call API (fire-and-forget, trả về ngay từ localStorage)
-    const result = await sendFlower(id);
+    try {
+      // Call API — bây giờ await response từ server (source of truth)
+      const result = await sendFlower(id);
 
-    // Cập nhật UI dựa trên kết quả localStorage
-    setFlowerStates((prev) => {
-      const current = prev[id] || { count: entry.flowerCount || 0, active: entry.hasFlowered || false };
-      const isAdding = result.toggled === 'added';
-      return {
+      // Cập nhật UI từ dữ liệu server (flowerCount chính xác từ Sheet TangHoa)
+      setFlowerStates((prev) => ({
         ...prev,
         [id]: {
-          count: isAdding ? current.count + 1 : Math.max(0, current.count - 1),
-          active: isAdding,
+          count: result.flowerCount,
+          active: result.toggled === 'added',
         },
-      };
-    });
+      }));
+    } catch (err) {
+      console.error('Tặng hoa thất bại:', err);
+      // Tắt animation nếu lỗi
+      setFlowerAnimating((prev) => ({ ...prev, [id]: false }));
+    }
   }, [flowerAnimating]);
 
   /* ── Empty state ── */
