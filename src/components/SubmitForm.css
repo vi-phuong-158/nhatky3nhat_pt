@@ -344,54 +344,54 @@
 
 /* Header icon */
 [data-theme="light"] .sf-header-icon {
-  color: var(--cherry-red, #FF4747);
+  color: var(--primary, #0099E6);
 }
 
 /* Label icon (camera, title...) */
 [data-theme="light"] .sf-label-icon {
-  color: var(--cherry-red, #FF4747);
+  color: var(--primary, #0099E6);
 }
 
 /* Focus icon trong input wrapper */
 [data-theme="light"] .sf-input-wrapper:focus-within .sf-input-icon {
-  color: var(--cherry-red, #FF4747);
+  color: var(--primary, #0099E6);
 }
 
 /* Focus state inputs */
 [data-theme="light"] .sf-input-wrapper input:focus,
 [data-theme="light"] .sf-input-wrapper select:focus,
 [data-theme="light"] .sf-form textarea:focus {
-  border-color: rgba(224, 48, 48, 0.4);
+  border-color: rgba(0, 153, 230, 0.4);
   background-color: var(--surface-container-lowest, #ffffff);
-  box-shadow: 0 0 0 3px rgba(224, 48, 48, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 153, 230, 0.1);
 }
 
 /* File input hover + focus */
 [data-theme="light"] .sf-form input[type="file"]:hover {
-  border-color: var(--cherry-red, #FF4747);
+  border-color: var(--primary, #0099E6);
 }
 
 [data-theme="light"] .sf-form input[type="file"]:focus {
-  border-color: rgba(224, 48, 48, 0.4);
-  box-shadow: 0 0 0 3px rgba(224, 48, 48, 0.1);
+  border-color: rgba(0, 153, 230, 0.4);
+  box-shadow: 0 0 0 3px rgba(0, 153, 230, 0.1);
 }
 
-/* Nút Gửi: gradient đỏ CAND → cam ấm */
+/* Nút Gửi: gradient xanh sâu → xanh sáng */
 [data-theme="light"] .sf-btn-submit {
-  background: linear-gradient(135deg, #E03030 0%, #ff6b35 100%);
+  background: linear-gradient(135deg, #005eaa 0%, #0099E6 100%);
   box-shadow:
-    0 4px 14px rgba(224, 48, 48, 0.35),
+    0 4px 14px rgba(0, 90, 140, 0.35),
     0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="light"] .sf-btn-submit:hover:not(:disabled) {
   box-shadow:
-    0 6px 20px rgba(224, 48, 48, 0.45),
+    0 6px 20px rgba(0, 90, 140, 0.45),
     0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .sf-btn-submit:active:not(:disabled) {
-  box-shadow: 0 2px 8px rgba(224, 48, 48, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 90, 140, 0.3);
 }
 
 /* Header border màu vàng nhạt scrapbook */
@@ -403,7 +403,7 @@
 [data-theme="light"] .sf-title {
   font-family: 'Dancing Script', cursive;
   font-size: 24px;
-  color: var(--cherry-red, #E03030);
+  color: var(--primary, #005eaa);
 }
 
 /* ═══════════════════════════════════════════════════════

@@ -1,37 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
-  <!-- Hoa sen (Lotus) - Biểu tượng Nhật Ký 3 Nhất -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
   <defs>
-    <linearGradient id="petalGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#66CCFF"/>
-      <stop offset="100%" stop-color="#0099E6"/>
-    </linearGradient>
-    <linearGradient id="petalSideGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#99DDFF"/>
-      <stop offset="100%" stop-color="#0088CC"/>
-    </linearGradient>
-    <linearGradient id="centerGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFF9C4"/>
-      <stop offset="100%" stop-color="#FFD700"/>
+    <linearGradient id="petal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#66CCFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0088CC;stop-opacity:1" />
     </linearGradient>
   </defs>
-  
-  <!-- Cánh hoa phía sau trái -->
-  <ellipse cx="14" cy="22" rx="7" ry="16" transform="rotate(-30 14 22)" fill="url(#petalSideGrad)" opacity="0.6"/>
-  <!-- Cánh hoa phía sau phải -->
-  <ellipse cx="34" cy="22" rx="7" ry="16" transform="rotate(30 34 22)" fill="url(#petalSideGrad)" opacity="0.6"/>
-  
-  <!-- Cánh hoa giữa trái -->
-  <ellipse cx="17" cy="20" rx="6.5" ry="15" transform="rotate(-15 17 20)" fill="url(#petalGrad)" opacity="0.8"/>
-  <!-- Cánh hoa giữa phải -->
-  <ellipse cx="31" cy="20" rx="6.5" ry="15" transform="rotate(15 31 20)" fill="url(#petalGrad)" opacity="0.8"/>
-  
-  <!-- Cánh hoa trung tâm -->
-  <ellipse cx="24" cy="18" rx="6" ry="16" fill="url(#petalGrad)"/>
-  
-  <!-- Nhụy hoa (vàng) -->
-  <circle cx="24" cy="24" r="5" fill="url(#centerGrad)"/>
-  <circle cx="24" cy="24" r="3" fill="#FFE500" opacity="0.8"/>
-  
-  <!-- Lá sen (dưới) -->
-  <path d="M12 38 Q24 30 36 38 Q24 42 12 38Z" fill="#0099E6" opacity="0.4"/>
+  <!-- Hoa Đào (Blue/Yellow Theme) -->
+  <g transform="translate(24, 24)">
+    <!-- Petal 1 -->
+    <path d="M0,0 Q-10,-20 0,-22 Q10,-20 0,0" fill="url(#petal-grad)" transform="rotate(0)" />
+    <!-- Petal 2 -->
+    <path d="M0,0 Q-10,-20 0,-22 Q10,-20 0,0" fill="url(#petal-grad)" transform="rotate(72)" />
+    <!-- Petal 3 -->
+    <path d="M0,0 Q-10,-20 0,-22 Q10,-20 0,0" fill="url(#petal-grad)" transform="rotate(144)" />
+    <!-- Petal 4 -->
+    <path d="M0,0 Q-10,-20 0,-22 Q10,-20 0,0" fill="url(#petal-grad)" transform="rotate(216)" />
+    <!-- Petal 5 -->
+    <path d="M0,0 Q-10,-20 0,-22 Q10,-20 0,0" fill="url(#petal-grad)" transform="rotate(288)" />
+    
+    <!-- Nhụy hoa (Vàng rực rỡ) -->
+    <circle cx="0" cy="0" r="4" fill="#FFE500" />
+    <circle cx="0" cy="0" r="2" fill="#FFD700" />
+  </g>
 </svg>

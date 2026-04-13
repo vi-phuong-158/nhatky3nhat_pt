@@ -16,9 +16,9 @@
 [data-theme="light"] .feed-container {
   background-color: var(--paper-cream);
   background-image:
-    radial-gradient(ellipse at 15% 40%, rgba(255, 245, 220, 0.5) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 15%, rgba(200, 170, 100, 0.08) 0%, transparent 45%),
-    radial-gradient(ellipse at 50% 90%, rgba(255, 240, 200, 0.3) 0%, transparent 60%);
+    radial-gradient(ellipse at 15% 40%, rgba(200, 230, 255, 0.5) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 15%, rgba(0, 153, 230, 0.05) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 90%, rgba(255, 245, 200, 0.3) 0%, transparent 60%);
 }
 
 /* ─── OFFLINE BANNER ─── */
@@ -63,7 +63,7 @@
 [data-theme="light"] .feed-topbar {
   background: rgba(255, 255, 255, 0.88);
   border-bottom: 2px solid var(--cherry-red);
-  box-shadow: 0 4px 20px rgba(255, 71, 71, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 136, 204, 0.1);
 }
 
 .feed-logo {
@@ -189,7 +189,7 @@
 [data-theme="light"] .feed-search-input:focus {
   background: rgba(255, 255, 255, 0.95);
   border-color: var(--cherry-red);
-  box-shadow: 0 0 0 3px rgba(255, 71, 71, 0.12), 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.12), 0 2px 8px rgba(0,0,0,0.05);
 }
 
 [data-theme="dark"] .feed-search-input {
@@ -281,11 +281,11 @@
 
 [data-theme="light"] .feed-filter-select:focus {
   border-color: var(--cherry-red);
-  box-shadow: 0 0 0 3px rgba(255, 71, 71, 0.12), 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.12), 0 1px 4px rgba(0,0,0,0.06);
 }
 
 [data-theme="light"] .feed-filter-select:hover {
-  border-color: rgba(224, 48, 48, 0.4);
+  border-color: rgba(0, 136, 204, 0.4);
   background-color: rgba(255, 255, 255, 0.95);
 }
 
@@ -425,10 +425,10 @@
 
 [data-theme="light"] .post-card:hover {
   box-shadow:
-    5px 8px 24px rgba(0, 0, 0, 0.12),
+    5px 8px 24px rgba(0, 136, 204, 0.12),
     0 2px 6px rgba(0, 0, 0, 0.06),
     inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-  transform: translateY(-3px) rotate(0.2deg);
+  transform: translateY(-3px) rotate(0.1deg);
 }
 
 /* ── Post Header ── */
@@ -641,15 +641,15 @@
   filter: brightness(0.95);
 }
 
-/* Light mode: badge dạng dấu mộc */
+/* Light mode: badge dạng dấu mộc - phong cách xanh vàng hòa quyện */
 [data-theme="light"] .post-header-right .px-2\.5 {
-  border: 2px solid rgba(180, 140, 50, 0.5) !important;
-  background: rgba(255, 255, 255, 0.85) !important;
-  color: #7a5800 !important;
+  border: 2px solid rgba(0, 136, 204, 0.4) !important;
+  background: rgba(232, 244, 253, 0.85) !important;
+  color: #005eaa !important;
   border-radius: 6px !important;
   font-family: 'Be Vietnam Pro', sans-serif !important;
-  box-shadow: inset 0 0 0 1px rgba(247, 233, 152, 0.6), 1px 1px 3px rgba(0,0,0,0.1) !important;
-  transform: rotate(-1.5deg);
+  box-shadow: inset 0 0 0 1px rgba(255, 229, 0, 0.3), 1px 1px 3px rgba(0,0,0,0.1) !important;
+  transform: rotate(-1deg);
   display: inline-block !important;
 }
 
@@ -920,17 +920,17 @@
 }
 
 .flower-btn:hover {
-  background: #fff0f3;
-  border-color: #f9a8d4;
-  color: #db2777;
+  background: #e8f4fd;
+  border-color: #0099E6;
+  color: #005eaa;
   transform: translateY(-1px);
-  box-shadow: 0 2px 10px rgba(219, 39, 119, 0.12);
+  box-shadow: 0 2px 10px rgba(0, 153, 230, 0.12);
 }
 
 [data-theme="dark"] .flower-btn:hover {
-  background: #4a1942;
-  border-color: #9d174d;
-  color: #f9a8d4;
+  background: #0d1520;
+  border-color: #0099E6;
+  color: #66CCFF;
 }
 
 .flower-btn:active {
@@ -938,16 +938,16 @@
 }
 
 .flower-btn.flower-active {
-  background: linear-gradient(135deg, #fdf2f8, #fce7f3);
-  border-color: #f9a8d4;
-  color: #db2777;
-  box-shadow: 0 2px 10px rgba(219, 39, 119, 0.15);
+  background: linear-gradient(135deg, #e8f4fd, #cceeff);
+  border-color: #0099E6;
+  color: #005eaa;
+  box-shadow: 0 2px 10px rgba(0, 153, 230, 0.15);
 }
 
 [data-theme="dark"] .flower-btn.flower-active {
-  background: linear-gradient(135deg, #4a1942, #831843);
-  border-color: #9d174d;
-  color: #f9a8d4;
+  background: linear-gradient(135deg, #0d1520, #005eaa);
+  border-color: #0099E6;
+  color: #ffffff;
 }
 
 .flower-icon {
@@ -986,13 +986,13 @@
 }
 
 .flower-btn.flower-active .flower-count {
-  background: rgba(219, 39, 119, 0.15);
-  color: #db2777;
+  background: rgba(0, 153, 230, 0.1);
+  color: #005eaa;
 }
 
 [data-theme="dark"] .flower-btn.flower-active .flower-count {
-  background: rgba(249, 168, 212, 0.15);
-  color: #f9a8d4;
+  background: rgba(102, 204, 255, 0.15);
+  color: #66CCFF;
 }
 
 /* ── Floating petal animation ── */
@@ -1180,14 +1180,14 @@
   box-shadow: 0 8px 22px rgba(0, 153, 230, 0.45);
 }
 
-/* Light mode: FAB đỏ → vàng */
+/* Light mode: FAB đỏ → xanh vàng */
 [data-theme="light"] .btm-nav-fab {
-  background: linear-gradient(135deg, var(--cherry-red), #ff8c42);
-  box-shadow: 0 6px 18px rgba(255, 71, 71, 0.4);
+  background: linear-gradient(135deg, var(--cherry-red), #FFE500);
+  box-shadow: 0 6px 18px rgba(0, 136, 204, 0.3);
 }
 
 [data-theme="light"] .btm-nav-fab:hover {
-  box-shadow: 0 8px 22px rgba(255, 71, 71, 0.5);
+  box-shadow: 0 8px 22px rgba(0, 136, 204, 0.4);
 }
 
 .btm-nav-fab:active {
