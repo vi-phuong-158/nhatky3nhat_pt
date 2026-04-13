@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import logoCand from '../assets/logo-cand.png';
 import logoPhuNu from '../assets/logo-phunu.png';
+import logoDove from '../assets/logo-dove.png';
 import './BookCover.css';
 
 export default function BookCover({ onOpen }) {
@@ -40,11 +41,13 @@ export default function BookCover({ onOpen }) {
         
         <motion.div variants={itemVariants} className="agency-name">
           <p>HỘI PHỤ NỮ CÔNG AN TỈNH PHÚ THỌ</p>
-          <p className="sub-agency">BAN PHỤ NỮ</p>
         </motion.div>
         
         <motion.div variants={itemVariants} className="book-title-wrapper">
-          <h2 className="title-small">Nhật ký</h2>
+          <div className="title-row">
+            <h2 className="title-small">Nhật ký</h2>
+            <img src={logoDove} alt="Dove Small" className="dove-title-right" />
+          </div>
           <h1 className="title-large">BA NHẤT</h1>
         </motion.div>
         
@@ -57,6 +60,16 @@ export default function BookCover({ onOpen }) {
         >
           MỞ SỔ NHẬT KÝ
         </motion.button>
+
+        {/* Con chim lớn góc dưới bên trái */}
+        <motion.img 
+          src={logoDove} 
+          alt="Dove Large" 
+          className="dove-bottom-left"
+          initial={{ opacity: 0, x: -100, rotate: -20 }}
+          animate={{ opacity: 1, x: 0, rotate: 0 }}
+          transition={{ delay: 0.8, duration: 1, type: "spring" }}
+        />
       </motion.div>
     </div>
   );

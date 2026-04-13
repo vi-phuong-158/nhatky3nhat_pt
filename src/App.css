@@ -1,6 +1,10 @@
-/* CSS BẢNG MÀU CHỦ ĐẠO — định nghĩa trong index.css */
+/* CSS BẢNG MÀU CHỦ ĐẠO – XANH DA TRỜI + VÀNG TƯƠI */
 :root {
-  --text-dark: #292524;
+  --sky-blue: #0099E6;
+  --sky-blue-dark: #005A8C;
+  --golden-yellow: #FFE500;
+  --sky-surface: #E8F4FD;
+  --text-dark: #1a2a3a;
 }
 
 /* Reset cơ bản */
@@ -11,8 +15,8 @@
 }
 
 body {
-  background-color: #1a1a1a;
-  background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h20v2H0v-2zm0 4h20v2H0v-2zm0 4h20v2H0v-2zm0 4h20v2H0v-2zm0 4h20v2H0v-2z" fill="%23262626" fill-opacity="0.4" fill-rule="evenodd"/></svg>');
+  background-color: #0A4D7A;
+  background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h20v2H0v-2zm0 4h20v2H0v-2zm0 4h20v2H0v-2zm0 4h20v2H0v-2zm0 4h20v2H0v-2z" fill="%230D5F94" fill-opacity="0.4" fill-rule="evenodd"/></svg>');
   font-family: 'Inter', sans-serif;
   color: var(--text-dark);
   margin: 0;
@@ -50,7 +54,7 @@ p, span, input, button, textarea {
   align-items: center;
   gap: 8px;
   background: rgba(255,255,255,0.95);
-  color: var(--cherry-red);
+  color: var(--sky-blue);
   border: none;
   border-radius: 20px;
   padding: 10px 18px;
@@ -93,9 +97,9 @@ p, span, input, button, textarea {
   flex: 1;
   padding: 30px 20px;
   background:
-    linear-gradient(to right, rgba(0,0,0,0.05) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.05) 100%),
-    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><rect width="100" height="100" fill="%23000"/><path d="M0 0 L100 100 M100 0 L0 100" stroke="%23fff" stroke-width="1"/></svg>');
-  background-color: var(--paper-cream);
+    linear-gradient(to right, rgba(0,0,0,0.03) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.03) 100%),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.03"><rect width="100" height="100" fill="%23000"/><path d="M0 0 L100 100 M100 0 L0 100" stroke="%23fff" stroke-width="1"/></svg>');
+  background-color: var(--sky-surface);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -125,7 +129,7 @@ p, span, input, button, textarea {
 }
 
 .scrapbook-page h1 {
-  color: var(--cherry-red);
+  color: var(--sky-blue);
   text-align: center;
   font-size: 28px;
   margin-bottom: 10px;
@@ -217,7 +221,7 @@ p, span, input, button, textarea {
 .cover-fallback {
   width: 100vw;
   height: 100dvh;
-  background-color: var(--cherry-red, #FF4747);
+  background-color: var(--sky-blue, #0099E6);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -375,7 +379,7 @@ p, span, input, button, textarea {
   top: 0; right: 0; bottom: 0;
   width: 100%;
   max-width: 380px;
-  background: var(--paper-cream, #E6E2D3);
+  background: var(--sky-surface, #E8F4FD);
   z-index: 101;
   transform: translateX(100%);
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -392,8 +396,8 @@ p, span, input, button, textarea {
   justify-content: space-between;
   align-items: center;
   padding: 20px 25px;
-  background: var(--cherry-red, #FF4747);
-  color: var(--butter-yellow, #F7E998);
+  background: var(--sky-blue, #0099E6);
+  color: var(--golden-yellow, #FFE500);
 }
 .drawer-header h3 {
   font-family: 'Lora', serif;
@@ -428,7 +432,7 @@ p, span, input, button, textarea {
   transition: border-color 0.2s, background 0.2s;
 }
 .drawer-search input:focus {
-  border-color: var(--cherry-red);
+  border-color: var(--sky-blue);
   background: white;
 }
 
@@ -444,7 +448,7 @@ p, span, input, button, textarea {
   padding: 15px;
   margin-bottom: 15px;
   cursor: pointer;
-  border-left: 5px solid var(--cherry-red);
+  border-left: 5px solid var(--sky-blue);
   transition: all 0.2s;
   box-shadow: 0 3px 6px rgba(0,0,0,0.05);
 }
@@ -452,7 +456,7 @@ p, span, input, button, textarea {
   background: white;
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-  border-left: 5px solid var(--butter-yellow);
+  border-left: 5px solid var(--golden-yellow);
 }
 .toc-card-header {
   display: flex;
@@ -466,7 +470,7 @@ p, span, input, button, textarea {
 }
 .toc-badge {
   font-weight: 800;
-  color: var(--cherry-red);
+  color: var(--sky-blue);
   text-transform: uppercase;
 }
 .toc-card h4 {

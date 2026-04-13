@@ -323,8 +323,8 @@ export default function ScrapbookViewer({
         )}
       </AnimatePresence>
 
-      {/* ─── Bottom Navigation (Mobile Only) — 5 cột ─── */}
-      <nav className="btm-nav md:hidden glass-card blue-glow">
+      {/* ─── Bottom Navigation — 5 cột ─── */}
+      <nav className="btm-nav glass-card blue-glow">
         <div className="btm-nav-inner">
           {/* 1. Trang chủ */}
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="btm-nav-item">

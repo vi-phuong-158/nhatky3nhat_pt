@@ -1,15 +1,15 @@
-/* BÌA SỔ (COVER) */
+/* BÌA SỔ (COVER) — Tông Xanh Da Trời */
 .book-cover-container {
   width: 100vw;
   height: 100dvh;
   position: relative;
-  background-color: var(--cherry-red, #FF4747); /* Đỏ Cherry */
+  background: linear-gradient(170deg, #00AAEE 0%, #0088CC 40%, #006699 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  box-shadow: inset 0 0 60px rgba(0,0,0,0.2);
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.15);
 }
 
 @media (min-width: 768px) {
@@ -50,16 +50,16 @@
   align-items: center;
   text-align: center;
   padding: 0 30px 0 50px; /* Dịch nội dung sang phải nhường gáy sổ */
-  color: var(--butter-yellow, #F7E998); /* Vàng bơ */
+  color: #FFE500; /* Vàng tươi */
 }
 
 .emblem-wrapper {
   margin-bottom: 25px;
-  filter: drop-shadow(0px 6px 10px rgba(0,0,0,0.4));
+  filter: drop-shadow(0px 6px 10px rgba(0,0,0,0.3));
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px; /* Creates space between the two logos */
+  gap: 20px;
 }
 
 .emblem-logo {
@@ -68,12 +68,40 @@
   object-fit: contain;
 }
 
+/* Logo chim bồ câu — Các vị trí mới */
+.dove-bottom-left {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 180px;
+  height: auto;
+  opacity: 0.9;
+  filter: drop-shadow(0px 4px 12px rgba(255, 229, 0, 0.4));
+  pointer-events: none;
+  z-index: 5;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: -5px;
+}
+
+.dove-title-right {
+  height: 60px;
+  width: auto;
+  filter: drop-shadow(0px 2px 6px rgba(255, 229, 0, 0.3));
+  margin-top: 10px;
+}
+
 .agency-name {
   font-family: 'Times New Roman', Times, serif;
   letter-spacing: 2px;
   margin-bottom: 50px;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-  color: var(--butter-yellow, #F7E998);
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+  color: #FFE500;
 }
 
 .agency-name p {
@@ -86,12 +114,12 @@
   font-size: 14px;
   opacity: 0.9;
   letter-spacing: 3px;
-  color: var(--butter-yellow, #F7E998);
+  color: #FFE500;
 }
 
 .book-title-wrapper {
   margin-bottom: 70px;
-  filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.4));
+  filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.3));
 }
 
 /* Font chữ mô phỏng lưu bút thủ công */
@@ -101,7 +129,7 @@
   font-style: italic;
   font-weight: normal;
   margin-bottom: -15px; 
-  color: var(--butter-yellow, #F7E998);
+  color: #FFE500;
 }
 
 .title-large {
@@ -111,7 +139,7 @@
   letter-spacing: 5px;
   text-transform: uppercase;
   /* Mạ vàng gradient cho chữ BA NHẤT */
-  background: linear-gradient(to bottom, #FFF7D6 0%, #D4AF37 50%, #A67C00 100%);
+  background: linear-gradient(to bottom, #FFF9C4 0%, #FFD700 50%, #C8A200 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -120,8 +148,8 @@
 
 /* Nút mở sổ sang chảnh */
 .btn-open-book {
-  background: linear-gradient(135deg, #FCECA1 0%, #D4AF37 100%);
-  color: #6a040f; /* Đỏ đun tương phản với vàng */
+  background: linear-gradient(135deg, #FFF9C4 0%, #FFD700 100%);
+  color: #005A8C; /* Xanh đậm tương phản với vàng */
   border: none;
   border-radius: 30px;
   padding: 16px 45px;
@@ -130,7 +158,7 @@
   font-size: 17px;
   cursor: pointer;
   box-shadow: 
-    0 8px 25px rgba(0,0,0,0.5), 
+    0 8px 25px rgba(0,0,0,0.4), 
     inset 0 2px 2px rgba(255,255,255,0.7);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   letter-spacing: 1px;
@@ -139,7 +167,7 @@
 .btn-open-book:hover {
   transform: translateY(-4px);
   box-shadow: 
-    0 12px 30px rgba(0,0,0,0.6), 
+    0 12px 30px rgba(0,0,0,0.5), 
     inset 0 2px 3px rgba(255,255,255,0.8);
   filter: brightness(1.1);
 }
@@ -149,7 +177,24 @@
   box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 
-/* Dark mode: bìa sổ không thay đổi màu chủ đạo (đỏ + vàng) vì là thiết kế thương hiệu */
+.book-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.book-location {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFE500;
+  letter-spacing: 2px;
+  opacity: 0.9;
+  text-transform: uppercase;
+}
+
+/* Dark mode: bìa sổ giữ tông xanh + vàng vì là thiết kế thương hiệu */
 [data-theme="dark"] .book-cover-container {
   box-shadow: inset 0 0 80px rgba(0,0,0,0.45);
 }

@@ -1,23 +1,24 @@
 /* =============================================
    HỆ THỐNG MÀU (Material Design 3 inspired)
    Hỗ trợ Light + Dark mode qua data-theme
+   Tông chủ đạo: Xanh da trời + Vàng tươi
    ============================================= */
 
 :root,
 [data-theme="light"] {
   /* --- Surface tones --- */
-  --surface: #f7f9ff;
-  --surface-container: #ebeef4;
-  --surface-container-low: #f1f4fa;
+  --surface: #f0f7ff;
+  --surface-container: #e4eef8;
+  --surface-container-low: #eaf2fc;
   --surface-container-lowest: #ffffff;
-  --surface-container-high: #e5e8ee;
+  --surface-container-high: #dae6f2;
 
   /* --- Accent colors --- */
-  --primary: #005eaa;
-  --primary-hover: #004e90;
-  --secondary-fixed: #ffe07d;
-  --tertiary: #b32420;
-  --outline-variant: #c0c7d4;
+  --primary: #0099E6;
+  --primary-hover: #0077B3;
+  --secondary-fixed: #FFE500;
+  --tertiary: #C8A200;
+  --outline-variant: #b8cbda;
 
   /* --- Text --- */
   --text-primary: #1c1b1f;
@@ -29,55 +30,35 @@
   --shadow-color: rgba(0, 0, 0, 0.08);
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
   --card-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
-  --topbar-bg: rgba(247, 249, 255, 0.7);
-
-  /* --- Bảng màu Scrapbook (chỉ dùng ở light mode) --- */
-  --cherry-red: #FF4747;
-  --butter-yellow: #F7E998;
-  --paper-cream: #EDE8DC;
-  --paper-card-bg: #fdfaf5;
-  --paper-card-border: rgba(180, 140, 80, 0.25);
-  --paper-tape: rgba(247, 233, 152, 0.82);
-
-  /* --- Ghi đè primary sang đỏ CAND ở light mode --- */
-  --primary: #E03030;
-  --primary-hover: #c42828;
+  --topbar-bg: rgba(240, 247, 255, 0.7);
 }
 
 [data-theme="dark"] {
   /* --- Surface tones --- */
-  --surface: #111318;
-  --surface-container: #1d1f25;
-  --surface-container-low: #191b21;
-  --surface-container-lowest: #0d0e12;
-  --surface-container-high: #282a30;
+  --surface: #0d1520;
+  --surface-container: #162030;
+  --surface-container-low: #111b28;
+  --surface-container-lowest: #0a1018;
+  --surface-container-high: #1e2e40;
 
   /* --- Accent colors --- */
-  --primary: #8ecaff;
-  --primary-hover: #aad7ff;
-  --secondary-fixed: #ffe07d;
-  --tertiary: #ffb4ab;
-  --outline-variant: #44474e;
+  --primary: #66CCFF;
+  --primary-hover: #99DDFF;
+  --secondary-fixed: #FFE500;
+  --tertiary: #FFD700;
+  --outline-variant: #384858;
 
   /* --- Text --- */
-  --text-primary: #e3e2e6;
-  --text-secondary: #c4c6cf;
-  --text-muted: #8e9099;
-  --text-faint: #5e6068;
+  --text-primary: #e3e8ee;
+  --text-secondary: #b8c8d8;
+  --text-muted: #7a8ea0;
+  --text-faint: #4a5e70;
 
   /* --- Misc --- */
   --shadow-color: rgba(0, 0, 0, 0.3);
   --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
   --card-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.2);
-  --topbar-bg: rgba(17, 19, 24, 0.75);
-
-  /* --- Bảng màu Scrapbook (giữ trung tính ở dark mode) --- */
-  --cherry-red: #ff6b6b;
-  --butter-yellow: #F7E998;
-  --paper-cream: #1d1f25;
-  --paper-card-bg: var(--surface-container-lowest);
-  --paper-card-border: var(--outline-variant);
-  --paper-tape: rgba(247, 233, 152, 0.6);
+  --topbar-bg: rgba(13, 21, 32, 0.75);
 }
 
 /* =============================================
@@ -91,16 +72,16 @@
 }
 
 .blue-glow {
-  box-shadow: 0 10px 40px -10px rgba(3, 96, 151, 0.15);
+  box-shadow: 0 10px 40px -10px rgba(0, 153, 230, 0.15);
 }
 
 [data-theme="dark"] .glass-card {
-  background: rgba(20, 20, 20, 0.5);
+  background: rgba(20, 30, 45, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] .blue-glow {
-  box-shadow: 0 10px 40px -10px rgba(142, 202, 255, 0.15);
+  box-shadow: 0 10px 40px -10px rgba(102, 204, 255, 0.15);
 }
 
 /* Body mặc định */
