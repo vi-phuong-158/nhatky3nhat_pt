@@ -364,9 +364,9 @@
             'l[oồôố]n', 'c[aặ][ck]', 'b[uú]i', 'đ[aá]i', 'đ[ụù]', 'c[ứư]t', 'đ[eè] m[ẹè]',
             'mẹ m[àa]y', 'con m[eẹ]', 'ch[oó] ch[eế]t', 'đ[oồ] ch[oó]', 'thằng ch[oó]',
             'con đ[ĩi]', 'đ[oồ] đ[iĩ]', 'đ[oồ] kh[oố]n', 'ngu v[ãâ][iíl]',
-            'mẹ ki[eế]p', 'm[aá] ki[eế]p', 'con đ[ỉi]', 'đ[oồ] ng[uư] ', 'đ[oồ] ngu$',
+            'mẹ ki[eế]p', 'm[aá] ki[eế]p', 'con đ[ỉi]', 'đ[oồ] ng[uư]',
             'f[uư]ck', 'shit', 'damn', 'wtf', 'stfu', 'asshole', 'bitch',
-            'đ\.m', 'đ\.c\.m', 'v\.l', 'c\.c', 'đ\.é\.o',
+            'đ\\.m', 'đ\\.c\\.m', 'v\\.l', 'c\\.c', 'đ\\.é\\.o',
         ];
 
         // 🟡 Cấp 2: Từ nhạy cảm / thiếu chuyên nghiệp
@@ -377,7 +377,7 @@
             'bán chức', 'vô dụng', 'bất tài', 'đồ rác', 'rác rưởi',
         ];
 
-        // 🟠 Cấp 3: Lỗi chính tả phổ biến tiếng Việt
+        // 🟠 Cấp 3: Lỗi chính tả phổ biến và Teencode tiếng Việt
         const SPELLING_ERRORS = [
             { wrong: 'xử dụng', right: 'sử dụng' },
             { wrong: 'sã hội', right: 'xã hội' },
@@ -389,28 +389,37 @@
             { wrong: 'chín sách', right: 'chính sách' },
             { wrong: 'chiến sỉ', right: 'chiến sĩ' },
             { wrong: 'giáo giục', right: 'giáo dục' },
-            { wrong: 'công nhân', right: 'công dân' },
             { wrong: 'dử lý', right: 'xử lý' },
             { wrong: 'kỹ luật', right: 'kỷ luật' },
-            { wrong: 'kỉ luật', right: 'kỷ luật' },
             { wrong: 'lên quan', right: 'liên quan' },
             { wrong: 'nổi lực', right: 'nỗ lực' },
+            { wrong: 'nổ lực', right: 'nỗ lực' },
             { wrong: 'sáng kiếng', right: 'sáng kiến' },
             { wrong: 'dành giật', right: 'giành giật' },
-            { wrong: 'dành đượi', right: 'giành được' },
             { wrong: 'gia đỉnh', right: 'gia đình' },
             { wrong: 'khắt khe', right: 'khắc khe' },
             { wrong: 'trăn chở', right: 'trăn trở' },
-            { wrong: 'sáng tạo', right: 'sáng tạo' },
             { wrong: 'điều chĩnh', right: 'điều chỉnh' },
-            { wrong: 'hoàn chỉnh', right: 'hoàn chỉnh' },
             { wrong: 'bàng hoàn', right: 'bàng hoàng' },
             { wrong: 'chặc chẽ', right: 'chặt chẽ' },
             { wrong: 'chặc chẻ', right: 'chặt chẽ' },
-            { wrong: 'kêu gọi', right: 'kêu gọi' },
             { wrong: 'rèng luyện', right: 'rèn luyện' },
             { wrong: 'nhận thứt', right: 'nhận thức' },
             { wrong: 'súc tích', right: 'xúc tích' },
+            // Cảnh báo Teencode phổ biến trong văn bản trang trọng
+            { wrong: 'ko', right: 'không' },
+            { wrong: 'hok', right: 'không' },
+            { wrong: 'dc', right: 'được' },
+            { wrong: 'đc', right: 'được' },
+            { wrong: 'zậy', right: 'vậy' },
+            { wrong: 'lm', right: 'làm' },
+            { wrong: 'vs', right: 'với' },
+            { wrong: 'nx', right: 'nữa' },
+            { wrong: 'rùi', right: 'rồi' },
+            { wrong: 'bik', right: 'biết' },
+            { wrong: 'bt', right: 'biết' },
+            { wrong: 'ntn', right: 'như thế nào' },
+            { wrong: 'cx', right: 'cũng' }
         ].filter(item => item.wrong !== item.right); // Loại bỏ mục trùng
 
         // ══════════════════════════════════════
@@ -419,19 +428,34 @@
 
         /** Phát hiện chuỗi ký tự vô nghĩa / spam */
         function isGibberish(text) {
-            if (!text || text.length < 10) return false;
-            // Tỷ lệ phụ âm liên tiếp bất thường (>4 phụ âm liền nhau)
+            if (!text || text.length < 5) return false;
+            
+            // Lọc bỏ URL để tránh nhận diện nhầm link ảnh/web thành ký tự vô nghĩa
+            const cleanedText = text.replace(/https?:\/\/[^\s]+/g, '').replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '');
+
+            // 1. Tỷ lệ phụ âm liên tiếp bất thường (5 phụ âm liền nhau trở lên)
             const gibberishPatterns = /[bcdfghjklmnpqrstvwxz]{5,}/gi;
-            // Ký tự lặp lại quá nhiều
+            
+            // 2. Ký tự lặp lại quá nhiều (4 lần trở lên liền nhau, ví dụ: aaaa, !!!!)
             const repeatPattern = /(.)\1{4,}/g;
-            // Không có nguyên âm trong đoạn dài
-            const noVowelChunk = /\b[^aeiouàáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ\s]{7,}\b/gi;
+            
+            // 3. Từ không có nguyên âm tiếng Việt hoặc chữ số trong đoạn dài (7 ký tự)
+            const noVowelChunk = /\b[^aeiouàáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ0-9\s]{7,}\b/gi;
+            
+            // 4. Từ tiếng Việt thì rất hiếm khi dài vượt quá 10 ký tự liền nhau (VD: "nghiêng" là 7 ký tự). Bắt các từ kẹt dính > 12 ký tự liên tục
+            const tooLongWord = /\b[a-zA-Zàáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]{12,}\b/gi;
 
-            const matches1 = text.match(gibberishPatterns) || [];
-            const matches2 = text.match(repeatPattern) || [];
-            const matches3 = text.match(noVowelChunk) || [];
+            // 5. Gõ bàn phím ngẫu nhiên (keyboard smash)
+            const keyboardSmash = /asdf|qwer|zxcv|jkl|uiop/gi;
 
-            return matches1.length > 0 || matches2.length > 0 || matches3.length > 0;
+            const matches1 = cleanedText.match(gibberishPatterns) || [];
+            const matches2 = cleanedText.match(repeatPattern) || [];
+            const matches3 = cleanedText.match(noVowelChunk) || [];
+            const matches4 = cleanedText.match(tooLongWord) || [];
+            const matches5 = cleanedText.match(keyboardSmash) || [];
+
+            // Nếu bắt gặp các dấu hiệu này, thì đánh dấu là bài rác / vô nghĩa
+            return matches1.length > 0 || matches2.length > 0 || matches3.length > 0 || matches4.length > 1 || matches5.length > 0;
         }
 
         /** Quét 1 bài viết, trả về mảng warnings */
@@ -464,7 +488,8 @@
 
             // 🟠 Kiểm tra lỗi chính tả
             SPELLING_ERRORS.forEach(item => {
-                if (textToScan.includes(item.wrong.toLowerCase())) {
+                const regex = new RegExp('(?:^|\\s|[.,!?])(' + item.wrong.toLowerCase() + ')(?:\\s|[.,!?]|$)', 'gi');
+                if (textToScan.match(regex)) {
                     warnings.push({ level: 'spelling', word: item.wrong, label: '🟠 Lỗi chính tả: "' + item.wrong + '" → nên là "' + item.right + '"' });
                 }
             });
@@ -492,16 +517,26 @@
         function highlightBadWords(text, warnings) {
             if (!warnings || warnings.length === 0 || !text) return escapeHtml(text);
             let result = escapeHtml(text);
-            warnings.forEach(w => {
+            
+            // Xếp các từ dài lên trước để tránh highlight đè (ví dụ "đần độn" trước "đần")
+            const sortedWarnings = [...warnings].sort((a,b) => (b.word || "").length - (a.word || "").length);
+
+            sortedWarnings.forEach(w => {
                 if (w.word) {
                     try {
                         const escaped = w.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                        const regex = new RegExp('(' + escaped + ')', 'gi');
+                        // Chỉ highlight khi nó là một từ độc lập hoặc bao quanh bởi ký tự đặc biệt
+                        const regex = new RegExp('(?:^|\\s|[.,!?]|>)((' + escaped + '))(?:\\s|[.,!?]|<|$)', 'gi');
+                        
                         const color = w.level === 'critical' ? 'bg-red-200 text-red-900' :
                                       w.level === 'warning' ? 'bg-yellow-200 text-yellow-900' :
                                       w.level === 'spelling' ? 'bg-orange-200 text-orange-900' :
                                       'bg-blue-200 text-blue-900';
-                        result = result.replace(regex, `<mark class="${color} px-0.5 rounded font-semibold">$1</mark>`);
+                        
+                        // Sử dụng function replace để giữ nguyên các ký tự bao quanh
+                        result = result.replace(regex, (match, p1) => {
+                            return match.replace(p1, `<mark class="${color} px-0.5 rounded font-semibold">${p1}</mark>`);
+                        });
                     } catch(e) {}
                 }
             });
