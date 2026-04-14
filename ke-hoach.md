@@ -1,4 +1,4 @@
-KẾ HOẠCH TRIỂN KHAI DỰ ÁN SỐ HOÁ "NHẬT KÝ 3 NHẤT"
+KẾ HOẠCH TRIỂN KHAI DỰ ÁN SỐ HOÁ "NHẬT KÝ BA nhất"
 Đơn vị: Chi đoàn Phòng An ninh đối ngoại - Công an tỉnh Phú ThọPhụ trách dự án: Đ/c Vi Ngọc Phương - Bí thư Chi đoànCông cụ hỗ trợ chính: Vibe Code (hoặc Cursor/AI Assistant), Google Workspace
 
 GIAI ĐOẠN 1: CHUẨN BỊ NỀN TẢNG DỮ LIỆU (DATABASE)
@@ -6,13 +6,13 @@ Mục tiêu: Xây dựng kho lưu trữ dữ liệu hoàn toàn miễn phí và 
 Bước 1.1: Tạo Google Sheets (Trang tính)
 
 Truy cập Google Drive của Chi đoàn (hoặc tài khoản cá nhân).
-Tạo một Google Sheets mới, đặt tên: Data_NhatKy3Nhat_ANDN.
+Tạo một Google Sheets mới, đặt tên: Data_NhatKyBaNhat_ANDN.
 Tạo các cột (Headers) chính xác như sau ở dòng đầu tiên (Row 1):
 id (Mã tự động)
 timestamp (Thời gian gửi)
 hoTen (Họ và tên)
 donVi (Đơn vị)
-tieuChi (Tiêu chí 3 Nhất)
+tieuChi (Tiêu chí Ba nhất)
 noiDung (Nội dung câu chuyện)
 linkAnhNen (Link ảnh bìa trang)
 linkAnh1 đến linkAnh5 (Các link ảnh hoạt động)
@@ -37,7 +37,7 @@ Mở phần mềm Vibe Code (hoặc Cursor/VS Code).
 Yêu cầu AI tạo một dự án React cơ bản (ví dụ: dùng Vite + React + Tailwind CSS).Prompt: "Tạo cho tôi một dự án ReactJS sử dụng Vite và Tailwind CSS."
 Bước 2.2: Tích hợp mã Giao diện (UI)
 
-Lấy toàn bộ đoạn code React (NhatKy3NhatApp.jsx) mà chúng ta đã thống nhất ở bản Demo.
+Lấy toàn bộ đoạn code React (NhatKyBaNhatApp.jsx) mà chúng ta đã thống nhất ở bản Demo.
 Dán đè vào file App.jsx (hoặc tạo component mới) trong dự án của anh.
 Yêu cầu AI (Vibe Code) cài đặt các thư viện biểu tượng (Icons).Prompt: "Hãy cài đặt thư viện 'lucide-react' cho dự án này."
 Bước 2.3: Kết nối Web với Google Sheets (Bước khó nhất nhưng AI sẽ lo)Mục tiêu: Thay vì dùng "Dữ liệu mẫu" (diaryEntries), web sẽ kéo dữ liệu thật từ Google Sheets.

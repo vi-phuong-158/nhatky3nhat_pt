@@ -149,3 +149,55 @@ export const sendFlower = async (articleId) => {
     throw err;
   }
 };
+
+/**
+ * Tải file (ảnh/video) trực tiếp lên Google Drive thông qua Resumable Upload
+ * Giúp vượt quá giới hạn 50MB và tránh tràn RAM do Base64
+ */
+export const uploadFileToDrive = (file, onProgress) => {
+  return new Promise(async (resolve, reject) => {
+    if (!GAS_URL) return reject(new Error("Chưa cấu hình API URL!"));
+    
+    try {
+      // 1. Lấy URL Resumable Upload từ GAS (truyền thêm Origin để khắc phục lỗi CORS)
+      const currentOrigin = window.location.origin;
+      const res = await fetch(`${GAS_URL}?action=getUploadUrl&fileName=${encodeURIComponent(file.name)}&mimeType=${encodeURIComponent(file.type)}&origin=${encodeURIComponent(currentOrigin)}`);
+      const { uploadUrl, error } = await res.json();
+      
+      if (!uploadUrl) {
+        return reject(new Error(error || "Không thể khởi tạo phiên tải lên (Upload Session)"));
+      }
+
+      // 2. Tải file trực tiếp lên URL do Google Drive cấp bằng XMLHttpRequest (để track %)
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', uploadUrl, true);
+      
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) {
+          const percentComplete = Math.round((e.loaded / e.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const fileData = JSON.parse(xhr.responseText);
+          resolve(fileData.id); // Trả về ID của file vừa upload
+        } else {
+          reject(new Error("Lỗi tải file lên server: " + xhr.statusText));
+        }
+      };
+
+      xhr.onerror = () => {
+        reject(new Error("Mạng bị lỗi hoặc bị ngắt kết nối khi đang tải."));
+      };
+
+      // Set đúng Content-Type của file
+      xhr.setRequestHeader('Content-Type', file.type);
+      xhr.send(file);
+      
+    } catch (e) {
+      reject(e);
+    }
+  });
+};

@@ -1,112 +1,44 @@
-# Nâng cấp Giao diện Nhật ký "3 Nhất" — Scrapbook Edition
+# Nâng cấp Luồng Tải Hình ảnh/Video Trực tiếp lên Google Drive (Cách B)
 
-Nâng cấp giao diện từ phong cách "Mạng xã hội" hiện tại sang kiến trúc "Scrapbook/Nhật ký" cao cấp, mang đậm nét truyền thống nhưng vẫn đảm bảo hiệu năng mượt mà khi xử lý hàng nghìn bài viết.
+Thay đổi kiến trúc tải file từ việc gửi chuỗi Base64 thông qua Apps Script sang cơ chế **Resumable Upload** trực tiếp lên Google Drive API. Việc này giúp vượt qua giới hạn dung lượng 50MB, khắc phục tình trạng tràn RAM trên điện thoại khi tải video, và tăng tốc độ tải file đáng kể.
 
----
+## User Review Required
 
-## Đã hoàn thành ✅
+> [!WARNING]
+> **Thay đổi Backend (Google Apps Script):**
+> Việc cập nhật mã nguồn GAS yêu cầu bạn phải tự copy mã mới dán vào `script.google.com` và thực hiện **Deploy as Web App** (chọn bản "New" thay vì chỉnh sửa bản cũ). Hãy cân nhắc xem bạn đã sẵn sàng thực hiện thao tác này chưa trước khi phê duyệt.
 
-### Bug fix: sortBy và filterCriteria không hoạt động
+## Proposed Changes
 
-- **File:** `ScrapbookViewer.jsx`
-- `sortBy` và `filterCriteria` trước đây là state "chết" — không áp dụng vào dữ liệu hiển thị.
-- Đã thêm `useMemo` → `displayEntries` để filter theo tiêu chí và sort (mới nhất / cũ nhất / nhiều hoa nhất) **client-side**.
-- Nút "Xóa bộ lọc" giờ cũng reset `sortBy` về mặc định.
+### Thay đổi Backend (Google Apps Script)
 
-### Font Dancing Script
-
-- **File:** `index.html`
-- Đã thêm `Dancing Script:wght@700` vào Google Fonts (non-blocking, cùng pattern preload/swap).
-- Áp dụng cho: logo topbar + tiêu đề bài viết (chỉ light mode).
-
-### Thống nhất CSS variables
-
-- **File:** `index.css` ← nguồn chính thức
-- `--cherry-red`, `--butter-yellow`, `--paper-cream` đã chuyển từ `App.css` sang `index.css`.
-- Thêm biến scrapbook: `--paper-card-bg`, `--paper-card-border`, `--paper-tape`.
-- Dark mode: các biến scrapbook trả về giá trị trung tính (giữ glassmorphism).
-
-### Scrapbook Aesthetic (light mode only)
-
-- **File:** `ScrapbookViewer.css`
-
-#### Nền feed
-
-- Light: `--paper-cream (#EDE8DC)` + radial gradient ấm giả hiệu ứng vầng sáng giấy.
-- Dark: giữ nguyên glassmorphism.
-
-#### Topbar
-
-- Light: nền trắng `rgba(255,255,255,0.88)` + viền dưới đỏ CAND.
-- Logo chuyển sang **Dancing Script**, màu đỏ CAND.
-
-#### PostCard — "Trang ký ức"
-
-- Light: `linear-gradient(160deg, #fdfaf5, #f5f1e8)` — giấy kem.
-- Border trái 4px đỏ CAND (như dấu gáy sổ).
-- Box-shadow 3 lớp → nổi như trang giấy thật.
-- Hover: nhấc lên + xoay nhẹ 0.2deg.
-
-#### Tiêu đề bài viết
-
-- Light: **Dancing Script** 21px, màu nâu đậm `#2c1a0e`.
-
-#### Tên tác giả
-
-- Light: màu đỏ CAND, bold — nổi bật như chữ ký.
-
-#### Badge tiêu chí
-
-- Light: viền vàng, nền trắng, xoay -1.5deg → kiểu dấu mộc/tem.
-
-#### Washi tape trên ảnh
-
-- Light: `::before` và `::after` pseudo-elements → 2 dải băng vàng `--paper-tape` ở 2 góc trên ảnh (xoay ±6-7deg).
-
-#### Đường kẻ footer
-
-- Light: dashed `rgba(180,140,80,0.35)` → kiểu đường kẻ giấy học sinh.
-
-#### Search input
-
-- Light: nền trắng, viền vàng-nâu, focus đổi viền đỏ CAND.
+#### [MODIFY] `GoogleAppsScript.js`
+- **Thêm API cấp phát URL tải lên (`doGet`):** Xử lý tham số `action=getUploadUrl`, sử dụng `UrlFetchApp` cùng `ScriptApp.getOAuthToken()` để tạo 1 URL tải lên tạm thời (Resumable Session) trỏ trực tiếp đến thư mục ảnh/video. Backend trả `uploadUrl` này về cho Frontend.
+- **Tối ưu hàm nhận bài viết (`doPost`):** Giữ khả năng tương thích ngược với Base64 (nếu cần), đồng thời thêm logic mới: khi Frontend gửi `fileId`, tự động thiết lập quyền mở rộng (`ANYONE_WITH_LINK`) cho file đó và gắn tag `[VIDEO]` vào đường link nếu file gốc là video để dễ nhận diện khi render.
 
 ---
 
-## Quyết định thiết kế
+### Thay đổi Frontend (React & HTML)
 
-| Vấn đề | Quyết định |
-| --- | --- |
-| Dark mode + scrapbook | Giữ glassmorphism ở dark mode. Scrapbook aesthetic CHỈ áp dụng ở light mode. |
-| Font tiêu đề | Dancing Script 21px cho `post-title` (đủ lớn để đọc rõ). |
-| Sort/Filter | Client-side (API chưa hỗ trợ `sort` param). |
-| Virtualization | Giữ infinite scroll pagination (20 bài/trang). Chưa dùng `react-window` vì chưa cần. |
-| BookCover.css | Giữ nguyên — đã có aesthetic bìa da đẹp, không cần thay đổi. |
+#### [MODIFY] `src/services/api.js`
+- **Viết hàm upload riêng (`uploadFileToDrive`):** 
+  - Bước 1: Fetch URL tạm thời từ GAS.
+  - Bước 2: Dùng `XMLHttpRequest` thực hiện HTTP PUT gửi Binary Data của file trực tiếp đến server Google Drive. Cơ chế này đính kèm lắng nghe sự kiện `progress` để đo % hoàn thành.
 
----
+#### [MODIFY] `src/components/SubmitForm.jsx`
+- **Mở rộng định dạng:** Cho phép chọn `video/mp4`, `video/quicktime` (giới hạn dung lượng khả dụng có thể nâng lên ~100MB cho video).
+- **Thêm thanh Progress Bar:** Áp dụng hàm upload mới cùng giao diện Progress Bar cho phép người dùng thấy số % đang tải lên, tránh cảm giác bị treo khi tải video lớn.
 
-## Open Questions (chưa xử lý)
+#### [MODIFY] `src/components/ScrapbookViewer.jsx`
+- **Hỗ trợ Player Video:** Bổ sung logic kiểm tra đường link `[VIDEO]`. Nếu phát hiện, thay vì dùng thẻ `<img>`, sổ lưu bút sẽ render thẻ `<iframe>` nhúng trực tiếp API xem trước (`/preview`) tốc độ cao của Google Drive.
 
-> [!NOTE]
->
-> 1. **Timeline Navigation:** Có muốn thêm sidebar timeline (nhảy theo năm/tháng) không?
-> 2. **Hiệu ứng flip trang:** Video `video2.webp` có hiệu ứng lật sách. Giữ cho từng bài hay chỉ bìa sách?
-> 3. **Dấu mộc "đã duyệt":** Cần Google Sheet có cột `status/approved` → backend mới hỗ trợ được.
-
----
+#### [MODIFY] `Admin.html`
+- **Bổ sung UI Video ở Dashboard:** Ở cột Hình ảnh, nếu là video, sẽ tự động render một nút "Xem Video" thay vì thumbnail. Giúp giảm tải tải thumbnail nặng từ video khi quản trị viên load bảng danh sách.
 
 ## Verification Plan
 
-### Automated Tests
-
-- Kiểm tra hiệu năng scroll (FPS) trên DevTools khi có nhiều mock data.
-
 ### Manual Verification
-
-- [ ] Light mode: nền parchment, card giấy, washi tape hiển thị đúng.
-- [ ] Dark mode: glassmorphism giữ nguyên, không bị vỡ layout.
-- [ ] Filter tiêu chí: chọn "Kỷ luật nhất" → chỉ hiện bài đúng tiêu chí.
-- [ ] Sort: "Nhiều hoa nhất" → bài có `flowerCount` cao nhất lên đầu.
-- [ ] Washi tape không che khuất nội dung ảnh.
-- [ ] Dancing Script đọc rõ trên mobile (≥ 20px).
-- [ ] Tương phản màu đỏ CAND trên nền giấy kem (accessibility).
+- Bạn (Admin) cập nhật mã lên GAS và sinh URL API mới.
+- Tôi sẽ thử tải một video ~20-30MB lên form trên localhost hiển thị thanh tiến trình 1->100%.
+- Kiểm tra dữ liệu được ghi trên Google Sheet xem có chứa đoạn `[VIDEO]https://...` không.
+- Kiểm tra trang xem nhật ký và trang Admin xem file ảnh/video có hiển thị đúng cấu trúc được thiết kế không.

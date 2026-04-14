@@ -69,7 +69,7 @@ function doGet(e) {
   if (e.parameter.view === 'admin') {
     var template = HtmlService.createTemplateFromFile('Admin');
     return template.evaluate()
-      .setTitle('Admin - Nhật ký 3 Nhất')
+      .setTitle('Admin - Nhật ký Ba nhất')
       .addMetaTag('viewport', 'width=device-width, initial-scale=1')
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   }
@@ -100,6 +100,48 @@ function doGet(e) {
         .setMimeType(ContentService.MimeType.JSON);
     } catch (err) {
       return ContentService.createTextOutput(JSON.stringify({ images: [], total: 0, error: err.message }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // ─── API: Cấp phát Resumable Upload URL trực tiếp lên Drive ───
+  if (e.parameter.action === 'getUploadUrl') {
+    try {
+      var uploadFolderId = '1Vs4kl7ch9MkfY711NtxlBUKV4I8Nlxh2';
+      var fileName = e.parameter.fileName || 'Upload';
+      var mimeType = e.parameter.mimeType || 'application/octet-stream';
+      var origin = e.parameter.origin || '*';
+      
+      var url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable';
+      var metadata = {
+        name: fileName,
+        parents: [uploadFolderId],
+        mimeType: mimeType
+      };
+
+      var params = {
+        method: 'post',
+        headers: {
+          Authorization: 'Bearer ' + ScriptApp.getOAuthToken(),
+          'Content-Type': 'application/json',
+          'Origin': origin
+        },
+        payload: JSON.stringify(metadata),
+        muteHttpExceptions: true
+      };
+      
+      var response = UrlFetchApp.fetch(url, params);
+      if (response.getResponseCode() === 200) {
+        var headers = response.getHeaders();
+        // Cần kiểm tra cả 2 trường hợp viết hoa/thường của key Location
+        var location = headers['Location'] || headers['location'];
+        return ContentService.createTextOutput(JSON.stringify({ uploadUrl: location }))
+          .setMimeType(ContentService.MimeType.JSON);
+      } else {
+        throw new Error(response.getContentText());
+      }
+    } catch (err) {
+      return ContentService.createTextOutput(JSON.stringify({ uploadUrl: null, error: err.message }))
         .setMimeType(ContentService.MimeType.JSON);
     }
   }
@@ -234,8 +276,10 @@ function doPost(e) {
     // ─── XỬ LÝ GỬI BÀI MỚI (mặc định) ───
     const sheet = getSheet();
 
-    // Upload ảnh lên Drive nếu có
-    let imageUrl = '';
+    // Xử lý link file (Ảnh / Video)
+    let fileUrl = '';
+    
+    // Hỗ trợ Cách A (Cũ): Frontend gửi Base64 đầy đủ
     if (body.base64Data && body.mimeType && body.fileName) {
       const blob = Utilities.newBlob(
         Utilities.base64Decode(body.base64Data),
@@ -245,7 +289,19 @@ function doPost(e) {
       const folder = DriveApp.getFolderById('1Vs4kl7ch9MkfY711NtxlBUKV4I8Nlxh2');
       const file = folder.createFile(blob);
       file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-      imageUrl = 'https://drive.google.com/uc?id=' + file.getId();
+      fileUrl = 'https://drive.google.com/uc?id=' + file.getId();
+    }
+    // Hỗ trợ Cách B (Mới): Frontend đã upload trực tiếp và gửi lại fileId
+    else if (body.fileId) {
+      const file = DriveApp.getFileById(body.fileId);
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      if (body.hasVideo) {
+        // Nếu là video, đánh dấu bằng [VIDEO] để frontend biết load Iframe
+        fileUrl = '[VIDEO]https://drive.google.com/file/d/' + body.fileId + '/preview';
+      } else {
+        // Ảnh bình thường load trực tiếp dạng file tĩnh
+        fileUrl = 'https://drive.google.com/uc?id=' + body.fileId;
+      }
     }
 
     // Ghi thêm 1 dòng mới vào sheet
@@ -256,7 +312,7 @@ function doPost(e) {
       body.tieuDe || '',    // D: Tiêu đề
       body.tieuChi || '',   // E: Tiêu chí
       body.noiDung || '',   // F: Nội dung
-      imageUrl,             // G: Link Ảnh
+      fileUrl,              // G: Link Ảnh/Video
       'Chờ duyệt',         // H: Trạng thái
       '',                   // I: Nhận xét
       body.soDienThoai || '' // J: SĐT

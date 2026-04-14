@@ -146,7 +146,7 @@ export default function ScrapbookViewer({
 
       {/* ─── TOP APP BAR ─── */}
       <header className="feed-topbar glass-card">
-        <span className="feed-logo">Nhật ký 3 Nhất</span>
+        <span className="feed-logo">Nhật ký Ba nhất</span>
         <div className="feed-topbar-actions">
           <button
             className="feed-btn-write"

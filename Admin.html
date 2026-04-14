@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard - Nhật ký 3 Nhất</title>
+    <title>Admin Dashboard - Nhật ký Ba nhất</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Thư viện SheetJS để xuất file Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -61,7 +61,7 @@
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <span class="material-symbols-outlined text-3xl">admin_panel_settings</span>
-                <h1 class="text-xl font-bold uppercase tracking-wide">Hệ Thống Quản Trị - Nhật Ký 3 Nhất</h1>
+                <h1 class="text-xl font-bold uppercase tracking-wide">Hệ Thống Quản Trị - Nhật ký Ba nhất</h1>
             </div>
             <div class="text-sm bg-sky-700 px-3 py-1 rounded-full border border-sky-500">
                 Ban Phụ nữ
@@ -246,7 +246,7 @@
                             class="font-semibold"></span></div>
                     <div><span class="text-gray-500 block text-xs">Thời gian:</span><span id="modal-thoigian"
                             class="font-medium text-gray-700"></span></div>
-                    <div><span class="text-gray-500 block text-xs">Tiêu chí 3 Nhất:</span><span id="modal-tieuchi"
+                    <div><span class="text-gray-500 block text-xs">Tiêu chí Ba nhất:</span><span id="modal-tieuchi"
                             class="font-medium text-sky-700"></span></div>
                 </div>
 
@@ -287,9 +287,19 @@
                 </div>
 
                 <div id="modal-image-container" class="mb-6 hidden">
-                    <span class="text-gray-500 block text-xs mb-1">Hình ảnh đính kèm:</span>
-                    <img id="modal-hinhanh" src="" alt="Ảnh hoạt động" referrerpolicy="no-referrer"
-                        class="max-h-80 w-auto rounded-lg border shadow-sm mx-auto">
+                    <span class="text-gray-500 block text-xs mb-1">Đính kèm (Ảnh/Video):</span>
+                    <div id="modal-media-content" class="w-full flex-col items-center">
+                        <img id="modal-hinhanh" src="" alt="Ảnh hoạt động" referrerpolicy="no-referrer"
+                            class="max-h-80 w-auto rounded-lg border shadow-sm hidden mx-auto">
+                        <div id="modal-video-container" class="w-full hidden flex-col relative">
+                            <iframe id="modal-video" src="" 
+                                class="w-full h-64 md:h-80 rounded-[4px] border shadow-sm" 
+                                allow="autoplay; fullscreen" allowFullScreen></iframe>
+                            <a id="modal-video-link" href="#" target="_blank" class="mt-2 text-center text-sm font-semibold text-blue-600 hover:underline">
+                                🚀 Mở Video trong thẻ mới (Nếu video đang bị nghẽn)
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <hr class="my-6">
@@ -696,22 +706,42 @@
                 warningBox.classList.add('hidden');
             }
 
-            // Xử lý ảnh
+            // Xử lý ảnh / video
             const imgContainer = document.getElementById('modal-image-container');
             const imgEl = document.getElementById('modal-hinhanh');
+            const vidEl = document.getElementById('modal-video');
+            
+            imgEl.classList.add('hidden');
+            vidEl.classList.add('hidden');
+
             if (item.linkAnh) {
-                let imgUrl = item.linkAnh;
-                if (imgUrl.includes('drive.google.com/uc?id=')) {
-                    const fileId = imgUrl.split('id=')[1].split('&')[0];
-                    imgUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
-                } else if (imgUrl.includes('drive.google.com/file/d/')) {
-                    const fileId = imgUrl.split('/d/')[1].split('/')[0];
-                    imgUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
+                let mediaUrl = item.linkAnh;
+                const isVideo = mediaUrl.startsWith('[VIDEO]');
+                
+                if (isVideo) {
+                    mediaUrl = mediaUrl.substring(7); // Bỏ [VIDEO]
+                    vidEl.src = mediaUrl;
+                    document.getElementById('modal-video-container').classList.remove('hidden');
+                    document.getElementById('modal-video-container').classList.add('flex');
+                    document.getElementById('modal-video-link').href = mediaUrl;
+                } else {
+                    if (mediaUrl.includes('drive.google.com/uc?id=')) {
+                        const fileId = mediaUrl.split('id=')[1].split('&')[0];
+                        mediaUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
+                    } else if (mediaUrl.includes('drive.google.com/file/d/')) {
+                        const fileId = mediaUrl.split('/d/')[1].split('/')[0];
+                        mediaUrl = 'https://lh3.googleusercontent.com/d/' + fileId;
+                    }
+                    imgEl.src = mediaUrl;
+                    imgEl.classList.remove('hidden');
                 }
-                imgEl.src = imgUrl;
                 imgContainer.classList.remove('hidden');
             } else {
                 imgContainer.classList.add('hidden');
+                document.getElementById('modal-video-container').classList.add('hidden');
+                document.getElementById('modal-video-container').classList.remove('flex');
+                vidEl.src = '';
+                imgEl.src = '';
             }
 
             document.getElementById('modal-flowercount').innerText = item.flowerCount || 0;

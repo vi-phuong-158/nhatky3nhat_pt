@@ -3,13 +3,14 @@
   width: 100vw;
   height: 100dvh;
   position: relative;
-  background: linear-gradient(170deg, #00AAEE 0%, #0088CC 40%, #006699 100%);
+  /* Chuyển sang tông xanh nhạt hơn theo yêu cầu */
+  background: linear-gradient(170deg, #72CFF9 0%, #52B5E9 40%, #3CA5E0 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  box-shadow: inset 0 0 60px rgba(0,0,0,0.15);
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.1);
 }
 
 @media (min-width: 768px) {
@@ -25,21 +26,9 @@
   display: none !important;
 }
 
-/* Nẹp cứng gáy sổ */
+/* Nẹp cứng gáy sổ - Ẩn theo yêu cầu */
 .book-cover-binding {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 50px;
-  background: linear-gradient(to right, 
-    rgba(0,0,0,0.85) 0%, 
-    rgba(0,0,0,0.3) 40%, 
-    rgba(255,255,255,0.15) 75%, 
-    rgba(0,0,0,0.4) 100%
-  );
-  z-index: 2;
-  box-shadow: 4px 0 15px rgba(0,0,0,0.7);
+  display: none;
 }
 
 .book-cover-content {
@@ -49,8 +38,9 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 30px 0 50px; /* Dịch nội dung sang phải nhường gáy sổ */
+  padding: 0 30px; /* Reset padding để cân giữa tuyệt đối */
   color: #FFCE00; /* Vàng tươi */
+  margin-top: -100px; /* Đẩy nội dung lên cao hơn nữa */
 }
 
 .emblem-wrapper {
@@ -86,24 +76,27 @@
 }
 
 .title-row {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  width: 100%;
   margin-bottom: -5px;
 }
 
 .dove-title-right {
+  position: absolute;
+  right: -40px; /* Đưa chim lại gần chữ Nhật ký hơn */
+  top: -10px;
   height: 60px;
   width: auto;
   filter: drop-shadow(0px 2px 6px rgba(255, 229, 0, 0.3));
-  margin-top: 10px;
 }
 
 .agency-name {
   font-family: 'Times New Roman', Times, serif;
-  letter-spacing: 2px;
-  margin-bottom: 50px;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
   color: #FFCE00;
 }
@@ -117,49 +110,48 @@
 .agency-name .sub-agency {
   font-size: 14px;
   opacity: 0.9;
-  letter-spacing: 3px;
+  letter-spacing: 1.5px;
   color: #FFCE00;
 }
 
 .book-title-wrapper {
-  margin-bottom: 70px;
+  margin-bottom: 30px; /* Thu hẹp khoảng cách gần sát bên dưới nút */
   filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.3));
 }
 
 /* Font chữ mô phỏng lưu bút thủ công */
 .title-small {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 38px;
-  font-style: italic;
-  font-weight: normal;
+  font-family: 'Dancing Script', cursive;
+  font-size: 73px; /* Tăng 30% */
+  font-style: normal;
+  font-weight: 700;
   margin-bottom: -15px; 
   color: #FFCE00;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 }
 
 .title-large {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 68px;
+  font-size: 88px; /* Tăng 30% */
   font-weight: 900;
   letter-spacing: 5px;
-  text-transform: uppercase;
-  /* Mạ vàng gradient cho chữ BA NHẤT */
   background: linear-gradient(to bottom, #FFF9C4 0%, #FFD700 50%, #C8A200 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 /* Nút mở sổ sang chảnh */
 .btn-open-book {
   background: linear-gradient(135deg, #FFF9C4 0%, #FFD700 100%);
-  color: #005A8C; /* Xanh đậm tương phản với vàng */
+  color: #005A8C; 
   border: none;
-  border-radius: 30px;
-  padding: 16px 45px;
+  border-radius: 40px;
+  padding: 18px 50px;
   font-family: 'Inter', sans-serif;
   font-weight: 800;
-  font-size: 17px;
+  font-size: 20px; /* Tăng kích thước nút */
   cursor: pointer;
   box-shadow: 
     0 8px 25px rgba(0,0,0,0.4), 
@@ -190,7 +182,7 @@
 
 .book-location {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 18px;
+  font-size: 22px; /* Tăng kích thước */
   font-weight: 700;
   color: #FFCE00;
   letter-spacing: 2px;

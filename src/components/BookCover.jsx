@@ -33,7 +33,7 @@ export default function BookCover({ onOpen }) {
         animate="show"
       >
         <motion.div variants={itemVariants} className="emblem-wrapper">
-          <img src="/nhat-ky-3-nhat.png" alt="Logo Nhật Ký 3 Nhất" className="emblem-logo" />
+          <img src="/nhat-ky-3-nhat.png" alt="Logo Nhật ký Ba nhất" className="emblem-logo" />
         </motion.div>
         
         <motion.div variants={itemVariants} className="agency-name">
@@ -45,7 +45,7 @@ export default function BookCover({ onOpen }) {
             <h2 className="title-small">Nhật ký</h2>
             <img src={logoDove} alt="Dove Small" className="dove-title-right" />
           </div>
-          <h1 className="title-large">BA NHẤT</h1>
+          <h1 className="title-large">Ba nhất</h1>
         </motion.div>
         
         <motion.button 

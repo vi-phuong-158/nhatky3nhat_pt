@@ -61,7 +61,10 @@ function PostCard({ entry, onImageClick, onToast }) {
     { ALLOWED_TAGS: ['br'], ALLOWED_ATTR: [] }
   );
 
-  const imgUrl = entry.linkAnh ? getDirectImageUrl(entry.linkAnh) : null;
+  const isVideo = entry.linkAnh && entry.linkAnh.startsWith('[VIDEO]');
+  const rawUrl = isVideo ? entry.linkAnh.substring(7) : entry.linkAnh;
+  const mediaUrl = rawUrl ? (isVideo ? rawUrl : getDirectImageUrl(rawUrl)) : null;
+
   const isActive = flowerState?.active ?? entry.hasFlowered;
   const flowerCount = flowerState?.count ?? entry.flowerCount ?? 0;
 
@@ -119,21 +122,48 @@ function PostCard({ entry, onImageClick, onToast }) {
         </button>
       </div>
 
-      {/* Image */}
-      {imgUrl && (
+      {/* Media (Ảnh/Video) */}
+      {rawUrl && (
         <div className="post-image-wrapper">
-          <img
-            src={imgUrl}
-            alt={`Ảnh hoạt động: ${entry.tieuDe}`}
-            loading="lazy"
-            className="post-image"
-            onClick={() => onImageClick(imgUrl)}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src =
-                'https://placehold.co/600x400/ebeef4/005eaa.png?text=Loi+Hien+Thi+Anh';
-            }}
-          />
+          {isVideo ? (
+            <div className="flex flex-col w-full px-[18px] pb-4 pt-2 relative z-10">
+              <div className="rounded-md overflow-hidden shadow-sm border border-black/10 bg-black">
+                <iframe 
+                  src={mediaUrl} 
+                  className="w-full aspect-video border-none" 
+                  allow="autoplay; fullscreen" 
+                  allowFullScreen
+                  title="Video Kỷ Niệm"
+                ></iframe>
+              </div>
+              <a 
+                href={mediaUrl} 
+                target="_blank" 
+                rel="noreferrer"
+                className="mt-3 text-center text-[12px] font-semibold text-[#52B5E9] hover:text-[#3da0d6] hover:underline"
+              >
+                Mở Video trong thẻ mới (Nếu video đang bị nghẽn)
+              </a>
+            </div>
+          ) : (
+            <img
+              src={mediaUrl}
+              alt={`Ảnh hoạt động: ${entry.tieuDe}`}
+              loading="lazy"
+              className="post-image"
+              onClick={() => onImageClick && onImageClick({ 
+                src: mediaUrl, 
+                alt: entry.tieuDe,
+                author: entry.hoTen,
+                unit: entry.donVi
+              })}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src =
+                  'https://placehold.co/600x400/ebeef4/005eaa.png?text=Loi+Hien+Thi+Anh';
+              }}
+            />
+          )}
         </div>
       )}
 

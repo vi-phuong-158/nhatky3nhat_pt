@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { submitEntry } from '../services/api';
+import { submitEntry, uploadFileToDrive } from '../services/api';
 import { donViList } from '../constants';
 import './SubmitForm.css';
 
@@ -16,6 +16,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [hasFile, setHasFile] = useState(false);
   const [fileName, setFileName] = useState('');
 
@@ -39,36 +40,27 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
       .replace(/>/g, "&gt;");
   };
 
-  const validateImageHeader = (file) => {
+  const validateFile = (file) => {
     return new Promise((resolve) => {
-      if (file.size > 5 * 1024 * 1024) {
-        resolve({ isValid: false, error: 'Kích thước file vượt quá 5MB.' });
+      // Giới hạn 100MB cho video, 10MB cho ảnh (để đảm bảo an toàn)
+      const isVideo = file.type.startsWith('video/');
+      const maxSize = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
+      
+      if (file.size > maxSize) {
+        resolve({ isValid: false, error: `Kích thước file vượt quá ${isVideo ? '100MB' : '10MB'}.` });
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = (e) => {
-        const arr = new Uint8Array(e.target.result).subarray(0, 4);
-        let header = '';
-        for (let i = 0; i < arr.length; i++) {
-          header += arr[i].toString(16);
-        }
-        if (header.startsWith('89504e47') || header.startsWith('ffd8')) {
-          resolve({ isValid: true });
-        } else {
-          resolve({ isValid: false, error: 'File ảnh không hợp lệ (.jpg hoặc .png).' });
-        }
-      };
-      reader.onerror = () => resolve({ isValid: false, error: 'Không thể đọc file.' });
-      reader.readAsArrayBuffer(file.slice(0, 4));
-    });
-  };
-
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = error => reject(error);
-      reader.readAsDataURL(file);
+      
+      // Chấp nhận ảnh JPEG, PNG và các định dạng Video phổ biến
+      if (file.type.startsWith('image/jpeg') || 
+          file.type.startsWith('image/png') || 
+          file.type.startsWith('video/mp4') || 
+          file.type.startsWith('video/quicktime') || 
+          file.type.startsWith('video/webm')) {
+        resolve({ isValid: true, isVideo: isVideo });
+      } else {
+        resolve({ isValid: false, error: 'Định dạng file không hỗ trợ (.jpg, .png, .mp4, .mov).' });
+      }
     });
   };
 
@@ -77,6 +69,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
     setError('');
     setSuccess('');
     setLoading(true);
+    setUploadProgress(0);
 
     const name = sanitizeInput(nameRef.current.value);
     const phone = sanitizeInput(phoneRef.current.value);
@@ -99,30 +92,35 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
     }
 
     const file = fileRef.current?.files?.[0];
-    let fileDataObj = { base64Data: '', mimeType: '', fileName: '' };
+    let filePayload = {}; // Lưu giữ fileId và cờ isVideo
 
     if (file) {
-      const { isValid, error: fileError } = await validateImageHeader(file);
+      const { isValid, error: fileError, isVideo } = await validateFile(file);
       if (!isValid) {
         setError(fileError);
         setLoading(false);
         return;
       }
       try {
-        const base64Str = await fileToBase64(file);
-        fileDataObj = {
-          base64Data: base64Str,
-          mimeType: file.type,
-          fileName: file.name
+        // Tải file trực tiếp lên Drive bằng method mới (Cách B)
+        const uploadedFileId = await uploadFileToDrive(file, (progress) => {
+          setUploadProgress(progress);
+        });
+        
+        filePayload = {
+          fileId: uploadedFileId,
+          hasVideo: isVideo
         };
       } catch(e) {
-        setError("Lỗi xử lý file ảnh.");
+        setError("Lỗi xử lý file: " + e.message);
         setLoading(false);
         return;
       }
     }
 
     try {
+      setUploadProgress(100); // Đã tải file xong, chuyển sang Submit form
+      
       await submitEntry({
         hoTen: name,
         soDienThoai: phone,
@@ -130,7 +128,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
         tieuDe: title,
         tieuChi: criteria,
         noiDung: content,
-        ...fileDataObj
+        ...filePayload
       });
       
       if (onToast) onToast('Gửi lưu bút thành công! Bài viết đang chờ phê duyệt.', 'success');
@@ -139,6 +137,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
       e.target.reset();
       setHasFile(false);
       setFileName('');
+      setUploadProgress(0);
     } catch(err) {
       setError('Đã xảy ra lỗi: ' + err.message);
     } finally {
@@ -241,7 +240,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
         {/* Tiêu chí */}
         <div className="sf-field">
           <label htmlFor="select-criteria" className="sf-label">
-            Tiêu chí 3 Nhất <span className="sf-required">*</span>
+            Tiêu chí Ba nhất <span className="sf-required">*</span>
           </label>
           <div className="sf-input-wrapper sf-select-wrapper">
             <span className="material-symbols-outlined sf-input-icon">military_tech</span>
@@ -268,17 +267,17 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
           ></textarea>
         </div>
 
-        {/* Upload ảnh */}
+        {/* Upload ảnh/video */}
         <div className="sf-field">
           <label htmlFor="input-file" className="sf-label">
             <span className="material-symbols-outlined sf-label-icon">add_photo_alternate</span>
-            Ảnh Kỷ Niệm
-            <span className="sf-label-hint">(JPG/PNG &lt; 5MB)</span>
+            Ảnh / Video Kỷ Niệm
+            <span className="sf-label-hint" style={{marginLeft: '8px', fontSize: '11px', color: '#666'}}>(&lt; 100MB)</span>
           </label>
           <input 
             id="input-file" 
             type="file" 
-            accept="image/png, image/jpeg" 
+            accept="image/png, image/jpeg, video/mp4, video/quicktime, video/webm" 
             ref={fileRef} 
             onChange={handleFileChange}
             disabled={loading || hasFile} 
@@ -299,18 +298,25 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
                 }}
                 className="text-xs font-semibold text-red-600 hover:text-red-800 transition-colors shrink-0"
               >
-                Hủy ảnh
+                Hủy file
               </button>
             </div>
           )}
         </div>
 
-        {/* Submit */}
+        {/* Progress Bar & Submit */}
+        {loading && uploadProgress > 0 && uploadProgress < 100 && (
+          <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4 mt-2">
+            <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${uploadProgress}%`, transition: 'width 0.3s ease' }}></div>
+            <p className="text-xs text-center text-gray-500 mt-1">Đang tải file: {uploadProgress}%</p>
+          </div>
+        )}
+
         <button type="submit" className="sf-btn-submit" disabled={loading} aria-label="Gửi lưu bút">
           {loading ? (
             <>
               <span className="sf-spinner"></span>
-              Đang gửi...
+              {uploadProgress > 0 && uploadProgress < 100 ? 'Đang tải file...' : 'Đang xử lý...'}
             </>
           ) : (
             <>
