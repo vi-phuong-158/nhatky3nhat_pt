@@ -50,7 +50,7 @@
   align-items: center;
   text-align: center;
   padding: 0 30px 0 50px; /* Dịch nội dung sang phải nhường gáy sổ */
-  color: #FFE500; /* Vàng tươi */
+  color: #FFCE00; /* Vàng tươi */
 }
 
 .emblem-wrapper {
@@ -63,22 +63,26 @@
 }
 
 .emblem-logo {
-  height: 80px;
-  width: auto;
-  object-fit: contain;
+  height: 110px;
+  width: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #FFCE00;
+  background-color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 /* Logo chim bồ câu — Các vị trí mới */
 .dove-bottom-left {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  width: 180px;
+  bottom: 0;
+  left: -20px;
+  width: 140px;
   height: auto;
-  opacity: 0.9;
-  filter: drop-shadow(0px 4px 12px rgba(255, 229, 0, 0.4));
+  opacity: 0.8;
+  filter: drop-shadow(0px 2px 8px rgba(255, 206, 0, 0.3));
   pointer-events: none;
-  z-index: 5;
+  z-index: 0;
 }
 
 .title-row {
@@ -101,7 +105,7 @@
   letter-spacing: 2px;
   margin-bottom: 50px;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
-  color: #FFE500;
+  color: #FFCE00;
 }
 
 .agency-name p {
@@ -114,7 +118,7 @@
   font-size: 14px;
   opacity: 0.9;
   letter-spacing: 3px;
-  color: #FFE500;
+  color: #FFCE00;
 }
 
 .book-title-wrapper {
@@ -129,7 +133,7 @@
   font-style: italic;
   font-weight: normal;
   margin-bottom: -15px; 
-  color: #FFE500;
+  color: #FFCE00;
 }
 
 .title-large {
@@ -188,7 +192,7 @@
   font-family: 'Times New Roman', Times, serif;
   font-size: 18px;
   font-weight: 700;
-  color: #FFE500;
+  color: #FFCE00;
   letter-spacing: 2px;
   opacity: 0.9;
   text-transform: uppercase;
@@ -197,4 +201,15 @@
 /* Dark mode: bìa sổ giữ tông xanh + vàng vì là thiết kế thương hiệu */
 [data-theme="dark"] .book-cover-container {
   box-shadow: inset 0 0 80px rgba(0,0,0,0.45);
+}
+
+
+.cover-footer {
+  margin-top: 25px;
+  letter-spacing: 3px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #FFCE00;
+  opacity: 0.9;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }

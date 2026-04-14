@@ -14,18 +14,18 @@
   --surface-container-high: #dae6f2;
 
   /* --- Accent colors --- */
-  --primary: #0099E6;
-  --primary-hover: #0077B3;
-  --secondary-fixed: #FFE500;
-  --tertiary: #C8A200;
+  --primary: #52B5E9;
+  --primary-hover: #3FA0D5;
+  --secondary-fixed: #FFCE00;
+  --tertiary: #D4A900;
   --outline-variant: #b8cbda;
-  --cherry-red: #0088CC;
+  --cherry-red: #52B5E9;
 
   /* --- Scrapbook / Paper tones (light mode) --- */
   --paper-cream: #e8f4fd;
   --paper-card-bg: #f0f7ff;
-  --paper-card-border: rgba(0, 136, 204, 0.2);
-  --paper-tape: rgba(0, 153, 230, 0.15);
+  --paper-card-border: rgba(82, 181, 233, 0.2);
+  --paper-tape: rgba(82, 181, 233, 0.15);
 
   /* --- Text --- */
   --text-primary: #1c1b1f;
@@ -49,18 +49,18 @@
   --surface-container-high: #1e2e40;
 
   /* --- Accent colors --- */
-  --primary: #66CCFF;
-  --primary-hover: #99DDFF;
-  --secondary-fixed: #FFE500;
-  --tertiary: #FFD700;
+  --primary: #52B5E9;
+  --primary-hover: #82CFFF;
+  --secondary-fixed: #FFCE00;
+  --tertiary: #FFCE00;
   --outline-variant: #384858;
-  --cherry-red: #66CCFF;
+  --cherry-red: #52B5E9;
 
   /* --- Scrapbook / Paper tones (dark mode) --- */
   --paper-cream: #0d1520;
   --paper-card-bg: #162030;
   --paper-card-border: rgba(255, 255, 255, 0.1);
-  --paper-tape: rgba(102, 204, 255, 0.1);
+  --paper-tape: rgba(82, 181, 233, 0.1);
 
   /* --- Text --- */
   --text-primary: #e3e8ee;
@@ -86,7 +86,7 @@
 }
 
 .blue-glow {
-  box-shadow: 0 10px 40px -10px rgba(0, 153, 230, 0.15);
+  box-shadow: 0 10px 40px -10px rgba(82, 181, 233, 0.15);
 }
 
 [data-theme="dark"] .glass-card {
@@ -95,7 +95,7 @@
 }
 
 [data-theme="dark"] .blue-glow {
-  box-shadow: 0 10px 40px -10px rgba(102, 204, 255, 0.15);
+  box-shadow: 0 10px 40px -10px rgba(82, 181, 233, 0.15);
 }
 
 /* Body mặc định */

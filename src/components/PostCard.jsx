@@ -93,9 +93,9 @@ function PostCard({ entry, onImageClick, onToast }) {
           </div>
         </div>
         <div className="post-header-right">
-          <span className="px-2.5 py-1 rounded-md border border-yellow-400/60 bg-gradient-to-r from-yellow-50/80 to-amber-100/80 backdrop-blur-md text-yellow-800 text-[10px] font-bold uppercase tracking-widest shadow-sm flex items-center gap-1">
-            <span className="material-symbols-outlined text-[12px]">military_tech</span>
-            {entry.tieuChi}
+          <span className="px-2 py-0.5 rounded-[2px] border border-blue-400/40 bg-blue-50/60 backdrop-blur-md text-[#52B5E9] text-[11px] font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[14px]">military_tech</span>
+            <span className="leading-none">{entry.tieuChi}</span>
           </span>
         </div>
       </div>

@@ -1,8 +1,8 @@
 /* CSS BẢNG MÀU CHỦ ĐẠO – XANH DA TRỜI + VÀNG TƯƠI */
 :root {
-  --sky-blue: #0099E6;
+  --sky-blue: #52B5E9;
   --sky-blue-dark: #005A8C;
-  --golden-yellow: #FFE500;
+  --golden-yellow: #FFCE00;
   --sky-surface: #E8F4FD;
   --text-dark: #1a2a3a;
 }
@@ -221,7 +221,7 @@ p, span, input, button, textarea {
 .cover-fallback {
   width: 100vw;
   height: 100dvh;
-  background-color: var(--sky-blue, #0099E6);
+  background-color: var(--sky-blue, #52B5E9);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -396,8 +396,8 @@ p, span, input, button, textarea {
   justify-content: space-between;
   align-items: center;
   padding: 20px 25px;
-  background: var(--sky-blue, #0099E6);
-  color: var(--golden-yellow, #FFE500);
+  background: var(--sky-blue, #52B5E9);
+  color: var(--golden-yellow, #FFCE00);
 }
 .drawer-header h3 {
   font-family: 'Lora', serif;

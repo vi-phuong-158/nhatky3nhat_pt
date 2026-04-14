@@ -1,7 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import logoCand from '../assets/logo-cand.png';
-import logoPhuNu from '../assets/logo-phunu.png';
 import logoDove from '../assets/logo-dove.png';
 import './BookCover.css';
 
@@ -35,8 +33,7 @@ export default function BookCover({ onOpen }) {
         animate="show"
       >
         <motion.div variants={itemVariants} className="emblem-wrapper">
-          <img src={logoCand} alt="Logo CAND" className="emblem-logo" />
-          <img src={logoPhuNu} alt="Logo Hội Phụ Nữ" className="emblem-logo" />
+          <img src="/nhat-ky-3-nhat.png" alt="Logo Nhật Ký 3 Nhất" className="emblem-logo" />
         </motion.div>
         
         <motion.div variants={itemVariants} className="agency-name">
@@ -60,6 +57,10 @@ export default function BookCover({ onOpen }) {
         >
           MỞ SỔ NHẬT KÝ
         </motion.button>
+
+        <motion.div variants={itemVariants} className="cover-footer">
+          <p>PHÚ THỌ - 2026</p>
+        </motion.div>
 
         {/* Con chim lớn góc dưới bên trái */}
         <motion.img 

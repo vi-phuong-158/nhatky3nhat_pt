@@ -290,7 +290,7 @@
   font-weight: 700;
   letter-spacing: 0.3px;
   color: #ffffff;
-  background: linear-gradient(135deg, #0099E6 0%, #00AAFF 100%);
+  background: linear-gradient(135deg, #52B5E9 0%, #00AAFF 100%);
   border: none;
   border-radius: 26px;
   cursor: pointer;
@@ -344,17 +344,17 @@
 
 /* Header icon */
 [data-theme="light"] .sf-header-icon {
-  color: var(--primary, #0099E6);
+  color: var(--primary, #52B5E9);
 }
 
 /* Label icon (camera, title...) */
 [data-theme="light"] .sf-label-icon {
-  color: var(--primary, #0099E6);
+  color: var(--primary, #52B5E9);
 }
 
 /* Focus icon trong input wrapper */
 [data-theme="light"] .sf-input-wrapper:focus-within .sf-input-icon {
-  color: var(--primary, #0099E6);
+  color: var(--primary, #52B5E9);
 }
 
 /* Focus state inputs */
@@ -368,7 +368,7 @@
 
 /* File input hover + focus */
 [data-theme="light"] .sf-form input[type="file"]:hover {
-  border-color: var(--primary, #0099E6);
+  border-color: var(--primary, #52B5E9);
 }
 
 [data-theme="light"] .sf-form input[type="file"]:focus {
@@ -378,7 +378,7 @@
 
 /* Nút Gửi: gradient xanh sâu → xanh sáng */
 [data-theme="light"] .sf-btn-submit {
-  background: linear-gradient(135deg, #005eaa 0%, #0099E6 100%);
+  background: linear-gradient(135deg, #005eaa 0%, #52B5E9 100%);
   box-shadow:
     0 4px 14px rgba(0, 90, 140, 0.35),
     0 1px 3px rgba(0, 0, 0, 0.08);
