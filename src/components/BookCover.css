@@ -38,9 +38,9 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 30px; /* Reset padding để cân giữa tuyệt đối */
-  color: #FFCE00; /* Vàng tươi */
-  margin-top: -100px; /* Đẩy nội dung lên cao hơn nữa */
+  padding: 0 30px; 
+  color: #FFCE00; 
+  margin-top: -60px; /* Đẩy nội dung xuống một chút (giảm bớt margin âm) */
 }
 
 .emblem-wrapper {
@@ -53,8 +53,8 @@
 }
 
 .emblem-logo {
-  height: 110px;
-  width: 110px;
+  height: 88px; /* Giảm khoảng 20% */
+  width: 88px;
   object-fit: cover;
   border-radius: 50%;
   border: 3px solid #FFCE00;
@@ -65,8 +65,8 @@
 /* Logo chim bồ câu — Các vị trí mới */
 .dove-bottom-left {
   position: absolute;
-  bottom: 0;
-  left: -20px;
+  bottom: 170px; /* Nằm ngay dưới khoảng chữ 'Ba' */
+  left: 0px; /* Chệch ra ngoài để không đè chữ */
   width: 140px;
   height: auto;
   opacity: 0.8;
@@ -86,9 +86,9 @@
 
 .dove-title-right {
   position: absolute;
-  right: -40px; /* Đưa chim lại gần chữ Nhật ký hơn */
-  top: -10px;
-  height: 60px;
+  right: -35px; /* Điều chỉnh lại khoảng cách cho cân đối với size mới */
+  top: 15px; /* Dịch xuống dưới hẳn cho ngang hàng thân chữ */
+  height: 60px; /* Tăng kích thước 30% */
   width: auto;
   filter: drop-shadow(0px 2px 6px rgba(255, 229, 0, 0.3));
 }
@@ -115,7 +115,7 @@
 }
 
 .book-title-wrapper {
-  margin-bottom: 30px; /* Thu hẹp khoảng cách gần sát bên dưới nút */
+  margin-bottom: 160px; /* Đẩy Nút bấm và Phú Thọ 2026 xuống sát dưới cân đối */
   filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.3));
 }
 
