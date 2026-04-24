@@ -641,6 +641,11 @@
   filter: brightness(0.95);
 }
 
+.post-image:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: -3px;
+}
+
 /* Light mode: badge dạng dấu mộc - phong cách xanh vàng hòa quyện */
 [data-theme="light"] .post-header-right .px-2\.5 {
   border: 2px solid rgba(0, 136, 204, 0.4) !important;
