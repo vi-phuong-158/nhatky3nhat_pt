@@ -150,13 +150,26 @@ function PostCard({ entry, onImageClick, onToast }) {
               src={mediaUrl}
               alt={`Ảnh hoạt động: ${entry.tieuDe}`}
               loading="lazy"
-              className="post-image"
+                className="post-image cursor-zoom-in focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-400 focus-visible:ring-offset-2 rounded-md"
+                role="button"
+                tabIndex={0}
               onClick={() => onImageClick && onImageClick({ 
                 src: mediaUrl, 
                 alt: entry.tieuDe,
                 author: entry.hoTen,
                 unit: entry.donVi
               })}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onImageClick && onImageClick({
+                      src: mediaUrl,
+                      alt: entry.tieuDe,
+                      author: entry.hoTen,
+                      unit: entry.donVi
+                    });
+                  }
+                }}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src =
