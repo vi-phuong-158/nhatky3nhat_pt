@@ -151,12 +151,27 @@ function PostCard({ entry, onImageClick, onToast }) {
               alt={`Ảnh hoạt động: ${entry.tieuDe}`}
               loading="lazy"
               className="post-image"
+              role="button"
+              tabIndex={0}
               onClick={() => onImageClick && onImageClick({ 
                 src: mediaUrl, 
                 alt: entry.tieuDe,
                 author: entry.hoTen,
                 unit: entry.donVi
               })}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  if (onImageClick) {
+                    onImageClick({
+                      src: mediaUrl,
+                      alt: entry.tieuDe,
+                      author: entry.hoTen,
+                      unit: entry.donVi
+                    });
+                  }
+                }
+              }}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src =
