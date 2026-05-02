@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AlbumView.css';
 
@@ -20,12 +20,27 @@ export default function AlbumView({ images, loading, onClose }) {
 
   const handleClose = useCallback(() => setSelectedImg(null), []);
 
+  // Close lightbox or modal on Escape
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedImg) setSelectedImg(null);
+        else onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [selectedImg, onClose]);
+
   return (
     <motion.div
       className="album-overlay"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="album-title"
     >
       <motion.div
         className="album-container"
@@ -38,7 +53,7 @@ export default function AlbumView({ images, loading, onClose }) {
           <div className="album-header-left">
             <span className="material-symbols-outlined album-header-icon" aria-hidden="true">photo_library</span>
             <div>
-              <h2 className="album-title">Album ảnh</h2>
+              <h2 id="album-title" className="album-title">Album ảnh</h2>
               {!loading && images.length > 0 && (
                 <span className="album-count">{images.length} ảnh</span>
               )}
@@ -110,6 +125,9 @@ export default function AlbumView({ images, loading, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Xem ảnh phóng to"
           >
             <button className="album-lightbox-close" onClick={handleClose} aria-label="Đóng ảnh">
               <span className="material-symbols-outlined">close</span>
