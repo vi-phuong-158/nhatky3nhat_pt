@@ -1,0 +1,3 @@
+## 2026-05-05 - Modal Accessibility (Escape key and ARIA roles)
+**Learning:** When building custom modals or overlays, accessibility standards require implementing `Escape` key event listeners for dismissal. Depending on internal state, this key can act locally (e.g. dismissing a nested dropdown or a lightbox within the modal) or globally (closing the entire modal). In addition to keyboard shortcuts, the modal container needs `role="dialog"`, `aria-modal="true"`, and `aria-labelledby="[id]"` connected to an `<h2>` heading.
+**Action:** Always add an Escape key `useEffect` listener and ARIA modal attributes to custom modal overlays.

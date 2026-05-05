@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AlbumView.css';
 
@@ -20,9 +20,26 @@ export default function AlbumView({ images, loading, onClose }) {
 
   const handleClose = useCallback(() => setSelectedImg(null), []);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedImg) {
+          handleClose();
+        } else {
+          onClose();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedImg, handleClose, onClose]);
+
   return (
     <motion.div
       className="album-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="album-title"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -38,7 +55,7 @@ export default function AlbumView({ images, loading, onClose }) {
           <div className="album-header-left">
             <span className="material-symbols-outlined album-header-icon" aria-hidden="true">photo_library</span>
             <div>
-              <h2 className="album-title">Album ảnh</h2>
+              <h2 id="album-title" className="album-title">Album ảnh</h2>
               {!loading && images.length > 0 && (
                 <span className="album-count">{images.length} ảnh</span>
               )}
