@@ -1,0 +1,3 @@
+## 2024-05-07 - Enhance Accessibility in Submit Form
+**Learning:** Native form validation, ARIA live regions, and hiding decorative icons significantly improve screen reader experience and general accessibility for web forms. Ensure the `material-symbols-outlined` icons have `aria-hidden="true"`. Use `role="alert"` for error messages and `role="status"` for success messages. Make sure required inputs have the `required` and `aria-required="true"` attributes.
+**Action:** Always add `aria-hidden="true"` to decorative icons. Consistently use ARIA roles for status and alert messages, and mark mandatory fields with `required` and `aria-required="true"`.
