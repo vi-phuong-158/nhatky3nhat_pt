@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { donViList } from '../constants';
 import './StatsView.css';
@@ -67,6 +67,16 @@ export default function StatsView({ entries, loading, onClose }) {
   const [showUnitDropdown, setShowUnitDropdown] = useState(false);
   const [sortCol, setSortCol] = useState('total');
   const [sortDir, setSortDir] = useState('desc');
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   /* ─── Lọc đơn vị cho dropdown tìm kiếm ─── */
   const filteredUnits = useMemo(() => {

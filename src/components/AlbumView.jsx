@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AlbumView.css';
 
@@ -18,7 +18,22 @@ const imgVariants = {
 export default function AlbumView({ images, loading, onClose }) {
   const [selectedImg, setSelectedImg] = useState(null);
 
+
   const handleClose = useCallback(() => setSelectedImg(null), []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedImg) {
+          handleClose();
+        } else if (onClose) {
+          onClose();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedImg, onClose, handleClose]);
 
   return (
     <motion.div
