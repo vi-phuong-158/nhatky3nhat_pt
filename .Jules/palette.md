@@ -1,0 +1,3 @@
+## 2024-05-11 - Add Native HTML5 Validation and ARIA Patterns to Forms
+**Learning:** Adding native validation (`required`) along with corresponding ARIA attributes (`aria-required`, `aria-invalid`) significantly improves form accessibility for screen readers. Using `role="alert"` and `role="status"` properly announces error/success states, while adding `aria-hidden="true"` to decorative elements like Google Material Icons reduces noise for assistive technology users.
+**Action:** Enforce HTML5 native validation on mandatory fields and explicitly manage aria properties for validation states and decorative elements on all custom form components.
