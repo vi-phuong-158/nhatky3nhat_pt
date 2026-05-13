@@ -1,0 +1,3 @@
+## 2025-02-12 - Enhance Form Accessibility and Validation
+**Learning:** For accessibility, form elements must enforce native validation and ARIA patterns (e.g., `required`, `aria-required="true"`, and `aria-invalid` on inputs, `role="alert"` or `role="status"` on notification areas, and `aria-hidden="true"` on decorative icons) rather than relying exclusively on JavaScript validation.
+**Action:** When creating or updating form components, ensure native HTML validation attributes are used alongside ARIA attributes to clearly communicate form requirements and validation states to screen readers. Add appropriate roles to error and success notification elements, and hide decorative icons from assistive technologies.
