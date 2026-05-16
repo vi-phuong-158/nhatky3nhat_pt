@@ -162,14 +162,14 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
 
       {/* ── Alerts ── */}
       {error && (
-        <div className="sf-alert sf-alert-error">
-          <span className="material-symbols-outlined sf-alert-icon">error</span>
+        <div className="sf-alert sf-alert-error" role="alert" aria-live="assertive">
+          <span className="material-symbols-outlined sf-alert-icon" aria-hidden="true">error</span>
           {error}
         </div>
       )}
       {success && (
-        <div className="sf-alert sf-alert-success">
-          <span className="material-symbols-outlined sf-alert-icon">check_circle</span>
+        <div className="sf-alert sf-alert-success" role="alert" aria-live="assertive">
+          <span className="material-symbols-outlined sf-alert-icon" aria-hidden="true">check_circle</span>
           {success}
         </div>
       )}
@@ -179,11 +179,11 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
         {/* Họ tên */}
         <div className="sf-field">
           <label htmlFor="input-name" className="sf-label">
-            Họ và tên <span className="sf-required">*</span>
+            Họ và tên <span className="sf-required" aria-hidden="true">*</span>
           </label>
           <div className="sf-input-wrapper">
-            <span className="material-symbols-outlined sf-input-icon">person</span>
-            <input id="input-name" type="text" ref={nameRef} placeholder="Vd: Nguyễn Thị Lan" disabled={loading} />
+            <span className="material-symbols-outlined sf-input-icon" aria-hidden="true">person</span>
+            <input id="input-name" type="text" ref={nameRef} placeholder="Vd: Nguyễn Thị Lan" disabled={loading} required aria-required="true" />
           </div>
         </div>
 
@@ -191,7 +191,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
         <div className="sf-field">
           <label htmlFor="input-phone" className="sf-label">Số điện thoại</label>
           <div className="sf-input-wrapper">
-            <span className="material-symbols-outlined sf-input-icon">call</span>
+            <span className="material-symbols-outlined sf-input-icon" aria-hidden="true">call</span>
             <input id="input-phone" type="tel" inputMode="numeric" ref={phoneRef} placeholder="Nhập SĐT..." disabled={loading} />
           </div>
         </div>
@@ -199,10 +199,10 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
         {/* Đơn vị */}
         <div className="sf-field">
           <label htmlFor="input-unit" className="sf-label">
-            Đơn vị <span className="sf-required">*</span>
+            Đơn vị <span className="sf-required" aria-hidden="true">*</span>
           </label>
           <div className="sf-input-wrapper">
-            <span className="material-symbols-outlined sf-input-icon">apartment</span>
+            <span className="material-symbols-outlined sf-input-icon" aria-hidden="true">apartment</span>
             <input 
               id="input-unit" 
               type="text" 
@@ -210,6 +210,8 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
               ref={unitRef} 
               placeholder="Chọn hoặc gõ tên đơn vị..." 
               disabled={loading}
+              required
+              aria-required="true"
               onBlur={(e) => {
                 const val = e.target.value;
                 if (val && !donViList.includes(val)) {
@@ -229,22 +231,22 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
         {/* Tiêu đề */}
         <div className="sf-field">
           <label htmlFor="input-title" className="sf-label">
-            Tiêu đề bài viết <span className="sf-required">*</span>
+            Tiêu đề bài viết <span className="sf-required" aria-hidden="true">*</span>
           </label>
           <div className="sf-input-wrapper">
-            <span className="material-symbols-outlined sf-input-icon">title</span>
-            <input id="input-title" type="text" ref={titleRef} placeholder="Nhập tiêu đề..." disabled={loading} />
+            <span className="material-symbols-outlined sf-input-icon" aria-hidden="true">title</span>
+            <input id="input-title" type="text" ref={titleRef} placeholder="Nhập tiêu đề..." disabled={loading} required aria-required="true" />
           </div>
         </div>
 
         {/* Tiêu chí */}
         <div className="sf-field">
           <label htmlFor="select-criteria" className="sf-label">
-            Tiêu chí Ba nhất <span className="sf-required">*</span>
+            Tiêu chí Ba nhất <span className="sf-required" aria-hidden="true">*</span>
           </label>
           <div className="sf-input-wrapper sf-select-wrapper">
-            <span className="material-symbols-outlined sf-input-icon">military_tech</span>
-            <select id="select-criteria" ref={criteriaRef} disabled={loading}>
+            <span className="material-symbols-outlined sf-input-icon" aria-hidden="true">military_tech</span>
+            <select id="select-criteria" ref={criteriaRef} disabled={loading} required aria-required="true">
               <option value="">-- Chọn tiêu chí --</option>
               <option value="Kỷ luật nhất">Kỷ luật nhất</option>
               <option value="Trung thành nhất">Trung thành nhất</option>
@@ -256,7 +258,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
         {/* Nội dung */}
         <div className="sf-field">
           <label htmlFor="textarea-content" className="sf-label">
-            Câu chuyện thi đua <span className="sf-required">*</span>
+            Câu chuyện thi đua <span className="sf-required" aria-hidden="true">*</span>
           </label>
           <textarea 
             id="textarea-content" 
@@ -264,6 +266,8 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
             rows="5" 
             placeholder="Hôm nay tôi đã làm..." 
             disabled={loading}
+            required
+            aria-required="true"
           ></textarea>
         </div>
 

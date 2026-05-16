@@ -1,0 +1,3 @@
+## 2024-05-16 - Add Native Validation and Accessibility to SubmitForm
+**Learning:** Decorative icons and asterisk markers in the main form lacked `aria-hidden` causing screen reader noise. Important state messages (success/error) lacked `role="alert"`. Native HTML5 form validation attributes (`required` and `aria-required`) were missing, relying solely on JavaScript.
+**Action:** Applied native a11y patterns across `SubmitForm.jsx` (adding `required`, `aria-required`, `aria-hidden` to decorative elements, and `role="alert"` for state messages). These changes create a better native experience for all users and drastically improve the screen reader experience without altering the UI visually.
