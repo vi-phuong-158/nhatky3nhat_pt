@@ -1,0 +1,3 @@
+## 2024-05-17 - SubmitForm Accessibility Enhancements
+**Learning:** Screen readers may redundant read out ligature-based icons (like Google Material Symbols) if they are not explicitly hidden.
+**Action:** Always add `aria-hidden="true"` to decorative `<span className="material-symbols-outlined">` elements, especially those used purely for visual flair within form inputs and alert banners. Additionally, HTML5 form validation (`required`) should be supplemented with `aria-required="true"` to ensure consistent cross-browser and screen reader support. Dynamic alert messages should utilize `role="alert"` for errors and `role="status"` for success messages.
