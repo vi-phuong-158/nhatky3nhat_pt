@@ -1,0 +1,3 @@
+## 2024-03-24 - Custom Modal Accessibility
+**Learning:** Custom modal components built with `framer-motion` (like AlbumView and StatsView) lacked basic accessibility requirements such as explicit `Escape` key dismissal and `role="dialog"` attributes, which made keyboard and screen reader navigation difficult.
+**Action:** Always ensure custom overlays and modals explicitly include an `Escape` key listener via `useEffect`, along with `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` linking to their headings for proper accessibility compliance.
