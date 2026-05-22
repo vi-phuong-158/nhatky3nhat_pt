@@ -1,0 +1,3 @@
+## 2026-05-22 - Form Accessibility: Native Validation & Dynamic Submit Buttons
+**Learning:** Adding a static `aria-label` to a submit button that has dynamic loading states (e.g., 'Đang xử lý...', 'Đang tải file...') overrides the dynamic text, preventing screen readers from announcing critical status changes. Furthermore, using `required` and `aria-required="true"` on native inputs alongside `role="alert"` and `role="status"` for feedback messages provides a significantly better native experience.
+**Action:** Always avoid static `aria-label`s on buttons with dynamic text states unless the label itself dynamically updates. Always leverage native HTML5 validation attributes (`required`) and semantic ARIA roles (`alert`, `status`, `aria-hidden`) for form elements.
