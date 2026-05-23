@@ -1,0 +1,3 @@
+## 2026-05-23 - Native HTML5 Validation attributes
+**Learning:** In SubmitForm.jsx, mandatory input fields were marked visually with a `*` but lacked the native `required` and `aria-required="true"` HTML attributes, relying purely on JavaScript for validation. This leads to poor accessibility, as screen readers may not announce the field as required, and misses out on native browser form validation capabilities.
+**Action:** Added missing validation attributes in inputs, select, and textarea. In the future, always ensure that forms utilize native `required` and `aria-required="true"` alongside any custom visual indicators and javascript-based validations.
