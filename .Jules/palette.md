@@ -1,0 +1,3 @@
+## 2024-05-29 - Dynamic Button and Toggle Accessibility
+**Learning:** Overusing static `aria-label` attributes on buttons with dynamic text (like a submit button that changes to "Loading...") prevents screen readers from announcing the new critical status. For toggle buttons, dynamically changing `aria-label` from "Tặng hoa" to "Bỏ tặng hoa" is an anti-pattern compared to using `aria-pressed={isActive}` which clearly conveys state to the screen reader.
+**Action:** When adding accessible labels, use `aria-pressed` for toggles and only use `aria-label` when the button is purely icon-based or lacks descriptive visible text.

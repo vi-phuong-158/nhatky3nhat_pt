@@ -266,8 +266,9 @@ export default function StatsView({ entries, loading, onClose }) {
                       setUnitFilter('');
                       setUnitSearch('');
                     }}
+                    aria-label="Xóa tìm kiếm"
                   >
-                    <span className="material-symbols-outlined">close</span>
+                    <span className="material-symbols-outlined" aria-hidden="true">close</span>
                   </button>
                 )}
               </div>

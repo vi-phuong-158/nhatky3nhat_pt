@@ -172,7 +172,7 @@ function PostCard({ entry, onImageClick, onToast }) {
         <button
           className={`flower-btn ${isActive ? 'flower-active' : ''}`}
           onClick={handleFlower}
-          aria-label={isActive ? 'Bỏ tặng hoa' : 'Tặng hoa'}
+          aria-pressed={isActive}
         >
           <span className="flower-icon" aria-hidden="true">🌸</span>
           <span className="flower-label">
