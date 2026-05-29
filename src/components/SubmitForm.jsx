@@ -312,15 +312,15 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
           </div>
         )}
 
-        <button type="submit" className="sf-btn-submit" disabled={loading} aria-label="Gửi lưu bút">
+        <button type="submit" className="sf-btn-submit" disabled={loading}>
           {loading ? (
             <>
-              <span className="sf-spinner"></span>
+              <span className="sf-spinner" aria-hidden="true"></span>
               {uploadProgress > 0 && uploadProgress < 100 ? 'Đang tải file...' : 'Đang xử lý...'}
             </>
           ) : (
             <>
-              <span className="material-symbols-outlined">send</span>
+              <span className="material-symbols-outlined" aria-hidden="true">send</span>
               Gửi Lưu Bút
             </>
           )}
