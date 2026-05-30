@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { donViList } from '../constants';
 import './StatsView.css';
@@ -67,6 +67,15 @@ export default function StatsView({ entries, loading, onClose }) {
   const [showUnitDropdown, setShowUnitDropdown] = useState(false);
   const [sortCol, setSortCol] = useState('total');
   const [sortDir, setSortDir] = useState('desc');
+
+  // Close modal on Escape
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
 
   /* ─── Lọc đơn vị cho dropdown tìm kiếm ─── */
   const filteredUnits = useMemo(() => {
@@ -193,6 +202,9 @@ export default function StatsView({ entries, loading, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Thống kê dữ liệu"
     >
       <motion.div
         className="stats-container"
@@ -207,7 +219,7 @@ export default function StatsView({ entries, loading, onClose }) {
             <h2 className="stats-title">Thống kê bài viết</h2>
           </div>
           <button className="stats-close" onClick={onClose} aria-label="Đóng thống kê">
-            <span className="material-symbols-outlined">close</span>
+            <span className="material-symbols-outlined" aria-hidden="true">close</span>
           </button>
         </header>
 
