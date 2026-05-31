@@ -1,0 +1,3 @@
+## 2024-06-01 - Enhance Form Accessibility and Native Validation
+**Learning:** In custom React forms, developers often rely entirely on JS-based validation for mandatory fields (throwing an error state string). This leaves screen reader users without immediate context about which fields are required before submission. Decorative icons inside input wrappers also introduce noise to screen readers.
+**Action:** Pair native `required` attributes with `aria-required="true"` for all mandatory fields. Ensure notification banners use `role="alert"` (for errors) or `role="status"` (for success), and set `aria-hidden="true"` on decorative icon elements (like `material-symbols-outlined` spans) inside form labels/wrappers.
