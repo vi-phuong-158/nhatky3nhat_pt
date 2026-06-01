@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { donViList } from '../constants';
 import './StatsView.css';
 
@@ -10,11 +10,7 @@ const parseDate = (s) => {
   return isNaN(d.getTime()) ? null : d;
 };
 
-const formatDate = (d) => {
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  return `${dd}/${mm}/${d.getFullYear()}`;
-};
+
 
 /* Tạo khoảng thời gian nhanh */
 const getQuickRange = (key) => {
@@ -60,7 +56,7 @@ const CRITERIA_COLORS = {
 /* ═══════════════════════════════════════
    COMPONENT: StatsView
    ═══════════════════════════════════════ */
-export default function StatsView({ entries, loading, onClose }) {
+export default function StatsView({ entries, onClose }) {
   const [timeFilter, setTimeFilter] = useState('all');
   const [unitFilter, setUnitFilter] = useState('');
   const [unitSearch, setUnitSearch] = useState('');
@@ -182,6 +178,16 @@ export default function StatsView({ entries, loading, onClose }) {
     setShowUnitDropdown(false);
   }, []);
 
+
+  // Close modal on Escape
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
   const sortIcon = (col) => {
     if (sortCol !== col) return 'unfold_more';
     return sortDir === 'asc' ? 'expand_less' : 'expand_more';
@@ -193,6 +199,9 @@ export default function StatsView({ entries, loading, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Thống kê bài viết"
     >
       <motion.div
         className="stats-container"

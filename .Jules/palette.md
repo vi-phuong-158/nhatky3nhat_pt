@@ -1,0 +1,3 @@
+## 2024-05-19 - Missing ARIA Roles and Keyboard Controls for Custom Modals
+**Learning:** Custom UI modal/overlay components (`StatsView.jsx` and `AlbumView.jsx`) lacked keyboard navigation for closing (Escape key) and proper ARIA properties (`role="dialog"`, `aria-modal="true"`, `aria-label`), significantly hindering screen reader users and keyboard-only users from interacting with or dismissing them properly.
+**Action:** Always implement explicit `keydown` event listeners for the `Escape` key to dismiss custom modals or lightboxes. Additionally, ensure the root overlay element of any custom modal has `role="dialog"`, `aria-modal="true"`, and a descriptive `aria-label` or `aria-labelledby` property.
