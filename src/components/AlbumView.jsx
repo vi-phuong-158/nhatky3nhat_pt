@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './AlbumView.css';
 
@@ -20,12 +20,31 @@ export default function AlbumView({ images, loading, onClose }) {
 
   const handleClose = useCallback(() => setSelectedImg(null), []);
 
+
+  // Close modal or lightbox on Escape
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedImg) {
+          handleClose();
+        } else {
+          onClose();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [selectedImg, handleClose, onClose]);
+
   return (
     <motion.div
       className="album-overlay"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Album ảnh"
     >
       <motion.div
         className="album-container"
@@ -110,6 +129,9 @@ export default function AlbumView({ images, loading, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Phóng to ảnh"
           >
             <button className="album-lightbox-close" onClick={handleClose} aria-label="Đóng ảnh">
               <span className="material-symbols-outlined">close</span>
