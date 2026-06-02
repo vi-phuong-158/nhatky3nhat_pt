@@ -1,0 +1,3 @@
+## 2025-06-02 - Icon-Only Button Accessibility Pattern
+**Learning:** Found a recurring pattern in the app where icon-only buttons (like `close` or `clear` using Google Material Symbols) had correct outer `aria-label`s, but lacked visual tooltips (`title`) for sighted mouse/keyboard users, and failed to hide the inner ligature text (e.g. "close") from screen readers. This caused screen readers to announce both the aria-label and the visible text.
+**Action:** When creating or modifying icon-only buttons using ligature-based icon fonts, always ensure the outer `<button>` has a `title` attribute for visual tooltips along with the `aria-label`, and the inner icon `<span>` explicitly sets `aria-hidden="true"`.

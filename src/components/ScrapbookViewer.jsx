@@ -173,8 +173,8 @@ export default function ScrapbookViewer({
             aria-label="Tìm kiếm bài viết"
           />
           {searchTerm && (
-            <button className="feed-search-clear" onClick={() => onSearchChange('')} aria-label="Xóa tìm kiếm">
-              <span className="material-symbols-outlined">close</span>
+            <button className="feed-search-clear" onClick={() => onSearchChange('')} aria-label="Xóa tìm kiếm" title="Xóa tìm kiếm">
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
           )}
         </div>
@@ -307,8 +307,9 @@ export default function ScrapbookViewer({
               className="lightbox-close"
               onClick={() => setSelectedImage(null)}
               aria-label="Đóng ảnh phóng to"
+              title="Đóng ảnh phóng to"
             >
-              <span className="material-symbols-outlined">close</span>
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
             <motion.img
               src={selectedImage}
