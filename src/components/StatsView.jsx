@@ -215,11 +215,11 @@ export default function StatsView({ entries, loading, onClose }) {
         <div className="stats-filters">
           {/* Time filter */}
           <div className="stats-filter-group">
-            <label className="stats-filter-label">
+            <label id="time-filter-label" className="stats-filter-label">
               <span className="material-symbols-outlined" aria-hidden="true">calendar_today</span>
               Thời gian
             </label>
-            <div className="stats-chips">
+            <div className="stats-chips" role="group" aria-labelledby="time-filter-label">
               {[
                 { key: 'all', label: 'Tất cả' },
                 { key: '7d', label: '7 ngày' },
@@ -231,6 +231,7 @@ export default function StatsView({ entries, loading, onClose }) {
                 <button
                   key={t.key}
                   className={`stats-chip ${timeFilter === t.key ? 'stats-chip-active' : ''}`}
+                  aria-pressed={timeFilter === t.key}
                   onClick={() => setTimeFilter(t.key)}
                 >
                   {t.label}
@@ -266,8 +267,10 @@ export default function StatsView({ entries, loading, onClose }) {
                       setUnitFilter('');
                       setUnitSearch('');
                     }}
+                    aria-label="Xóa bộ lọc đơn vị"
+                    title="Xóa bộ lọc đơn vị"
                   >
-                    <span className="material-symbols-outlined">close</span>
+                    <span className="material-symbols-outlined" aria-hidden="true">close</span>
                   </button>
                 )}
               </div>
