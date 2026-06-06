@@ -215,11 +215,11 @@ export default function StatsView({ entries, loading, onClose }) {
         <div className="stats-filters">
           {/* Time filter */}
           <div className="stats-filter-group">
-            <label className="stats-filter-label">
+            <label className="stats-filter-label" id="time-filter-label">
               <span className="material-symbols-outlined" aria-hidden="true">calendar_today</span>
               Thời gian
             </label>
-            <div className="stats-chips">
+            <div className="stats-chips" role="group" aria-labelledby="time-filter-label">
               {[
                 { key: 'all', label: 'Tất cả' },
                 { key: '7d', label: '7 ngày' },
@@ -232,6 +232,7 @@ export default function StatsView({ entries, loading, onClose }) {
                   key={t.key}
                   className={`stats-chip ${timeFilter === t.key ? 'stats-chip-active' : ''}`}
                   onClick={() => setTimeFilter(t.key)}
+                  aria-pressed={timeFilter === t.key}
                 >
                   {t.label}
                 </button>
