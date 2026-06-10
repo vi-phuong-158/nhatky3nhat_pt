@@ -44,8 +44,8 @@ export default function AlbumView({ images, loading, onClose }) {
               )}
             </div>
           </div>
-          <button className="album-close" onClick={onClose} aria-label="Đóng album">
-            <span className="material-symbols-outlined">close</span>
+          <button className="album-close" onClick={onClose} aria-label="Đóng album" title="Đóng album">
+            <span className="material-symbols-outlined" aria-hidden="true">close</span>
           </button>
         </header>
 
@@ -111,8 +111,8 @@ export default function AlbumView({ images, loading, onClose }) {
             exit={{ opacity: 0 }}
             onClick={handleClose}
           >
-            <button className="album-lightbox-close" onClick={handleClose} aria-label="Đóng ảnh">
-              <span className="material-symbols-outlined">close</span>
+            <button className="album-lightbox-close" onClick={handleClose} aria-label="Đóng ảnh" title="Đóng ảnh">
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
             <motion.img
               src={selectedImg.url}
