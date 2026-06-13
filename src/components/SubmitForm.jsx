@@ -154,8 +154,8 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
           <h2 className="sf-title">Viết trang mới</h2>
         </div>
         {onClose && (
-          <button type="button" onClick={onClose} className="sf-btn-close" aria-label="Đóng">
-            <span className="material-symbols-outlined">close</span>
+          <button type="button" onClick={onClose} className="sf-btn-close" aria-label="Đóng" title="Đóng">
+            <span className="material-symbols-outlined" aria-hidden="true">close</span>
           </button>
         )}
       </div>

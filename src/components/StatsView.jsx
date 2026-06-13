@@ -206,8 +206,8 @@ export default function StatsView({ entries, loading, onClose }) {
             <span className="material-symbols-outlined stats-header-icon" aria-hidden="true">analytics</span>
             <h2 className="stats-title">Thống kê bài viết</h2>
           </div>
-          <button className="stats-close" onClick={onClose} aria-label="Đóng thống kê">
-            <span className="material-symbols-outlined">close</span>
+          <button className="stats-close" onClick={onClose} aria-label="Đóng thống kê" title="Đóng thống kê">
+            <span className="material-symbols-outlined" aria-hidden="true">close</span>
           </button>
         </header>
 
@@ -266,8 +266,10 @@ export default function StatsView({ entries, loading, onClose }) {
                       setUnitFilter('');
                       setUnitSearch('');
                     }}
+                    title="Xóa tìm kiếm đơn vị"
+                    aria-label="Xóa tìm kiếm đơn vị"
                   >
-                    <span className="material-symbols-outlined">close</span>
+                    <span className="material-symbols-outlined" aria-hidden="true">close</span>
                   </button>
                 )}
               </div>
