@@ -1,0 +1,3 @@
+## 2024-06-15 - Dynamic Loading States & Static ARIA Labels
+**Learning:** Found that a static `aria-label` on a submit button (e.g., `aria-label="Gửi lưu bút"`) completely overrides dynamic inner text changes (like swapping "Gửi Lưu Bút" for "Đang xử lý..." during loading). This prevents screen readers from announcing critical asynchronous loading states to the user.
+**Action:** Remove static `aria-label` attributes from buttons that use dynamic text to convey state. Rely on the button's inner text, and use `aria-hidden="true"` on inner decorative icons (like Material Symbols) to prevent redundant noise.
