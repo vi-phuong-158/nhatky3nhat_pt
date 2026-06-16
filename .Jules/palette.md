@@ -1,0 +1,3 @@
+## 2024-06-16 - Make Interactive Divs Keyboard Accessible
+**Learning:** In React applications utilizing Framer Motion or custom UI patterns, interactive elements are frequently implemented using `div` or `motion.div` with an `onClick` handler. This makes them inaccessible to keyboard users (who navigate via Tab) and screen readers (which don't recognize the element as interactive).
+**Action:** When using a `div` as a button (e.g., clickable cards or lightboxes), always add `role="button"`, `tabIndex={0}` to place it in the tab order, an informative `aria-label` or `aria-labelledby`, and an `onKeyDown` event handler that triggers the action when the 'Enter' or 'Space' key is pressed.
