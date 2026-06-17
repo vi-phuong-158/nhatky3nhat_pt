@@ -115,7 +115,7 @@ function PostCard({ entry, onImageClick, onToast }) {
           onClick={() => setExpanded((p) => !p)}
           aria-expanded={expanded}
         >
-          <span className="material-symbols-outlined btn-expand-icon">
+          <span className="material-symbols-outlined btn-expand-icon" aria-hidden="true">
             {expanded ? 'expand_less' : 'expand_more'}
           </span>
           {expanded ? 'Thu gọn' : 'Xem chi tiết'}
@@ -172,7 +172,7 @@ function PostCard({ entry, onImageClick, onToast }) {
         <button
           className={`flower-btn ${isActive ? 'flower-active' : ''}`}
           onClick={handleFlower}
-          aria-label={isActive ? 'Bỏ tặng hoa' : 'Tặng hoa'}
+          aria-pressed={isActive}
         >
           <span className="flower-icon" aria-hidden="true">🌸</span>
           <span className="flower-label">
