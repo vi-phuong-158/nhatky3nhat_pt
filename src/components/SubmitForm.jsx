@@ -306,21 +306,28 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
 
         {/* Progress Bar & Submit */}
         {loading && uploadProgress > 0 && uploadProgress < 100 && (
-          <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4 mt-2">
+          <div
+            className="w-full bg-gray-200 rounded-full h-2.5 mb-4 mt-2"
+            role="progressbar"
+            aria-label="Tiến trình tải file"
+            aria-valuenow={uploadProgress}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
             <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${uploadProgress}%`, transition: 'width 0.3s ease' }}></div>
-            <p className="text-xs text-center text-gray-500 mt-1">Đang tải file: {uploadProgress}%</p>
+            <p className="text-xs text-center text-gray-500 mt-1" aria-hidden="true">Đang tải file: {uploadProgress}%</p>
           </div>
         )}
 
-        <button type="submit" className="sf-btn-submit" disabled={loading} aria-label="Gửi lưu bút">
+        <button type="submit" className="sf-btn-submit" disabled={loading}>
           {loading ? (
             <>
-              <span className="sf-spinner"></span>
+              <span className="sf-spinner" aria-hidden="true"></span>
               {uploadProgress > 0 && uploadProgress < 100 ? 'Đang tải file...' : 'Đang xử lý...'}
             </>
           ) : (
             <>
-              <span className="material-symbols-outlined">send</span>
+              <span className="material-symbols-outlined" aria-hidden="true">send</span>
               Gửi Lưu Bút
             </>
           )}

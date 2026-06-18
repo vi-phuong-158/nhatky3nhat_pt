@@ -1,0 +1,3 @@
+## 2025-02-12 - Accessible Progress Indicators and Dynamic Buttons
+**Learning:** Hardcoded `aria-label`s on buttons with dynamic state/text (like loading spinners or progress text) block screen readers from announcing the critical status updates taking place inside the button. Also, visual percentage indicators inside progress bars should be hidden (`aria-hidden="true"`) when using `aria-valuenow` to avoid redundant announcements.
+**Action:** When implementing loading or progress states inside buttons, let the inner text serve as the label and hide decorative elements. For progress bars, always combine `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`.
