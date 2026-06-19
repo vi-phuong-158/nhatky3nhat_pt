@@ -162,14 +162,14 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
 
       {/* ── Alerts ── */}
       {error && (
-        <div className="sf-alert sf-alert-error">
-          <span className="material-symbols-outlined sf-alert-icon">error</span>
+        <div className="sf-alert sf-alert-error" role="alert">
+          <span className="material-symbols-outlined sf-alert-icon" aria-hidden="true">error</span>
           {error}
         </div>
       )}
       {success && (
-        <div className="sf-alert sf-alert-success">
-          <span className="material-symbols-outlined sf-alert-icon">check_circle</span>
+        <div className="sf-alert sf-alert-success" role="status">
+          <span className="material-symbols-outlined sf-alert-icon" aria-hidden="true">check_circle</span>
           {success}
         </div>
       )}
@@ -306,9 +306,15 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
 
         {/* Progress Bar & Submit */}
         {loading && uploadProgress > 0 && uploadProgress < 100 && (
-          <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4 mt-2">
+          <div
+            className="w-full bg-gray-200 rounded-full h-2.5 mb-4 mt-2"
+            role="progressbar"
+            aria-valuenow={Math.round(uploadProgress)}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
             <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${uploadProgress}%`, transition: 'width 0.3s ease' }}></div>
-            <p className="text-xs text-center text-gray-500 mt-1">Đang tải file: {uploadProgress}%</p>
+            <p className="text-xs text-center text-gray-500 mt-1" aria-hidden="true">Đang tải file: {uploadProgress}%</p>
           </div>
         )}
 
