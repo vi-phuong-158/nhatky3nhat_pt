@@ -1,0 +1,3 @@
+## 2026-06-21 - Dynamic Buttons & Progress Bars
+**Learning:** Static `aria-label`s on buttons override inner dynamic text changes (e.g. 'Gửi lưu bút' overriding 'Đang xử lý...'). Additionally, custom `div`-based progress bars require explicit `role="progressbar"` and `aria-value*` properties to be understood by screen readers, and inner visual text like '50%' should be hidden with `aria-hidden="true"` to avoid redundancy.
+**Action:** Always omit static `aria-label`s on buttons that rely on text changes to convey loading/processing states. Ensure all custom progress indicators include full ARIA roles and state attributes.
