@@ -154,22 +154,22 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
           <h2 className="sf-title">Viết trang mới</h2>
         </div>
         {onClose && (
-          <button type="button" onClick={onClose} className="sf-btn-close" aria-label="Đóng">
-            <span className="material-symbols-outlined">close</span>
+          <button type="button" onClick={onClose} className="sf-btn-close" aria-label="Đóng" title="Đóng">
+            <span className="material-symbols-outlined" aria-hidden="true">close</span>
           </button>
         )}
       </div>
 
       {/* ── Alerts ── */}
       {error && (
-        <div className="sf-alert sf-alert-error">
-          <span className="material-symbols-outlined sf-alert-icon">error</span>
+        <div className="sf-alert sf-alert-error" role="alert" aria-live="assertive">
+          <span className="material-symbols-outlined sf-alert-icon" aria-hidden="true">error</span>
           {error}
         </div>
       )}
       {success && (
-        <div className="sf-alert sf-alert-success">
-          <span className="material-symbols-outlined sf-alert-icon">check_circle</span>
+        <div className="sf-alert sf-alert-success" role="status" aria-live="polite">
+          <span className="material-symbols-outlined sf-alert-icon" aria-hidden="true">check_circle</span>
           {success}
         </div>
       )}
@@ -312,15 +312,15 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
           </div>
         )}
 
-        <button type="submit" className="sf-btn-submit" disabled={loading} aria-label="Gửi lưu bút">
+        <button type="submit" className="sf-btn-submit" disabled={loading}>
           {loading ? (
             <>
-              <span className="sf-spinner"></span>
+              <span className="sf-spinner" aria-hidden="true"></span>
               {uploadProgress > 0 && uploadProgress < 100 ? 'Đang tải file...' : 'Đang xử lý...'}
             </>
           ) : (
             <>
-              <span className="material-symbols-outlined">send</span>
+              <span className="material-symbols-outlined" aria-hidden="true">send</span>
               Gửi Lưu Bút
             </>
           )}

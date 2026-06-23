@@ -1,0 +1,3 @@
+## 2025-02-23 - Submit Form Accessibility and Dynamic Buttons
+**Learning:** Static `aria-label` attributes on buttons containing dynamic text (like loading indicators) will override the dynamic text, preventing screen readers from announcing important status updates (e.g., "Đang tải file..."). Additionally, error and success alerts require `aria-live` and `role="alert"` / `role="status"` to be proactively announced.
+**Action:** Remove static `aria-label`s from buttons that change text dynamically based on state, and ensure validation messages use proper ARIA live regions so screen readers notice them immediately.
