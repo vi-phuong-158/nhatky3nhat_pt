@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowUpDown,
@@ -201,12 +201,30 @@ export default function StatsView({ entries, loading, onClose }) {
     return sortDir === 'asc' ? ChevronUp : ChevronDown;
   };
 
+  // Close dropdown or stats view on Escape
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        if (showUnitDropdown) {
+          setShowUnitDropdown(false);
+        } else if (onClose) {
+          onClose();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [showUnitDropdown, onClose]);
+
   return (
     <motion.div
       className="stats-overlay"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Thống kê bài viết"
     >
       <motion.div
         className="stats-container"
