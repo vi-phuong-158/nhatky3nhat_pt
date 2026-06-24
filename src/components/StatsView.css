@@ -98,8 +98,8 @@
   letter-spacing: 0.5px;
 }
 
-.stats-filter-label .material-symbols-outlined {
-  font-size: 16px;
+.stats-filter-label svg {
+  flex-shrink: 0;
 }
 
 /* Chips */
@@ -188,10 +188,6 @@
 
 .stats-unit-clear:hover {
   background: var(--surface-container);
-}
-
-.stats-unit-clear .material-symbols-outlined {
-  font-size: 18px;
 }
 
 .stats-unit-dropdown {
@@ -376,9 +372,9 @@
   margin: 0 0 14px;
 }
 
-.stats-section-title .material-symbols-outlined {
-  font-size: 20px;
+.stats-section-title svg {
   color: var(--primary);
+  flex-shrink: 0;
 }
 
 .stats-chart {
@@ -500,6 +496,11 @@
   font-size: 16px;
   vertical-align: middle;
   margin-left: 2px;
+}
+
+.stats-th-flower-icon {
+  vertical-align: middle;
+  color: #e91e90;
 }
 
 .stats-tr {

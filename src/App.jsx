@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { CircleAlert, CircleCheck, Info, X } from 'lucide-react';
 import './App.css';
 import ScrapbookViewer from './components/ScrapbookViewer';
 import { fetchEntries, fetchAllEntries, fetchAlbumImages } from './services/api';
@@ -16,7 +17,7 @@ function Toast({ message, type, onClose }) {
     return () => clearTimeout(timer);
   }, [onClose]);
 
-  const icon = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+  const ToastIcon = type === 'success' ? CircleCheck : type === 'error' ? CircleAlert : Info;
 
   return (
     <motion.div
@@ -27,10 +28,10 @@ function Toast({ message, type, onClose }) {
       role="alert"
       aria-live="polite"
     >
-      <span className="material-symbols-outlined toast-icon" aria-hidden="true">{icon}</span>
+      <ToastIcon className="toast-icon" size={20} aria-hidden="true" />
       <span className="toast-message">{message}</span>
       <button className="toast-close" onClick={onClose} aria-label="Đóng thông báo">
-        <span className="material-symbols-outlined">close</span>
+        <X size={18} aria-hidden="true" />
       </button>
     </motion.div>
   );

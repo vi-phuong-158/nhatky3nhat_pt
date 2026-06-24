@@ -1,5 +1,19 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowUpDown,
+  BarChart3,
+  Building2,
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  Flower2,
+  LineChart,
+  Table,
+  Users,
+  X,
+} from 'lucide-react';
 import { donViList } from '../constants';
 import './StatsView.css';
 
@@ -182,9 +196,9 @@ export default function StatsView({ entries, loading, onClose }) {
     setShowUnitDropdown(false);
   }, []);
 
-  const sortIcon = (col) => {
-    if (sortCol !== col) return 'unfold_more';
-    return sortDir === 'asc' ? 'expand_less' : 'expand_more';
+  const getSortIcon = (col) => {
+    if (sortCol !== col) return ArrowUpDown;
+    return sortDir === 'asc' ? ChevronUp : ChevronDown;
   };
 
   return (
@@ -203,11 +217,11 @@ export default function StatsView({ entries, loading, onClose }) {
         {/* Header */}
         <header className="stats-header">
           <div className="stats-header-left">
-            <span className="material-symbols-outlined stats-header-icon" aria-hidden="true">analytics</span>
+            <LineChart className="stats-header-icon" size={26} aria-hidden="true" />
             <h2 className="stats-title">Thống kê bài viết</h2>
           </div>
           <button className="stats-close" onClick={onClose} aria-label="Đóng thống kê">
-            <span className="material-symbols-outlined">close</span>
+            <X size={20} aria-hidden="true" />
           </button>
         </header>
 
@@ -216,7 +230,7 @@ export default function StatsView({ entries, loading, onClose }) {
           {/* Time filter */}
           <div className="stats-filter-group">
             <label className="stats-filter-label">
-              <span className="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+              <Calendar size={16} aria-hidden="true" />
               Thời gian
             </label>
             <div className="stats-chips">
@@ -242,7 +256,7 @@ export default function StatsView({ entries, loading, onClose }) {
           {/* Unit filter */}
           <div className="stats-filter-group">
             <label className="stats-filter-label">
-              <span className="material-symbols-outlined" aria-hidden="true">apartment</span>
+              <Building2 size={16} aria-hidden="true" />
               Đơn vị
             </label>
             <div className="stats-unit-filter">
@@ -267,7 +281,7 @@ export default function StatsView({ entries, loading, onClose }) {
                       setUnitSearch('');
                     }}
                   >
-                    <span className="material-symbols-outlined">close</span>
+                    <X size={18} aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -302,21 +316,21 @@ export default function StatsView({ entries, loading, onClose }) {
         {/* Summary cards */}
         <div className="stats-summary">
           <div className="stats-card stats-card-total">
-            <span className="material-symbols-outlined stats-card-icon">article</span>
+            <FileText className="stats-card-icon" size={28} aria-hidden="true" />
             <div className="stats-card-content">
               <span className="stats-card-value">{summary.total}</span>
               <span className="stats-card-label">Tổng bài viết</span>
             </div>
           </div>
           <div className="stats-card stats-card-units">
-            <span className="material-symbols-outlined stats-card-icon">groups</span>
+            <Users className="stats-card-icon" size={28} aria-hidden="true" />
             <div className="stats-card-content">
               <span className="stats-card-value">{summary.unitCount}</span>
               <span className="stats-card-label">Đơn vị</span>
             </div>
           </div>
           <div className="stats-card stats-card-flowers">
-            <span className="material-symbols-outlined stats-card-icon">local_florist</span>
+            <Flower2 className="stats-card-icon" size={28} aria-hidden="true" />
             <div className="stats-card-content">
               <span className="stats-card-value">{summary.totalFlowers}</span>
               <span className="stats-card-label">Tổng hoa</span>
@@ -345,7 +359,7 @@ export default function StatsView({ entries, loading, onClose }) {
         {topUnits.length > 0 && (
           <section className="stats-chart-section">
             <h3 className="stats-section-title">
-              <span className="material-symbols-outlined" aria-hidden="true">leaderboard</span>
+              <BarChart3 size={20} aria-hidden="true" />
               Top 10 đơn vị nổi bật
             </h3>
             <div className="stats-chart">
@@ -371,7 +385,7 @@ export default function StatsView({ entries, loading, onClose }) {
         {/* Full table */}
         <section className="stats-table-section">
           <h3 className="stats-section-title">
-            <span className="material-symbols-outlined" aria-hidden="true">table_chart</span>
+            <Table size={20} aria-hidden="true" />
             Chi tiết theo đơn vị
           </h3>
           <div className="stats-table-wrapper">
@@ -381,21 +395,21 @@ export default function StatsView({ entries, loading, onClose }) {
                   <th className="stats-th stats-th-stt">#</th>
                   <th className="stats-th stats-th-name" onClick={() => handleSort('name')}>
                     Đơn vị
-                    <span className="material-symbols-outlined stats-sort-icon">{sortIcon('name')}</span>
+                    {React.createElement(getSortIcon('name'), { className: 'stats-sort-icon', size: 16, 'aria-hidden': 'true' })}
                   </th>
                   <th className="stats-th stats-th-num" onClick={() => handleSort('total')}>
                     Tổng
-                    <span className="material-symbols-outlined stats-sort-icon">{sortIcon('total')}</span>
+                    {React.createElement(getSortIcon('total'), { className: 'stats-sort-icon', size: 16, 'aria-hidden': 'true' })}
                   </th>
                   {CRITERIA_LIST.map((c) => (
                     <th key={c} className="stats-th stats-th-num" onClick={() => handleSort(c)}>
                       {c.replace(' nhất', '')}
-                      <span className="material-symbols-outlined stats-sort-icon">{sortIcon(c)}</span>
+                      {React.createElement(getSortIcon(c), { className: 'stats-sort-icon', size: 16, 'aria-hidden': 'true' })}
                     </th>
                   ))}
                   <th className="stats-th stats-th-num" onClick={() => handleSort('flowers')}>
-                    🌸
-                    <span className="material-symbols-outlined stats-sort-icon">{sortIcon('flowers')}</span>
+                    <Flower2 className="stats-th-flower-icon" size={15} aria-hidden="true" />
+                    {React.createElement(getSortIcon('flowers'), { className: 'stats-sort-icon', size: 16, 'aria-hidden': 'true' })}
                   </th>
                 </tr>
               </thead>

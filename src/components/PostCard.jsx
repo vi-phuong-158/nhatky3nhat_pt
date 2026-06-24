@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import DOMPurify from 'dompurify';
+import { Award, ChevronDown, ChevronUp, Clock, Flower2, MessageSquareText } from 'lucide-react';
 import { sendFlower } from '../services/api';
 
 /* ─── Utilities ─── */
@@ -35,9 +36,9 @@ const timeAgo = (isoString) => {
 const getBadgeClass = (tieuChi) => {
   if (!tieuChi) return 'badge-default';
   const lower = tieuChi.toLowerCase();
-  if (lower.includes('nhất 1') || lower.includes('nhat 1')) return 'badge-nhat1';
-  if (lower.includes('nhất 2') || lower.includes('nhat 2')) return 'badge-nhat2';
-  if (lower.includes('nhất 3') || lower.includes('nhat 3')) return 'badge-nhat3';
+  if (lower.includes('kỷ luật') || lower.includes('ky luat')) return 'badge-nhat1';
+  if (lower.includes('trung thành') || lower.includes('trung thanh')) return 'badge-nhat2';
+  if (lower.includes('gần dân') || lower.includes('gan dan')) return 'badge-nhat3';
   return 'badge-default';
 };
 
@@ -86,7 +87,9 @@ function PostCard({ entry, onImageClick, onToast }) {
   }, [flowerAnimating, entry.id, onToast]);
 
   return (
-    <motion.article className="post-card glass-card blue-glow" variants={cardVariants}>
+    <Motion.article className="post-card glass-card blue-glow" variants={cardVariants}>
+      <span className="post-tape post-tape-left" aria-hidden="true" />
+      <span className="post-tape post-tape-right" aria-hidden="true" />
       {/* Header */}
       <div className="post-header">
         <div className="post-header-left">
@@ -95,17 +98,17 @@ function PostCard({ entry, onImageClick, onToast }) {
             <span className="post-unit">{entry.donVi}</span>
           </div>
         </div>
-        <div className="post-header-right">
-          <span className="px-2 py-0.5 rounded-[2px] border border-blue-400/40 bg-blue-50/60 backdrop-blur-md text-[#52B5E9] text-[11px] font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[14px]">military_tech</span>
-            <span className="leading-none">{entry.tieuChi}</span>
-          </span>
-        </div>
       </div>
 
       {/* Body */}
       <div className="post-body">
-        <h3 className="post-title">{entry.tieuDe}</h3>
+        <div className="post-title-row">
+          <h3 className="post-title">{entry.tieuDe}</h3>
+          <span className={`post-criteria-badge ${getBadgeClass(entry.tieuChi)}`}>
+            <Award size={14} aria-hidden="true" />
+            <span className="post-criteria-label">{entry.tieuChi}</span>
+          </span>
+        </div>
         <div
           className={`post-text ${expanded ? '' : 'clamped'}`}
           dangerouslySetInnerHTML={{ __html: safeHtml }}
@@ -115,9 +118,11 @@ function PostCard({ entry, onImageClick, onToast }) {
           onClick={() => setExpanded((p) => !p)}
           aria-expanded={expanded}
         >
-          <span className="material-symbols-outlined btn-expand-icon">
-            {expanded ? 'expand_less' : 'expand_more'}
-          </span>
+          {expanded ? (
+            <ChevronUp className="btn-expand-icon" size={18} aria-hidden="true" />
+          ) : (
+            <ChevronDown className="btn-expand-icon" size={18} aria-hidden="true" />
+          )}
           {expanded ? 'Thu gọn' : 'Xem chi tiết'}
         </button>
       </div>
@@ -126,43 +131,45 @@ function PostCard({ entry, onImageClick, onToast }) {
       {rawUrl && (
         <div className="post-image-wrapper">
           {isVideo ? (
-            <div className="flex flex-col w-full px-[18px] pb-4 pt-2 relative z-10">
-              <div className="rounded-md overflow-hidden shadow-sm border border-black/10 bg-black">
-                <iframe 
-                  src={mediaUrl} 
-                  className="w-full aspect-video border-none" 
-                  allow="autoplay; fullscreen" 
+            <div className="post-video-box">
+              <div className="post-video-inner">
+                <iframe
+                  src={mediaUrl}
+                  className="post-video-frame"
+                  allow="autoplay; fullscreen"
                   allowFullScreen
                   title="Video Kỷ Niệm"
                 ></iframe>
               </div>
-              <a 
-                href={mediaUrl} 
-                target="_blank" 
+              <a
+                href={mediaUrl}
+                target="_blank"
                 rel="noreferrer"
-                className="mt-3 text-center text-[12px] font-semibold text-[#52B5E9] hover:text-[#3da0d6] hover:underline"
+                className="post-video-link"
               >
                 Mở Video trong thẻ mới (Nếu video đang bị nghẽn)
               </a>
             </div>
           ) : (
-            <img
-              src={mediaUrl}
-              alt={`Ảnh hoạt động: ${entry.tieuDe}`}
-              loading="lazy"
-              className="post-image"
-              onClick={() => onImageClick && onImageClick({ 
-                src: mediaUrl, 
-                alt: entry.tieuDe,
-                author: entry.hoTen,
-                unit: entry.donVi
-              })}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src =
-                  'https://placehold.co/600x400/ebeef4/005eaa.png?text=Loi+Hien+Thi+Anh';
-              }}
-            />
+            <div className="post-polaroid-frame">
+              <img
+                src={mediaUrl}
+                alt={`Ảnh hoạt động: ${entry.tieuDe}`}
+                loading="lazy"
+                className="post-image"
+                onClick={() => onImageClick && onImageClick({
+                  src: mediaUrl,
+                  alt: entry.tieuDe,
+                  author: entry.hoTen,
+                  unit: entry.donVi
+                })}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    'https://placehold.co/600x400/ebeef4/005eaa.png?text=Loi+Hien+Thi+Anh';
+                }}
+              />
+            </div>
           )}
         </div>
       )}
@@ -174,7 +181,7 @@ function PostCard({ entry, onImageClick, onToast }) {
           onClick={handleFlower}
           aria-label={isActive ? 'Bỏ tặng hoa' : 'Tặng hoa'}
         >
-          <span className="flower-icon" aria-hidden="true">🌸</span>
+          <Flower2 className="flower-icon" size={18} aria-hidden="true" />
           <span className="flower-label">
             {isActive ? 'Đã tặng hoa' : 'Tặng hoa'}
           </span>
@@ -182,24 +189,24 @@ function PostCard({ entry, onImageClick, onToast }) {
           {flowerAnimating && (
             <span className="flower-petals" aria-hidden="true">
               {[...Array(6)].map((_, i) => (
-                <span key={i} className={`petal petal-${i + 1}`}>🌸</span>
+                <Flower2 key={i} className={`petal petal-${i + 1}`} size={16} />
               ))}
             </span>
           )}
         </button>
 
         <span className="post-timestamp">
-          <span className="material-symbols-outlined post-footer-icon" aria-hidden="true">schedule</span>
+          <Clock className="post-footer-icon" size={17} aria-hidden="true" />
           {timeAgo(entry.thoiGian)}
         </span>
         {entry.nhanXet && (
           <span className="post-comment">
-            <span className="material-symbols-outlined post-footer-icon" aria-hidden="true">rate_review</span>
+            <MessageSquareText className="post-footer-icon" size={17} aria-hidden="true" />
             {entry.nhanXet}
           </span>
         )}
       </div>
-    </motion.article>
+    </Motion.article>
   );
 }
 

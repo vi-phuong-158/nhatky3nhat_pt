@@ -55,10 +55,6 @@
   transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
-.sf-btn-close .material-symbols-outlined {
-  font-size: 20px;
-}
-
 .sf-btn-close:hover {
   background: var(--surface-container, #ebeef4);
   color: #1c1b1f;
@@ -300,10 +296,6 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-.sf-btn-submit .material-symbols-outlined {
-  font-size: 20px;
-}
-
 .sf-btn-submit:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow:
@@ -479,4 +471,60 @@
 [data-theme="dark"] .sf-btn-close:hover {
   background: var(--surface-container);
   color: var(--text-primary);
+}
+
+
+/* ─── Class thay cho Tailwind (đã bỏ Tailwind CDN) ─── */
+.sf-file-input {
+  width: 100%;
+}
+.sf-file-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+}
+.sf-file-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #15803d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+.sf-file-cancel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #dc2626;
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.sf-file-cancel:hover {
+  color: #991b1b;
+}
+.sf-progress-track {
+  width: 100%;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  height: 10px;
+  margin: 8px 0 16px;
+}
+.sf-progress-bar {
+  background: #2563eb;
+  height: 10px;
+  border-radius: 9999px;
+}
+.sf-progress-text {
+  font-size: 12px;
+  text-align: center;
+  color: #6b7280;
+  margin-top: 4px;
 }

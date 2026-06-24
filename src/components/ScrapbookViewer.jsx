@@ -1,5 +1,22 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  BookOpen,
+  Bot,
+  CircleCheck,
+  CloudOff,
+  Home,
+  Images,
+  Moon,
+  RefreshCw,
+  Search,
+  SearchX,
+  SquarePen,
+  Sun,
+  TrendingUp,
+  WifiOff,
+  X,
+} from 'lucide-react';
 import PostCard from './PostCard';
 import './ScrapbookViewer.css';
 
@@ -133,13 +150,15 @@ export default function ScrapbookViewer({
   const handleImageClick = useCallback((url) => setSelectedImage(url), []);
 
   const hasFilters = searchTerm || filterCriteria;
+  const lightboxSrc = typeof selectedImage === 'string' ? selectedImage : selectedImage?.src;
+  const lightboxAlt = typeof selectedImage === 'string' ? 'Phóng to' : selectedImage?.alt || 'Phóng to';
 
   return (
     <div className="feed-container">
       {/* ─── Offline Banner ─── */}
       {!isOnline && (
         <div className="offline-banner" role="alert">
-          <span className="material-symbols-outlined" aria-hidden="true">wifi_off</span>
+          <WifiOff size={18} aria-hidden="true" />
           Mất kết nối mạng
         </div>
       )}
@@ -155,7 +174,7 @@ export default function ScrapbookViewer({
             title={darkMode ? 'Chế độ sáng' : 'Chế độ tối'}
             style={{ padding: '0 12px', minWidth: '40px' }}
           >
-            <span className="material-symbols-outlined" aria-hidden="true">{darkMode ? 'light_mode' : 'dark_mode'}</span>
+            {darkMode ? <Sun size={20} aria-hidden="true" /> : <Moon size={20} aria-hidden="true" />}
           </button>
         </div>
       </header>
@@ -163,10 +182,10 @@ export default function ScrapbookViewer({
       {/* ─── SEARCH & FILTER BAR ─── */}
       <div className="feed-toolbar glass-card" role="search">
         <div className="feed-search-wrapper">
-          <span className="material-symbols-outlined feed-search-icon" aria-hidden="true">search</span>
+          <Search className="feed-search-icon" size={20} aria-hidden="true" />
           <input
             type="search"
-            className="feed-search-input glass-card bg-white/40 border border-white/50 shadow-inner text-slate-800 focus:bg-white/60 focus:ring-2 focus:ring-blue-500/40 focus:outline-none"
+            className="feed-search-input glass-card"
             placeholder="Tìm bài viết..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -174,31 +193,31 @@ export default function ScrapbookViewer({
           />
           {searchTerm && (
             <button className="feed-search-clear" onClick={() => onSearchChange('')} aria-label="Xóa tìm kiếm">
-              <span className="material-symbols-outlined">close</span>
+              <X size={18} aria-hidden="true" />
             </button>
           )}
         </div>
         <div className="feed-filters">
           <select
-            className="feed-filter-select glass-card bg-white/40 border border-white/50 shadow-inner text-slate-800 focus:bg-white/60 focus:ring-2 focus:ring-blue-500/40 focus:outline-none"
+            className="feed-filter-select glass-card"
             value={filterCriteria}
             onChange={(e) => setFilterCriteria(e.target.value)}
             aria-label="Lọc theo tiêu chí"
           >
-            <option value="" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Tất cả tiêu chí</option>
-            <option value="Kỷ luật nhất" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Kỷ luật nhất</option>
-            <option value="Trung thành nhất" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Trung thành nhất</option>
-            <option value="Gần dân nhất" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Gần dân nhất</option>
+            <option value="">Tất cả tiêu chí</option>
+            <option value="Kỷ luật nhất">Kỷ luật nhất</option>
+            <option value="Trung thành nhất">Trung thành nhất</option>
+            <option value="Gần dân nhất">Gần dân nhất</option>
           </select>
           <select
-            className="feed-filter-select glass-card bg-white/40 border border-white/50 shadow-inner text-slate-800 focus:bg-white/60 focus:ring-2 focus:ring-blue-500/40 focus:outline-none"
+            className="feed-filter-select glass-card"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             aria-label="Sắp xếp bài viết"
           >
-            <option value="newest" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Mới nhất</option>
-            <option value="oldest" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Cũ nhất</option>
-            <option value="flowers" className="bg-white/95 text-slate-800 dark:bg-slate-800 dark:text-gray-100">Nhiều hoa nhất</option>
+            <option value="newest">Mới nhất</option>
+            <option value="oldest">Cũ nhất</option>
+            <option value="flowers">Nhiều hoa nhất</option>
           </select>
         </div>
       </div>
@@ -223,11 +242,11 @@ export default function ScrapbookViewer({
         {/* Error state with retry */}
         {!loading && error && (
           <div className="feed-empty feed-error-state">
-            <span className="material-symbols-outlined feed-empty-icon">cloud_off</span>
+            <CloudOff className="feed-empty-icon" size={56} aria-hidden="true" />
             <p>{error}</p>
             {onRetry && (
               <button className="feed-retry-btn" onClick={onRetry}>
-                <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
+                <RefreshCw size={18} aria-hidden="true" />
                 Thử lại
               </button>
             )}
@@ -237,9 +256,11 @@ export default function ScrapbookViewer({
         {/* Empty state */}
         {!loading && !error && displayEntries.length === 0 && (
           <div className="feed-empty">
-            <span className="material-symbols-outlined feed-empty-icon">
-              {hasFilters ? 'search_off' : 'auto_stories'}
-            </span>
+            {hasFilters ? (
+              <SearchX className="feed-empty-icon" size={56} aria-hidden="true" />
+            ) : (
+              <BookOpen className="feed-empty-icon" size={56} aria-hidden="true" />
+            )}
             <p>{hasFilters ? 'Không tìm thấy bài viết phù hợp.' : 'Chưa có bài viết nào...'}</p>
             {hasFilters && (
               <button className="feed-retry-btn" onClick={() => { onSearchChange(''); setFilterCriteria(''); setSortBy('newest'); }}>
@@ -284,7 +305,7 @@ export default function ScrapbookViewer({
         {/* ─── Hết bài viết ─── */}
         {!loading && !error && !hasMore && entries.length > 0 && !hasFilters && (
           <div className="feed-end-message">
-            <span className="material-symbols-outlined" aria-hidden="true">check_circle</span>
+            <CircleCheck size={18} aria-hidden="true" />
             Bạn đã xem hết tất cả bài viết
           </div>
         )}
@@ -292,7 +313,7 @@ export default function ScrapbookViewer({
 
       {/* ─── LIGHTBOX ─── */}
       <AnimatePresence>
-        {selectedImage && (
+        {lightboxSrc && (
           <motion.div
             className="lightbox-overlay"
             onClick={() => setSelectedImage(null)}
@@ -308,11 +329,11 @@ export default function ScrapbookViewer({
               onClick={() => setSelectedImage(null)}
               aria-label="Đóng ảnh phóng to"
             >
-              <span className="material-symbols-outlined">close</span>
+              <X size={22} aria-hidden="true" />
             </button>
             <motion.img
-              src={selectedImage}
-              alt="Phóng to"
+              src={lightboxSrc}
+              alt={lightboxAlt}
               className="lightbox-image"
               onClick={(e) => e.stopPropagation()}
               initial={{ scale: 0.85, opacity: 0 }}
@@ -328,33 +349,33 @@ export default function ScrapbookViewer({
         <div className="btm-nav-inner">
           {/* 1. Trang chủ */}
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="btm-nav-item">
-            <span className="material-symbols-outlined btm-nav-icon" aria-hidden="true">home</span>
+            <Home className="btm-nav-icon" size={22} aria-hidden="true" />
             <span className="btm-nav-label">Trang chủ</span>
           </button>
 
           {/* 2. Album ảnh */}
           <button onClick={onOpenAlbum} className="btm-nav-item">
-            <span className="material-symbols-outlined btm-nav-icon" aria-hidden="true">photo_library</span>
+            <Images className="btm-nav-icon" size={22} aria-hidden="true" />
             <span className="btm-nav-label">Album</span>
           </button>
 
           {/* 3. Viết bài (Nổi bật - giữa) */}
           <div className="btm-nav-center">
             <button onClick={onOpenForm} className="btm-nav-fab" aria-label="Viết bài mới">
-              <span className="material-symbols-outlined text-[26px]">edit</span>
+              <SquarePen size={26} aria-hidden="true" />
             </button>
             <span className="btm-nav-label btm-nav-label-primary">Viết bài</span>
           </div>
 
           {/* 4. Trợ lý AI */}
           <a href="https://notebooklm.google.com/notebook/ad20daef-a080-4103-a6e8-3ee5271866ed" target="_blank" rel="noopener noreferrer" className="btm-nav-item">
-            <span className="material-symbols-outlined btm-nav-icon" aria-hidden="true">smart_toy</span>
+            <Bot className="btm-nav-icon" size={22} aria-hidden="true" />
             <span className="btm-nav-label">Trợ lý AI</span>
           </a>
 
           {/* 5. Thống kê */}
           <button onClick={onOpenStats} className="btm-nav-item">
-            <span className="material-symbols-outlined btm-nav-icon" aria-hidden="true">insights</span>
+            <TrendingUp className="btm-nav-icon" size={22} aria-hidden="true" />
             <span className="btm-nav-label">Thống kê</span>
           </button>
         </div>

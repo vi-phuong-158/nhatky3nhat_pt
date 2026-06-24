@@ -319,10 +319,6 @@ p, span, input, button, textarea {
   opacity: 1;
 }
 
-.toast-close .material-symbols-outlined {
-  font-size: 18px;
-}
-
 /* ═══════════════════════════════════════════════════════
    DARK MODE FAB
    ═══════════════════════════════════════════════════════ */
@@ -354,8 +350,9 @@ p, span, input, button, textarea {
   transform: scale(0.95);
 }
 
-.fab-dark-mode .material-symbols-outlined {
-  font-size: 22px;
+.fab-dark-mode svg {
+  width: 22px;
+  height: 22px;
 }
 
 /* ─── DRAWER (giữ nguyên) ─── */

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ImageOff, Images, X } from 'lucide-react';
 import './AlbumView.css';
 
 /* ─── Card animation ─── */
@@ -36,7 +37,7 @@ export default function AlbumView({ images, loading, onClose }) {
         {/* Header */}
         <header className="album-header">
           <div className="album-header-left">
-            <span className="material-symbols-outlined album-header-icon" aria-hidden="true">photo_library</span>
+            <Images className="album-header-icon" size={26} aria-hidden="true" />
             <div>
               <h2 className="album-title">Album ảnh</h2>
               {!loading && images.length > 0 && (
@@ -45,7 +46,7 @@ export default function AlbumView({ images, loading, onClose }) {
             </div>
           </div>
           <button className="album-close" onClick={onClose} aria-label="Đóng album">
-            <span className="material-symbols-outlined">close</span>
+            <X size={20} aria-hidden="true" />
           </button>
         </header>
 
@@ -60,7 +61,7 @@ export default function AlbumView({ images, loading, onClose }) {
         {/* Empty state */}
         {!loading && images.length === 0 && (
           <div className="album-empty">
-            <span className="material-symbols-outlined album-empty-icon">image_not_supported</span>
+            <ImageOff className="album-empty-icon" size={48} aria-hidden="true" />
             <p>Chưa có ảnh nào trong album</p>
           </div>
         )}
@@ -112,7 +113,7 @@ export default function AlbumView({ images, loading, onClose }) {
             onClick={handleClose}
           >
             <button className="album-lightbox-close" onClick={handleClose} aria-label="Đóng ảnh">
-              <span className="material-symbols-outlined">close</span>
+              <X size={22} aria-hidden="true" />
             </button>
             <motion.img
               src={selectedImg.url}
