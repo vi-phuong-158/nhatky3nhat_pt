@@ -55,3 +55,21 @@
 - **File đã sửa:** `src/components/PostCard.jsx`, `src/components/ScrapbookViewer.css`.
 - **Lý do:** Triển khai bản hiển thị mỗi bài viết như một trang nhật ký/trang vở trang trí, ưu tiên trải nghiệm đọc trên mobile và sửa đúng yêu cầu font tiếng Việt.
 - **Kiểm tra:** `npm run build` PASS; `npx eslint src/components/PostCard.jsx` PASS; `git diff --check -- src/components/PostCard.jsx src/components/ScrapbookViewer.css` PASS; kiểm tra browser mobile 390px xác nhận app mở được, nhưng dữ liệu feed từ máy chủ đang lỗi không ổn định nên chưa đo được card thật trong live feed. `npm run lint` toàn repo bị timeout/kẹt sau 4 phút trong môi trường hiện tại.
+---
+
+## [2026-06-24] Text home + modal PA01
+
+- **Agent:** Codex
+- **Thay đổi:** Đổi tên đơn vị hiển thị ở trang bìa thành `Chi hội phụ nữ Phòng PA01`. Phần modal chào mừng bỏ tên cá nhân và để một dòng chung `Chi hội phụ nữ Phòng PA01`.
+- **File đã sửa:** `src/components/BookCover.jsx`, `index.html`.
+- **Lý do:** Đồng bộ thông tin nhận diện ở màn hình trang chủ và modal chào mừng theo đơn vị được yêu cầu.
+- **Kiểm tra:** `npm run build` PASS; `rg` xác nhận chuỗi mới có mặt ở `src/components/BookCover.jsx` và `index.html`; `git diff --check -- src/components/BookCover.jsx index.html` PASS.
+---
+
+## [2026-06-24] Sync meta description PA01
+
+- **Agent:** Codex
+- **Thay đổi:** Đổi `meta description` trong `index.html` từ tên cấp tỉnh sang `Chi hội Phụ nữ Phòng PA01`.
+- **File đã sửa:** `index.html`.
+- **Lý do:** Tránh còn sót tên đơn vị cũ ở metadata user-facing sau khi đã đổi text trang bìa và modal.
+- **Kiểm tra:** `rg` không còn chuỗi cũ trong `src/` và `index.html`; `git diff --check -- index.html` PASS.
