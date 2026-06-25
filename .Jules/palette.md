@@ -1,0 +1,4 @@
+## 2024-06-25 - Added Accessibility to SubmitForm Progress Bar and Form Errors
+
+**Learning:** When building complex forms in React with custom loading states (like file uploads), using native `required` combined with `aria-required="true"` on inputs greatly improves form screen reader experience. Furthermore, standardizing custom progress bars requires adding `role="progressbar"` alongside `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`.
+**Action:** Always ensure custom progress visualizations include proper ARIA roles and validation states. Also, use `role="alert"` or `role="status"` on form feedback messages to ensure users using screen readers hear validation outcomes immediately.

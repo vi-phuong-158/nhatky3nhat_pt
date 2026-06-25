@@ -175,13 +175,13 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
 
       {/* ── Alerts ── */}
       {error && (
-        <div className="sf-alert sf-alert-error">
+        <div className="sf-alert sf-alert-error" role="alert" aria-live="assertive">
           <CircleAlert className="sf-alert-icon" size={20} aria-hidden="true" />
           {error}
         </div>
       )}
       {success && (
-        <div className="sf-alert sf-alert-success">
+        <div className="sf-alert sf-alert-success" role="status" aria-live="polite">
           <CircleCheck className="sf-alert-icon" size={20} aria-hidden="true" />
           {success}
         </div>
@@ -196,7 +196,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
           </label>
           <div className="sf-input-wrapper">
             <User className="sf-input-icon" size={20} aria-hidden="true" />
-            <input id="input-name" type="text" ref={nameRef} placeholder="Vd: Nguyễn Thị Lan" disabled={loading} />
+            <input id="input-name" type="text" ref={nameRef} placeholder="Vd: Nguyễn Thị Lan" disabled={loading} required aria-required="true" />
           </div>
         </div>
 
@@ -223,6 +223,8 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
               ref={unitRef} 
               placeholder="Chọn hoặc gõ tên đơn vị..." 
               disabled={loading}
+              required
+              aria-required="true"
               onBlur={(e) => {
                 const val = e.target.value;
                 if (val && !donViList.includes(val)) {
@@ -246,7 +248,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
           </label>
           <div className="sf-input-wrapper">
             <Type className="sf-input-icon" size={20} aria-hidden="true" />
-            <input id="input-title" type="text" ref={titleRef} placeholder="Nhập tiêu đề..." disabled={loading} />
+            <input id="input-title" type="text" ref={titleRef} placeholder="Nhập tiêu đề..." disabled={loading} required aria-required="true" />
           </div>
         </div>
 
@@ -257,7 +259,7 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
           </label>
           <div className="sf-input-wrapper sf-select-wrapper">
             <Award className="sf-input-icon" size={20} aria-hidden="true" />
-            <select id="select-criteria" ref={criteriaRef} disabled={loading}>
+            <select id="select-criteria" ref={criteriaRef} disabled={loading} required aria-required="true">
               <option value="">-- Chọn tiêu chí --</option>
               <option value="Kỷ luật nhất">Kỷ luật nhất</option>
               <option value="Trung thành nhất">Trung thành nhất</option>
@@ -277,6 +279,8 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
             rows="5" 
             placeholder="Hôm nay tôi đã làm..." 
             disabled={loading}
+            required
+            aria-required="true"
           ></textarea>
         </div>
 
@@ -319,9 +323,9 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
 
         {/* Progress Bar & Submit */}
         {loading && uploadProgress > 0 && uploadProgress < 100 && (
-          <div className="sf-progress-track">
+          <div className="sf-progress-track" role="progressbar" aria-valuenow={uploadProgress} aria-valuemin={0} aria-valuemax={100} aria-label="Tiến trình tải file">
             <div className="sf-progress-bar" style={{ width: `${uploadProgress}%`, transition: 'width 0.3s ease' }}></div>
-            <p className="sf-progress-text">Đang tải file: {uploadProgress}%</p>
+            <p className="sf-progress-text" aria-hidden="true">Đang tải file: {uploadProgress}%</p>
           </div>
         )}
 
