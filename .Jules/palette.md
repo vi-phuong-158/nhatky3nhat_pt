@@ -1,0 +1,3 @@
+## 2024-06-26 - Keyboard navigation and ARIA in Modals
+**Learning:** This codebase uses multiple custom overlay/modal components (like AlbumView, StatsView) using Framer Motion without a centralized modal hook. As a result, critical accessibility attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`) and keyboard interactions (`Escape` to close) are often missing and must be manually implemented in each component.
+**Action:** When adding new modals, overlays, or lightboxes to this project, ensure they manually include a component-level `useEffect` binding for the `Escape` key, as well as proper ARIA attributes linking the container to its title.

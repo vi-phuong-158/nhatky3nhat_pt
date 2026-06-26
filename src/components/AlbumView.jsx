@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageOff, Images, X } from 'lucide-react';
 import './AlbumView.css';
@@ -19,11 +19,30 @@ const imgVariants = {
 export default function AlbumView({ images, loading, onClose }) {
   const [selectedImg, setSelectedImg] = useState(null);
 
+
   const handleClose = useCallback(() => setSelectedImg(null), []);
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        if (selectedImg) {
+          setSelectedImg(null);
+        } else {
+          onClose();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [selectedImg, onClose]);
+
 
   return (
     <motion.div
       className="album-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="album-title"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -39,7 +58,7 @@ export default function AlbumView({ images, loading, onClose }) {
           <div className="album-header-left">
             <Images className="album-header-icon" size={26} aria-hidden="true" />
             <div>
-              <h2 className="album-title">Album ảnh</h2>
+              <h2 id="album-title" className="album-title">Album ảnh</h2>
               {!loading && images.length > 0 && (
                 <span className="album-count">{images.length} ảnh</span>
               )}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowUpDown,
@@ -196,6 +196,20 @@ export default function StatsView({ entries, loading, onClose }) {
     setShowUnitDropdown(false);
   }, []);
 
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        if (showUnitDropdown) {
+          setShowUnitDropdown(false);
+        } else {
+          onClose();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [showUnitDropdown, onClose]);
+
   const getSortIcon = (col) => {
     if (sortCol !== col) return ArrowUpDown;
     return sortDir === 'asc' ? ChevronUp : ChevronDown;
@@ -204,6 +218,9 @@ export default function StatsView({ entries, loading, onClose }) {
   return (
     <motion.div
       className="stats-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="stats-title"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -218,7 +235,7 @@ export default function StatsView({ entries, loading, onClose }) {
         <header className="stats-header">
           <div className="stats-header-left">
             <LineChart className="stats-header-icon" size={26} aria-hidden="true" />
-            <h2 className="stats-title">Thống kê bài viết</h2>
+            <h2 id="stats-title" className="stats-title">Thống kê bài viết</h2>
           </div>
           <button className="stats-close" onClick={onClose} aria-label="Đóng thống kê">
             <X size={20} aria-hidden="true" />
