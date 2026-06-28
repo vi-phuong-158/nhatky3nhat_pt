@@ -163,6 +163,11 @@
   box-shadow: var(--card-shadow-hover);
 }
 
+.album-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .album-card:active {
   transform: scale(0.98);
 }
