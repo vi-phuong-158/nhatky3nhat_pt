@@ -1498,6 +1498,11 @@
   max-height: 430px;
 }
 
+.post-image:focus-visible {
+  outline: 2px solid var(--primary, #005eaa);
+  outline-offset: 2px;
+}
+
 .post-footer {
   margin-top: 8px;
   padding: 12px 4px 4px;
