@@ -229,11 +229,11 @@ export default function StatsView({ entries, loading, onClose }) {
         <div className="stats-filters">
           {/* Time filter */}
           <div className="stats-filter-group">
-            <label className="stats-filter-label">
+            <label id="time-filter-label" className="stats-filter-label">
               <Calendar size={16} aria-hidden="true" />
               Thời gian
             </label>
-            <div className="stats-chips">
+            <div className="stats-chips" role="group" aria-labelledby="time-filter-label">
               {[
                 { key: 'all', label: 'Tất cả' },
                 { key: '7d', label: '7 ngày' },
@@ -246,6 +246,7 @@ export default function StatsView({ entries, loading, onClose }) {
                   key={t.key}
                   className={`stats-chip ${timeFilter === t.key ? 'stats-chip-active' : ''}`}
                   onClick={() => setTimeFilter(t.key)}
+                  aria-pressed={timeFilter === t.key}
                 >
                   {t.label}
                 </button>
@@ -255,13 +256,14 @@ export default function StatsView({ entries, loading, onClose }) {
 
           {/* Unit filter */}
           <div className="stats-filter-group">
-            <label className="stats-filter-label">
+            <label htmlFor="unit-search" className="stats-filter-label">
               <Building2 size={16} aria-hidden="true" />
               Đơn vị
             </label>
             <div className="stats-unit-filter">
               <div className="stats-unit-input-wrapper">
                 <input
+                  id="unit-search"
                   type="text"
                   className="stats-unit-input"
                   placeholder="Tìm đơn vị..."
@@ -276,6 +278,7 @@ export default function StatsView({ entries, loading, onClose }) {
                 {(unitFilter || unitSearch) && (
                   <button
                     className="stats-unit-clear"
+                    aria-label="Xóa tìm kiếm đơn vị"
                     onClick={() => {
                       setUnitFilter('');
                       setUnitSearch('');
