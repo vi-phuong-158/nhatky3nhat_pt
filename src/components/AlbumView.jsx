@@ -78,7 +78,16 @@ export default function AlbumView({ images, loading, onClose }) {
                 initial="hidden"
                 animate="visible"
                 layoutId={`album-img-${img.id}`}
+                role="button"
+                tabIndex={0}
+                aria-label={`Phóng to ảnh ${img.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp)$/i, '')}`}
                 onClick={() => setSelectedImg(img)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedImg(img);
+                  }
+                }}
               >
                 <div className="album-img-wrapper">
                   <img
