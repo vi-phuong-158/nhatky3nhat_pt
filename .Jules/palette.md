@@ -1,0 +1,3 @@
+## 2025-02-18 - Improve Dynamic Form Feedback and Progress Indicators
+**Learning:** For accessibility, dynamic custom progress indicators must include `role="progressbar"`, `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`. Additionally, form feedback alerts must use `role="alert"` (with `aria-live="assertive"`) for errors and `role="status"` (with `aria-live="polite"`) for success messages so that screen readers can proactively announce dynamic changes to the user.
+**Action:** Always ensure that custom progress elements and dynamic feedback UI in forms implement the proper ARIA roles and live regions for optimal screen reader support.
