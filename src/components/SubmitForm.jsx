@@ -319,13 +319,19 @@ export default function SubmitForm({ onFormSuccess, onClose, onToast }) {
 
         {/* Progress Bar & Submit */}
         {loading && uploadProgress > 0 && uploadProgress < 100 && (
-          <div className="sf-progress-track">
+          <div
+            className="sf-progress-track"
+            role="progressbar"
+            aria-valuenow={uploadProgress}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
             <div className="sf-progress-bar" style={{ width: `${uploadProgress}%`, transition: 'width 0.3s ease' }}></div>
-            <p className="sf-progress-text">Đang tải file: {uploadProgress}%</p>
+            <p className="sf-progress-text" aria-hidden="true">Đang tải file: {uploadProgress}%</p>
           </div>
         )}
 
-        <button type="submit" className="sf-btn-submit" disabled={loading} aria-label="Gửi lưu bút">
+        <button type="submit" className="sf-btn-submit" disabled={loading}>
           {loading ? (
             <>
               <span className="sf-spinner"></span>
