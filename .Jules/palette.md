@@ -1,0 +1,3 @@
+## 2024-07-08 - Keyboard accessibility for clickable images
+**Learning:** Adding keyboard accessibility (`onKeyDown`, `tabIndex`, `role="button"`) to `img` and `div` elements used as interactive cards or lightboxes is a critical pattern in this app, specifically in `PostCard.jsx` and `AlbumView.jsx`.
+**Action:** When creating custom interactive elements that behave like buttons (like expanding an image), always ensure they are fully navigable via keyboard by adding `tabIndex={0}`, `role="button"`, an appropriate `aria-label`, and an `onKeyDown` handler listening for 'Enter' or 'Space' that calls `e.preventDefault()` and the respective action.
