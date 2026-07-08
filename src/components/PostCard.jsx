@@ -163,6 +163,22 @@ function PostCard({ entry, onImageClick, onToast }) {
                   author: entry.hoTen,
                   unit: entry.donVi
                 })}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (onImageClick) {
+                      onImageClick({
+                        src: mediaUrl,
+                        alt: entry.tieuDe,
+                        author: entry.hoTen,
+                        unit: entry.donVi
+                      });
+                    }
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Phóng to ảnh: ${entry.tieuDe}`}
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src =
