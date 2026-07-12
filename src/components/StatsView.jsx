@@ -229,11 +229,11 @@ export default function StatsView({ entries, loading, onClose }) {
         <div className="stats-filters">
           {/* Time filter */}
           <div className="stats-filter-group">
-            <label className="stats-filter-label">
+            <label className="stats-filter-label" id="stats-time-label">
               <Calendar size={16} aria-hidden="true" />
               Thời gian
             </label>
-            <div className="stats-chips">
+            <div className="stats-chips" role="group" aria-labelledby="stats-time-label">
               {[
                 { key: 'all', label: 'Tất cả' },
                 { key: '7d', label: '7 ngày' },
@@ -245,6 +245,7 @@ export default function StatsView({ entries, loading, onClose }) {
                 <button
                   key={t.key}
                   className={`stats-chip ${timeFilter === t.key ? 'stats-chip-active' : ''}`}
+                  aria-pressed={timeFilter === t.key}
                   onClick={() => setTimeFilter(t.key)}
                 >
                   {t.label}
@@ -255,7 +256,7 @@ export default function StatsView({ entries, loading, onClose }) {
 
           {/* Unit filter */}
           <div className="stats-filter-group">
-            <label className="stats-filter-label">
+            <label className="stats-filter-label" htmlFor="stats-unit-input">
               <Building2 size={16} aria-hidden="true" />
               Đơn vị
             </label>
@@ -264,6 +265,7 @@ export default function StatsView({ entries, loading, onClose }) {
                 <input
                   type="text"
                   className="stats-unit-input"
+                  id="stats-unit-input"
                   placeholder="Tìm đơn vị..."
                   value={unitSearch || unitFilter}
                   onChange={(e) => {
@@ -276,6 +278,7 @@ export default function StatsView({ entries, loading, onClose }) {
                 {(unitFilter || unitSearch) && (
                   <button
                     className="stats-unit-clear"
+                    aria-label="Xóa bộ lọc đơn vị"
                     onClick={() => {
                       setUnitFilter('');
                       setUnitSearch('');
