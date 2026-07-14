@@ -1,0 +1,3 @@
+## 2023-10-27 - [Filter Chips Accessibility]
+**Learning:** Filter chips that toggle state function as a single choice group but look like independent buttons, which is confusing for screen readers if not marked up properly. Using `role="group"` on the container with `aria-labelledby` and adding `aria-pressed={isActive}` on individual toggle buttons ensures their behavior correctly mirrors radio-button-like or multi-select functionality.
+**Action:** When creating toggle button groups (like time or category filters), wrap them in a container with `role="group"` and apply `aria-pressed` to represent active state.
