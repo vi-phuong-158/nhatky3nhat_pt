@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { ImageOff, Images, X } from 'lucide-react';
 import './AlbumView.css';
 
@@ -22,13 +22,13 @@ export default function AlbumView({ images, loading, onClose }) {
   const handleClose = useCallback(() => setSelectedImg(null), []);
 
   return (
-    <motion.div
+    <Motion.div
       className="album-overlay"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <motion.div
+      <Motion.div
         className="album-container"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { type: 'spring', damping: 25, stiffness: 300 } }}
@@ -70,7 +70,7 @@ export default function AlbumView({ images, loading, onClose }) {
         {!loading && images.length > 0 && (
           <div className="album-grid">
             {images.map((img, i) => (
-              <motion.div
+              <Motion.div
                 key={img.id}
                 className="album-card"
                 custom={i}
@@ -79,6 +79,15 @@ export default function AlbumView({ images, loading, onClose }) {
                 animate="visible"
                 layoutId={`album-img-${img.id}`}
                 onClick={() => setSelectedImg(img)}
+                role="button"
+                tabIndex={0}
+                aria-label={`Xem ảnh: ${img.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp)$/i, '')}`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedImg(img);
+                  }
+                }}
               >
                 <div className="album-img-wrapper">
                   <img
@@ -96,16 +105,16 @@ export default function AlbumView({ images, loading, onClose }) {
                     {img.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp)$/i, '')}
                   </span>
                 </div>
-              </motion.div>
+              </Motion.div>
             ))}
           </div>
         )}
-      </motion.div>
+      </Motion.div>
 
       {/* Lightbox */}
       <AnimatePresence>
         {selectedImg && (
-          <motion.div
+          <Motion.div
             className="album-lightbox"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -115,7 +124,7 @@ export default function AlbumView({ images, loading, onClose }) {
             <button className="album-lightbox-close" onClick={handleClose} aria-label="Đóng ảnh">
               <X size={22} aria-hidden="true" />
             </button>
-            <motion.img
+            <Motion.img
               src={selectedImg.url}
               alt={selectedImg.name}
               className="album-lightbox-img"
@@ -127,9 +136,9 @@ export default function AlbumView({ images, loading, onClose }) {
             <div className="album-lightbox-caption" onClick={(e) => e.stopPropagation()}>
               {selectedImg.name.replace(/\.(jpg|jpeg|png|gif|webp|bmp)$/i, '')}
             </div>
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </Motion.div>
   );
 }
