@@ -1,0 +1,3 @@
+## 2024-05-15 - Form Feedback & Custom Progress Bar ARIA Patterns
+**Learning:** For accessibility in this app's components, form feedback alerts require specific role and aria-live attributes based on their type (`role="alert" aria-live="assertive"` for errors, `role="status" aria-live="polite"` for success). Custom progress indicators built with divs need `role="progressbar"`, `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` attributes, along with `aria-hidden="true"` on inner text to avoid double announcements by screen readers.
+**Action:** When creating form notifications or custom progress bars, always apply these reusable ARIA patterns to ensure screen readers announce status changes effectively and interpret dynamic progress accurately without redundancy.
