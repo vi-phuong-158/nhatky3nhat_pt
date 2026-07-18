@@ -163,6 +163,21 @@ function PostCard({ entry, onImageClick, onToast }) {
                   author: entry.hoTen,
                   unit: entry.donVi
                 })}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (onImageClick) {
+                      onImageClick({
+                        src: mediaUrl,
+                        alt: entry.tieuDe,
+                        author: entry.hoTen,
+                        unit: entry.donVi
+                      });
+                    }
+                  }
+                }}
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src =
