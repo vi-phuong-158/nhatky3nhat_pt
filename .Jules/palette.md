@@ -1,0 +1,3 @@
+## 2024-05-19 - Centralize Escape Key Listeners and ARIA roles for Overlays
+**Learning:** Custom modals and overlays (like `StatsView` and `AlbumView`) without centralized event management can miss critical accessibility features like `Escape` key dismissal and proper ARIA dialog roles (`role="dialog"`, `aria-modal="true"`, `aria-label`). Users relying on keyboards or screen readers will struggle if these features are omitted.
+**Action:** When implementing custom full-screen overlays or modals, always ensure there is an explicit `useEffect` handling the `Escape` key for dismissal, and set appropriate semantic ARIA roles to notify screen readers of the modal context.

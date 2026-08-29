@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowUpDown,
@@ -177,6 +177,15 @@ export default function StatsView({ entries, loading, onClose }) {
 
   const maxCount = topUnits.length > 0 ? topUnits[0].total : 1;
 
+  /* ─── Escape Key Handler ─── */
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
   /* ─── Handlers ─── */
   const handleSort = useCallback(
     (col) => {
@@ -207,6 +216,9 @@ export default function StatsView({ entries, loading, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Thống kê"
     >
       <motion.div
         className="stats-container"
